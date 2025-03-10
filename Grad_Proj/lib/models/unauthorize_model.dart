@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-class SignUpModel {
+class UnAuthorizeModel {
   List ? email;
   List ? password;
   List ? firstName;
@@ -8,7 +8,7 @@ class SignUpModel {
   List ? userName;
   List ? phoneNumber;
 
-  SignUpModel({
+  UnAuthorizeModel({
     this.email,
     this.password,
     this.firstName,
@@ -17,8 +17,8 @@ class SignUpModel {
     this.phoneNumber,
   });
 
-  factory SignUpModel.fromJson(Map<dynamic, dynamic> jsonData) {
-    return SignUpModel(
+  factory UnAuthorizeModel.fromJson(Map<dynamic, dynamic> jsonData) {
+    return UnAuthorizeModel(
         email: jsonData["Email"],
         password: jsonData["Password"],
         firstName: jsonData["FirstName"],

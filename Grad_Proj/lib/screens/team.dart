@@ -23,6 +23,7 @@ class _TeamState extends State<Team> {
   bool addedRole = false;
   int index = 0;
   List<String> role = ['Manager', 'Owner', 'Worker', 'Export'];
+  Map<String, dynamic> myRoleListEdit = {'name' : 'Hessian' , 'role' : 'Manager'};
   void add() {
     if (formstate.currentState!.validate()) {
       farm.add(userName);
@@ -52,7 +53,7 @@ class _TeamState extends State<Team> {
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                hintText: "Enter Email or Username",
+                hintText: widget.editFarm? myRoleListEdit['name'] : "Enter Email or Username",
                 hintStyle: const TextStyle(color: borderColor),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
@@ -108,7 +109,7 @@ class _TeamState extends State<Team> {
                     child: DropdownButton(
                       dropdownColor: Colors.white,
                       isExpanded: true,
-                      hint: const Text('Manager'),
+                      hint: Text(widget.editFarm ? myRoleListEdit['role'] : 'Manger'),
                       style: const TextStyle(
                           fontFamily: 'Manrope',
                           color: borderColor,
@@ -183,13 +184,15 @@ class _TeamState extends State<Team> {
             const SizedBox(
               height: 10,
             ),
-            myRoleList.isNotEmpty
+            widget.editFarm?_buildRolesList(): myRoleList.isNotEmpty
                 ? _buildRolesList()
                 : const SizedBox(
                     height: 1,
                   ),
             const Spacer(),
-            Align(
+            widget.editFarm ?
+            const SizedBox(height: 1,)
+            : Align(
               alignment: Alignment.bottomRight,
               child: Container(
                   height: 60,
@@ -249,7 +252,7 @@ class _TeamState extends State<Team> {
 Widget _buildRolesList() {
   ///team members part
   return SizedBox(
-    width: 380,
+    width: 390,
     height: 260,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,

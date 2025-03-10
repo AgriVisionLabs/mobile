@@ -13,6 +13,7 @@ class TodoBar extends StatefulWidget {
 
 class _TodoBarState extends State<TodoBar> {
   bool isChecked = false;
+  Task ? task ;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,8 +39,8 @@ class _TodoBarState extends State<TodoBar> {
                           onDismissed: (_) {
                             ///remove the current task
                           },
-                          //give a unique key to eack task
-                          key: Key(index.toString()),
+                          //give a unique key to each task
+                          key: UniqueKey(),
                           background: const Icon(
                             Icons.delete,
                             color: borderColor,
@@ -59,6 +60,7 @@ class _TodoBarState extends State<TodoBar> {
                                     //check and uncheck the task
                                     setState(() {
                                       isChecked = !isChecked;
+                                      print(index);
                                     });
                                   },
                                   child: AnimatedContainer(

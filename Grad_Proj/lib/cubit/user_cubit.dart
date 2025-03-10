@@ -54,7 +54,7 @@ class UserCubit extends Cubit<UserState> {
       CacheHelper().saveData(key: ApiKey.id, value: user!.id);
       emit(SignInSuccess());
     } on ServerException catch (e) {
-      emit(SignInFailure(errMessage: e.errorModel.message));
+      emit(SignInFailure(errMessage: e.errorModel.message , errors: e.errorModel.error));
     }
   }
 

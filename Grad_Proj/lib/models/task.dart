@@ -17,10 +17,11 @@ class Task {
     required String ? id,
     required String ? description,
     required String ? dueDate,
+    required bool ? isCompleted
   })=>Task(
     //is used to uniquely identify an object or a record in a database
     id: const Uuid().v1(), 
     description: description ?? "", 
     dueDate: dueDate ?? "", 
-    isCompleted: false);
+    isCompleted: isCompleted ?? false);
 }

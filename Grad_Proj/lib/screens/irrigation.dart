@@ -15,10 +15,11 @@ class Irrigation extends StatefulWidget {
   State<Irrigation> createState() => _IrrigationState();
 }
 
-List<Map<String, dynamic>> myIrrigationList = [];
+
 
 class _IrrigationState extends State<Irrigation> {
   GlobalKey<FormState> formstate = GlobalKey();
+  List<Map<String, dynamic>> myIrrigationList = [];
   TextEditingController ? serialNumberController ;
   String? irrigationUnitName;
   String serialNum = ' ';
@@ -194,7 +195,6 @@ class _IrrigationState extends State<Irrigation> {
                             'name': irrigationUnitName,
                             'number': serialNum,
                           });
-                          add();
                             print(myIrrigationList);
 
                           addOne = false;
@@ -261,11 +261,8 @@ class _IrrigationState extends State<Irrigation> {
                             index = widget.currentIndex;
                             index++;
                             add();
+                            widget.onInputChanged(field, index);
                           }
-                          add();
-                          index = widget.currentIndex;
-                          index++;
-                          widget.onInputChanged(field, index);
                         });
                       },
                       child: const SizedBox(

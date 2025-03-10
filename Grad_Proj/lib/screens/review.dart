@@ -6,7 +6,8 @@ import '../Components/color.dart';
 
 class Review extends StatefulWidget {
   final List farm;
-  const Review({super.key, required this.farm});
+  final bool editFarm ;
+  const Review({super.key, required this.farm , this.editFarm = false});
 
   @override
   State<Review> createState() => _ReviewState();
@@ -14,6 +15,7 @@ class Review extends StatefulWidget {
 
 class _ReviewState extends State<Review> {
   List farm =[];
+  List editFarm = ['Green Farm','900','Ismailia','Clay','Hessian', 'Manager'];
   @override
   Widget build(BuildContext context) {
     farm = widget.farm;
@@ -49,7 +51,8 @@ class _ReviewState extends State<Review> {
                         color: primaryColor,
                         fontSize: 20,
                         fontWeight: FontWeight.w500)),
-                Text(farm[0][0],
+                Text(
+                  widget.editFarm? editFarm[0] : farm[0][0],
                     style: const TextStyle(
                         fontFamily: 'Manrope',
                         color: Colors.black,
@@ -64,7 +67,8 @@ class _ReviewState extends State<Review> {
                         color: primaryColor,
                         fontSize: 20,
                         fontWeight: FontWeight.w500)),
-                Text('${farm[0][1]} acres',
+                Text(
+                  widget.editFarm? "${editFarm[1]} acres" : '${farm[0][1]} acres',
                     style: const TextStyle(
                         fontFamily: 'Manrope',
                         color: Colors.black,
@@ -89,7 +93,8 @@ class _ReviewState extends State<Review> {
                         color: primaryColor,
                         fontSize: 20,
                         fontWeight: FontWeight.w500)),
-                Text(farm[0][2],
+                Text(
+                  widget.editFarm? editFarm[2] : farm[0][2],
                     style: const TextStyle(
                         fontFamily: 'Manrope',
                         color: Colors.black,
@@ -98,13 +103,15 @@ class _ReviewState extends State<Review> {
               ]),
               const Spacer(),
               Column(children: [
-                const Text('Soil Type',
-                    style: TextStyle(
+                Text(
+                  'Soil Type',
+                    style: const TextStyle(
                         fontFamily: 'Manrope',
                         color: primaryColor,
                         fontSize: 20,
                         fontWeight: FontWeight.w500)),
-                Text(farm[0][3]+' Soil',
+                Text(
+                  widget.editFarm? editFarm[3] : farm[0][3]+' Soil',
                     style: const TextStyle(
                         fontFamily: 'Manrope',
                         color: Colors.black,
@@ -119,6 +126,7 @@ class _ReviewState extends State<Review> {
         ),
         _buildRolesList(),
         const Spacer(),
+        widget.editFarm ? SizedBox(height: 1,):
         Align(
           alignment: Alignment.bottomRight,
           child: Container(
@@ -167,7 +175,7 @@ Widget _buildRolesList() {
           width: 380,
           height: 220,
           child: ListView.builder(
-              itemCount: farm.length-1,
+              itemCount: widget.editFarm ? 1 : farm.length-1,
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
                 return Container(
@@ -181,7 +189,7 @@ Widget _buildRolesList() {
                       children: [
                         //Task Descrption
                         Text(
-                          farm[index+1][0],
+                          widget.editFarm? editFarm[4] : farm[index+1][0],
                           style: const TextStyle(
                             fontFamily: 'Manrope',
                             color: Colors.black,
@@ -192,16 +200,37 @@ Widget _buildRolesList() {
                         ),
                         const Spacer(),
 
-                        //Due Date
                         
-                        Text(farm[index+1][(1)],
+                        
+                        Text(
+                          widget.editFarm? editFarm[5] : farm[index+1][(1)],
                             style: const TextStyle(
                               fontFamily: 'Manrope',
                               color: Colors.black,
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                               // decoration: TextDecoration.lineThrough
-                            ))
+                            )),
+
+                        widget.editFarm? Align(
+                            heightFactor: 1,
+                            alignment: Alignment.centerRight,
+                            child: SizedBox(
+                              width: 20,
+                              height: 30,
+                              child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      
+                                    });
+                                  },
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 18,
+                                  )),
+                            ),
+                          ):SizedBox(width: 1,)
                       ],
                     ),
                   ),

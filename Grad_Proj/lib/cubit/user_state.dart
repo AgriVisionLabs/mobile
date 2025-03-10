@@ -9,8 +9,9 @@ final class SignInLoading extends UserState {}
 
 final class SignInFailure extends UserState {
   final String errMessage;
-
-  SignInFailure({required this.errMessage});
+  final dynamic errors;
+  
+  SignInFailure({required this.errMessage,required this.errors});
 }
 
 

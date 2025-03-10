@@ -20,7 +20,7 @@ class _ReviewFieldState extends State<ReviewField> {
     field = widget.field;
     return SizedBox(
       width: 380,
-      height: 660,
+      height: 680,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(
           children: [

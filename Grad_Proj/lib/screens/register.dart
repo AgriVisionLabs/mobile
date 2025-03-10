@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/cubit/user_cubit.dart';
 import 'package:grd_proj/cubit/user_state.dart';
-import 'package:grd_proj/models/sign_up_model.dart';
+
+
+import '../models/unauthorize_model.dart';
 
 class Rigester extends StatefulWidget {
   const Rigester({super.key});
@@ -24,7 +26,7 @@ class _RigesterState extends State<Rigester> {
   bool obscureText2 = true;
   bool isChecked = false;
   String description = '';
-  SignUpModel ? response;
+  UnAuthorizeModel ? response;
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +44,9 @@ class _RigesterState extends State<Rigester> {
       } else if (state is SignUpFailure) {
         if (state.errMessage == 'Conflict') {
           description = state.errors[0]['description'];
-          response = SignUpModel();
+          response = UnAuthorizeModel();
         } else {
-          response = SignUpModel.fromJson(state.errors);
+          response = UnAuthorizeModel.fromJson(state.errors);
         }
         ScaffoldMessenger.of(context).clearSnackBars();
         WidgetsBinding.instance.addPostFrameCallback((_) {

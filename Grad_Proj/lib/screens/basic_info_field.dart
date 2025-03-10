@@ -37,7 +37,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
     return Container(
       color: Colors.white,
       width: 380,
-      height: 530,
+      height: 680,
       child: Form(
           key: formstate,
           child:

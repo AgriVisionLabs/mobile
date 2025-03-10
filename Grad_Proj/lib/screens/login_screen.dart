@@ -9,6 +9,9 @@ import 'package:grd_proj/screens/home_screen.dart';
 import 'package:grd_proj/screens/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
+import '../models/unauthorize_model.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -20,6 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordControler = TextEditingController();
   bool obscureText = true;
   bool isChecked = true;
+  String description = '';
+  UnAuthorizeModel? response;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +51,12 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialPageRoute(builder: (context) => HomeScreen()),
             );
           } else if (state is SignInFailure) {
+            if (state.errMessage == 'Unauthorized'){
+              description = state.errors[0]['description'];
+              response = UnAuthorizeModel();
+            } else {
+              response = UnAuthorizeModel.fromJson(state.errors);
+            }
             ScaffoldMessenger.of(context).clearSnackBars();
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -54,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               );
             });
+            context.read<UserCubit>().signInFormKey.currentState!.validate();
           }
         }, builder: (context, state) {
           return Scaffold(
@@ -132,10 +144,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Please enter your email";
-                                } else if (!value.contains("@")) {
-                                  return 'Please enter a valid email address';
+                                if (response!.email != null) {
+                                  if (value!.isEmpty) {
+                                    return response!.email![0];
+                                  } else if (!value.contains("@")) {
+                                    return response!.email![0];
+                                  }
+                                  }else if(description.isNotEmpty && description != "A user with this username already exists."){
+                                    return description;
                                 }
                                 return null;
                               },
@@ -177,8 +193,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter a password';
+                                if (response!.password != null) {
+                                  if (value!.isEmpty) {
+                                    return response!.password![0];
+                                  } else {
+                                    return response!.password![0];
+                                  }
                                 }
                                 return null;
                               },

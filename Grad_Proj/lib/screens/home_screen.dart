@@ -80,9 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // String? selectedValue;
   final List<Widget> screens = [
     const DashBoard(),
-    const FarmsScreen(
-      farms: [],
-    ),
+    const FarmsScreen(farms: [],),
     const ScanScreen(),
     const TaskScreen(),
     const MoreScreen(),
@@ -152,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
-        currentIndex: indexing,
+        currentIndex: indexing > 4 ? 2 : indexing,
         onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
@@ -166,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Image.asset('assets/images/farms.png',
                 height: 30,
                 width: 30,
-                color: indexing == 1 ? Colors.green[900] : Colors.black),
+                color: indexing == 1 || indexing == 5? Colors.green[900] : Colors.black),
             label: 'Farms',
           ),
           BottomNavigationBarItem(

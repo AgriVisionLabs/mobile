@@ -35,32 +35,40 @@ class _EditFarmState extends State<EditFarm> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          margin: const EdgeInsets.all(16),
-          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-            pageTop(),
-            const SizedBox(height: 40),
-            buildDots(),
-            const SizedBox(height: 20),
-            currentIndex == 0
-                ? BasicInfo(
-                    onInputChanged: _onInputChanged,
-                    currentIndex: currentIndex,
-                    editFarm: true,
-                  )
-                : currentIndex == 1
-                    ? Team(
-                        onInputChanged: _onInputChanged,
-                        currentIndex: currentIndex,
-                        editFarm: true,
-                      )
-                    : Review(
-                        farm: farm,
-                      ),
-            const Spacer(),
-            button()
-          ]),
+        child: Column(
+          children: [
+            // Fixed Top Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  pageTop(),
+                  const SizedBox(height: 40),
+                  buildDots(),
+                ],
+              ),
+            ),
+            
+            // Scrollable Form Section
+            Expanded(
+              child: SingleChildScrollView(
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    if (currentIndex == 0)
+                      BasicInfo(onInputChanged: _onInputChanged, currentIndex: currentIndex , editFarm: true,)
+                    else if (currentIndex == 1)
+                      Team(onInputChanged: _onInputChanged, currentIndex: currentIndex ,editFarm: true,)
+                    else
+                      Review(farm: farm,editFarm: true,),
+                    const SizedBox(height: 20),
+                    button()
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

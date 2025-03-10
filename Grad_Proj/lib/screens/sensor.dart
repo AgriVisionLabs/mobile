@@ -15,16 +15,17 @@ class Sensor extends StatefulWidget {
   State<Sensor> createState() => _SensorState();
 }
 
-List<Map<String, dynamic>> mySensorList = [];
+
 
 class _SensorState extends State<Sensor> {
   GlobalKey<FormState> formstate = GlobalKey();
+  List<Map<String, dynamic>> mySensorList = [];
   TextEditingController? serialNumberController;
   String? sensorUnitName;
   String serialNum = ' ';
   List field = [];
   int index = 0;
-  bool addOne = false;
+  bool add1=true;
   void add() {
     if (formstate.currentState!.validate()) {
       field.add(sensorUnitName);
@@ -113,6 +114,7 @@ class _SensorState extends State<Sensor> {
                     width: 297,
                     height: 60,
                     child: TextFormField(
+                      controller: serialNumberController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: "Enter Serial Number",
@@ -182,25 +184,25 @@ class _SensorState extends State<Sensor> {
               height: 24,
             ),
             Container(
-                height: 80,
+                height: 60,
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  color: addOne ? primaryColor : borderColor,
+                  color: add1? primaryColor : borderColor,
                 ),
                 child: TextButton(
                     onPressed: () {
                       setState(() {
-                        if (addOne == true) {
+                        if (add1== true) {
                           if (formstate.currentState!.validate()) {
                             mySensorList.add({
                               'name': sensorUnitName,
                               'number': serialNum,
                             });
-                            add();
+                            
                             print(mySensorList);
 
-                            addOne = false;
+                            add1= false;
                           } else {
                             print('Please Enter requested info');
                           }
@@ -260,7 +262,7 @@ class _SensorState extends State<Sensor> {
                           } else {
                             index = widget.currentIndex;
                             index++;
-                            add();
+                            add ();
                           }
                           add();
                           index = widget.currentIndex;
@@ -291,93 +293,92 @@ class _SensorState extends State<Sensor> {
     );
   }
 
-
-Widget _buildIrrigationList() {
-  return SizedBox(
-    width: 380,
-    height: 260,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Added Irrigation Unit',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
-            )),
-        const SizedBox(
-          height: 8,
-        ),
-        SizedBox(
-          width: 380,
-          height: 220,
-          child: ListView.builder(
-              padding: const EdgeInsets.all(0),
-              itemCount: mySensorList.length,
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                return Container(
-                  width: 380,
-                  height: 110,
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(30, 105, 48, 0.15),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: ListTile(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        //Task Descrption
-                        Text(
-                          mySensorList[index]['name'],
-                          style: const TextStyle(
-                            fontFamily: 'Manrope',
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            // decoration: TextDecoration.lineThrough
-                          ),
-                        ),
-
-                        Align(
-                          heightFactor: 1,
-                          alignment: Alignment.centerRight,
-                          child: SizedBox(
-                            width: 20,
-                            height: 30,
-                            child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    mySensorList.removeAt(index);
-                                    addOne = !addOne;
-                                  });
-                                },
-                                icon: const Icon(
-                                  Icons.close,
-                                  color: Colors.black,
-                                  size: 18,
-                                )),
-                          ),
-                        ),
-                        //Due Date
-                        Text('${mySensorList[index]['number']}',
+  Widget _buildIrrigationList() {
+    return SizedBox(
+      width: 380,
+      height: 260,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Added Irrigation Unit',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+              )),
+          const SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            width: 380,
+            height: 220,
+            child: ListView.builder(
+                padding: const EdgeInsets.all(0),
+                itemCount: mySensorList.length,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 380,
+                    height: 110,
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(30, 105, 48, 0.15),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ListTile(
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          //Task Descrption
+                          Text(
+                            mySensorList[index]['name'],
                             style: const TextStyle(
                               fontFamily: 'Manrope',
-                              color: borderColor,
+                              color: Colors.black,
                               fontSize: 18,
                               fontWeight: FontWeight.w400,
                               // decoration: TextDecoration.lineThrough
-                            ))
-                      ],
+                            ),
+                          ),
+
+                          Align(
+                            heightFactor: 1,
+                            alignment: Alignment.centerRight,
+                            child: SizedBox(
+                              width: 20,
+                              height: 30,
+                              child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      mySensorList.removeAt(index);
+                                      add1 = !add1;
+                                    });
+                                  },
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 18,
+                                  )),
+                            ),
+                          ),
+                          //Due Date
+                          Text('${mySensorList[index]['number']}',
+                              style: const TextStyle(
+                                fontFamily: 'Manrope',
+                                color: borderColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400,
+                                // decoration: TextDecoration.lineThrough
+                              ))
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }),
-        ),
-      ],
-    ),
-  );
-}
+                  );
+                }),
+          ),
+        ],
+      ),
+    );
+  }
 }
