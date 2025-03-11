@@ -9,11 +9,34 @@ class TodoBar extends StatefulWidget {
   State<TodoBar> createState() => _TodoBarState();
 }
 
-
+List<Task> tasks = [
+  Task(
+      id: "1",
+      description: "Schedule equipment maintenance",
+      dueDate: "Today",
+      isCompleted:false),
+  Task.create(
+      id: "2",
+      description: "Review crop rotation plan",
+      dueDate: "Tomorrow",
+      isCompleted: false),
+  Task(
+    id: "3",
+    description: "Prepare monthly yield report",
+    dueDate: "3 Days",
+    isCompleted: false
+  ),
+  Task(
+    id: "4",
+    description: "Order new seeds for next season",
+    dueDate: "1 Weeks",
+    isCompleted: false
+  ),
+];
 
 class _TodoBarState extends State<TodoBar> {
   bool isChecked = false;
-  Task ? task ;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,11 +49,11 @@ class _TodoBarState extends State<TodoBar> {
         SizedBox(
             width: double.infinity,
             height: 300,
-            child: Tasks().tasks.isNotEmpty
+            child: tasks.isNotEmpty
                 ?
                 //task list is not empty
                 ListView.builder(
-                    itemCount:Tasks().tasks.length,
+                    itemCount: tasks.length,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (context, index) {
                       //container of each task
@@ -59,8 +82,7 @@ class _TodoBarState extends State<TodoBar> {
                                   onTap: () {
                                     //check and uncheck the task
                                     setState(() {
-                                      isChecked = !isChecked;
-                                      print(index);
+                                      tasks[index].isCompleted = !tasks[index].isCompleted;
                                     });
                                   },
                                   child: AnimatedContainer(
@@ -70,12 +92,14 @@ class _TodoBarState extends State<TodoBar> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(5)),
                                     ),
-                                    child: isChecked ? const Icon(
-                                      Icons.check,
-                                      color: primaryColor,
-                                    ):
-                                    const Icon(Icons.check_box_outline_blank
-                                    , color: Colors.white),
+                                    child: tasks[index].isCompleted
+                                        ? const Icon(
+                                            Icons.check,
+                                            color: primaryColor,
+                                          )
+                                        : const Icon(
+                                            Icons.check_box_outline_blank,
+                                            color: Colors.white),
                                   ),
                                 ),
 
@@ -86,7 +110,7 @@ class _TodoBarState extends State<TodoBar> {
                                     SizedBox(
                                       width: 185,
                                       child: Text(
-                                        Tasks().tasks[index].description,
+                                        tasks[index].description,
                                         style: const TextStyle(
                                           fontFamily: 'Manrope',
                                           color: Colors.black,
@@ -108,8 +132,7 @@ class _TodoBarState extends State<TodoBar> {
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(30)),
                                       ),
-                                      child: Text(
-                                          Tasks().tasks[index].dueDate,
+                                      child: Text(tasks[index].dueDate,
                                           style: const TextStyle(
                                             fontFamily: 'Manrope',
                                             color: Colors.black,
@@ -137,35 +160,3 @@ class _TodoBarState extends State<TodoBar> {
     );
   }
 }
-
-
-class Tasks {
-  List <Task> tasks = [
-  Task(
-    id: "1",
-    description: "Schedule equipment maintenance",
-    dueDate: "Today",
-    isCompleted: false
-  ),
-  Task(
-    id: "1",
-    description: "Review crop rotation plan",
-    dueDate: "Tomorrow",
-    isCompleted: false
-  ),
-  Task(
-    id: "1",
-    description: "Prepare monthly yield report",
-    dueDate: "3 Days",
-    isCompleted: false
-  ),
-  Task(
-    id: "1",
-    description: "Order new seeds for next season",
-    dueDate: "1 Weeks",
-    isCompleted: false
-  ),
-  ];
-}
-
-

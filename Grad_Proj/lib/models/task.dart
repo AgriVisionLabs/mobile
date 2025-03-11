@@ -10,7 +10,7 @@ class Task {
     required this.id,
     required this.description,
     required this.dueDate,
-    required this.isCompleted
+    this.isCompleted = true
   });
 
   factory Task.create({
@@ -22,6 +22,7 @@ class Task {
     //is used to uniquely identify an object or a record in a database
     id: const Uuid().v1(), 
     description: description ?? "", 
-    dueDate: dueDate ?? "", 
-    isCompleted: isCompleted ?? false);
+    dueDate: dueDate ?? "",
+    isCompleted: isCompleted ?? false
+);
 }
