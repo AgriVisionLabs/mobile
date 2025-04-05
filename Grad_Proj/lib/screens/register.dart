@@ -101,7 +101,11 @@ class _RigesterState extends State<Rigester> {
                               controller:
                                   context.read<UserCubit>().signUpFirstName,
                               keyboardType: TextInputType.name,
+                              style: TextStyle(
+                                fontSize: 16
+                              ),
                               decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                                 hintText: "First Name",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -139,7 +143,11 @@ class _RigesterState extends State<Rigester> {
                               controller:
                                   context.read<UserCubit>().signUpLastName,
                               keyboardType: TextInputType.name,
+                              style: TextStyle(
+                                fontSize: 16
+                              ),
                               decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                                 hintText: "Last Name",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -176,9 +184,14 @@ class _RigesterState extends State<Rigester> {
                             TextFormField(
                               controller: context.read<UserCubit>().signUpName,
                               keyboardType: TextInputType.name,
+                              style: TextStyle(
+                                fontSize: 16
+                              ),
                               decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                                 hintText: "User Name",
-                                hintStyle: TextStyle(color: borderColor),
+                                hintStyle: TextStyle(
+                                  color: borderColor),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30.0),
                                   borderSide: BorderSide(
@@ -215,7 +228,11 @@ class _RigesterState extends State<Rigester> {
                             TextFormField(
                               controller: context.read<UserCubit>().signUpEmail,
                               keyboardType: TextInputType.emailAddress,
+                              style: TextStyle(
+                                fontSize: 16
+                              ),
                               decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                                 hintText: "Enter your Email",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -254,8 +271,12 @@ class _RigesterState extends State<Rigester> {
                               controller: passwordController,
                               obscureText: obscureText,
                               keyboardType: TextInputType.visiblePassword,
+                              style: TextStyle(
+                                fontSize: 16
+                              ),
                               decoration: InputDecoration(
-                                hintText: "Enter your  Password",
+                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                hintText: "Enter your Password",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(50.0),
@@ -306,8 +327,12 @@ class _RigesterState extends State<Rigester> {
                               obscureText: obscureText2,
                               controller: confirmPasswordController,
                               keyboardType: TextInputType.visiblePassword,
+                              style: TextStyle(
+                                fontSize: 16
+                              ),
                               decoration: InputDecoration(
-                                hintText: "Enter your  Password",
+                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                hintText: "Confirm Your Password",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(50.0),
@@ -347,9 +372,13 @@ class _RigesterState extends State<Rigester> {
                             const SizedBox(height: 16),
                             TextFormField(
                               controller:
-                                  context.read<UserCubit>().signUpPhoneNumber,
+                              context.read<UserCubit>().signUpPhoneNumber,
                               keyboardType: TextInputType.phone,
+                              style: TextStyle(
+                                fontSize: 16
+                              ),
                               decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                                 hintText: "Phone Number",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -407,7 +436,8 @@ class _RigesterState extends State<Rigester> {
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 13,
-                                      fontFamily: "Manrope")),
+                                      fontFamily: "Manrope",
+                                      fontWeight: FontWeight.w600)),
                             ],
                           ),
                           GestureDetector(
@@ -423,6 +453,7 @@ class _RigesterState extends State<Rigester> {
                                 color: Color(0xff1E6930),
                                 fontSize: 13,
                                 fontFamily: "Manrope",
+                                fontWeight: FontWeight.bold
                               ),
                             ),
                           ),

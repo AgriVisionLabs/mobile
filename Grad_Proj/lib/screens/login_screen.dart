@@ -122,7 +122,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             TextFormField(
                               controller: context.read<UserCubit>().signInEmail,
                               keyboardType: TextInputType.emailAddress,
+                              style: TextStyle(
+                                fontSize: 16
+                              ),
                               decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                                 hintText: "Enter your Email",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -162,8 +166,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context.read<UserCubit>().signInPassword,
                               obscureText: obscureText,
                               keyboardType: TextInputType.visiblePassword,
+                              style: TextStyle(
+                                fontSize: 16
+                              ),
                               decoration: InputDecoration(
-                                hintText: "Enter your  Password",
+                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                hintText: "Enter your Password",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(50.0),
@@ -176,19 +184,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color: primaryColor, width: 3.0),
                                 ),
                                 errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderRadius: BorderRadius.circular(50.0),
                                   borderSide:
                                       BorderSide(color: errorColor, width: 3.0),
                                 ),
-                                suffixIcon: IconButton(
-                                    onPressed: () {
+                                suffixIcon: GestureDetector(
+                                    onTap: () {
                                       setState(() {
                                         obscureText = !obscureText;
                                       });
                                     },
-                                    icon: Icon(obscureText
-                                        ? Icons.visibility
-                                        : Icons.visibility_off)),
+                                    child: Image.asset(
+                                      obscureText ? 'assets/images/visiability on.png' : 'assets/images/visiability off.png'
+                                    )
+                                    ),
                               ),
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
@@ -233,9 +242,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               showModalBottomSheet(
                                 context: context,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
+                                enableDrag: false,
                                 shape: RoundedRectangleBorder(
                                   side: BorderSide(
-                                    color: Colors.grey,
+                                    color: borderColor,
                                   ),
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(40.0),

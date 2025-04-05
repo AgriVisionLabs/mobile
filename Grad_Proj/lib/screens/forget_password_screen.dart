@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/forget_password_data.dart';
 
@@ -15,64 +14,30 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   GlobalKey<FormState> formstate = GlobalKey();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  final _firebase = FirebaseAuth.instance;
   bool obscureText = true;
   bool obscureText2 = true;
   final controller = ForgetPasswordData();
   final pageController = PageController();
   int currentIndex = 0;
-  String code = '12345';
-
-
-  @override
-  void dispose() {
-    pageController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Handle back button press
-        // Return true to allow back navigation, false to prevent it
-        if (currentIndex > 0) {
-          pageController.previousPage(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.ease,
-          );
-          return false;
-        } else {
-          return true;
-        }
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: 385,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: Column(
-                children: [
-                  head(),
-                  body(),
-                  currentIndex == 0
-                      ? email()
-                      : currentIndex == 1
-                          ? buildSequare()
-                          : password(),
-                  button(),
-                  codeResend()
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+          child: Container(
+              margin: EdgeInsets.all(22),
+              child: Column(children: [
+                head(),
+                currentIndex == 0
+                    ? forget_password()
+                    : currentIndex == 1
+                        ? vCode()
+                        : resetPassword(),
+                button()
+              ]))),
     );
   }
-
 
 //back and close arrow
   Widget head() {
@@ -81,10 +46,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         padding: const EdgeInsets.only(top: 3.0, right: 300),
         child: IconButton(
             onPressed: () {
-              pageController.previousPage(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.ease,
-              );
+              setState(() {});
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -105,240 +67,258 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   }
 
   //Body
-  Widget body() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 16, bottom: 14),
-        child: Center(
-          child: PageView.builder(
-            controller: pageController,
-            onPageChanged: (value) {
-              setState(() {
-                currentIndex = value;
-              });
-            },
-            itemCount: controller.items.length,
-            itemBuilder: (context, index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //Titles
-                  Text(
-                    controller.items[index].title,
-                    style: const TextStyle(
-                      fontSize: 22,
+
+  Widget forget_password() {
+    return Container(
+        margin: const EdgeInsets.all(10),
+        child: Column(children: [
+          //Titles
+          Text(
+            controller.items[currentIndex].title,
+            style: const TextStyle(
+              fontSize: 22,
+              color: Colors.black,
+              fontFamily: "Manrope",
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+
+          const SizedBox(height: 14),
+          Text(
+            controller.items[currentIndex].description,
+            style: const TextStyle(
+                color: Colors.black, fontSize: 16, fontFamily: "Manrope"),
+          ),
+          Form(
+            key: formstate,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Email",
+                  style: TextStyle(
+                      fontSize: 18,
                       color: Colors.black,
                       fontFamily: "Manrope",
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.normal),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                TextFormField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    hintText: "Enter your Email",
+                    hintStyle: const TextStyle(color: borderColor),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(color: borderColor, width: 3.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(color: primaryColor, width: 3.0),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(color: errorColor, width: 3.0),
                     ),
                   ),
-
-                  const SizedBox(height: 14),
-                  //Description
-                  currentIndex != 2
-                      ? Text(
-                          controller.items[index].description,
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontFamily: "Manrope"),
-                        )
-                      : const SizedBox(height: 0),
-                ],
-              );
-            },
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Please enter your email";
+                    } else if (!value.contains("@")) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
-    );
+        ]));
   }
 
-  //email text field
-  Widget email() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Form(
-        key: formstate,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Email",
-              style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black,
-                  fontFamily: "Manrope",
-                  fontWeight: FontWeight.normal),
+  Widget vCode() {
+    return Container(
+        margin: const EdgeInsets.all(10),
+        child: Column(children: [
+          //Titles
+          Text(
+            controller.items[currentIndex].title,
+            style: const TextStyle(
+              fontSize: 22,
+              color: Colors.black,
+              fontFamily: "Manrope",
+              fontWeight: FontWeight.w600,
             ),
-            const SizedBox(height: 8,),
-            TextFormField(
-              controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                hintText: "Enter your Email",
-                hintStyle: const TextStyle(color: borderColor),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: const BorderSide(color: borderColor, width: 3.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: const BorderSide(color: primaryColor, width: 3.0),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: const BorderSide(color: errorColor, width: 3.0),
-                ),
-              ),
-              autocorrect: false,
-              textCapitalization: TextCapitalization.none,
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return "Please enter your email";
-                } else if (!value.contains("@")) {
-                  return 'Please enter a valid email address';
-                }
-                return null;
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+          ),
 
+          const SizedBox(height: 14),
+          Text(
+            controller.items[currentIndex].description,
+            style: const TextStyle(
+                color: Colors.black, fontSize: 16, fontFamily: "Manrope"),
+          )
+        ]));
+  }
 
 //reset password
-  Widget password() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Form(
-        key: formstate,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "New Password",
-              style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.black,
-                  fontFamily: "Manrope",
-                  fontWeight: FontWeight.normal),
+  Widget resetPassword() {
+    return Container(
+        margin: const EdgeInsets.all(10),
+        child: Column(children: [
+          //Titles
+          Text(
+            controller.items[currentIndex].title,
+            style: const TextStyle(
+              fontSize: 22,
+              color: Colors.black,
+              fontFamily: "Manrope",
+              fontWeight: FontWeight.w600,
             ),
-            TextFormField(
-              controller: passwordController,
-              obscureText: obscureText,
-              keyboardType: TextInputType.visiblePassword,
-              decoration: InputDecoration(
-                hintText: "Enter your  Password",
-                hintStyle: const TextStyle(color: borderColor),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(50.0),
-                  borderSide: const BorderSide(color: borderColor, width: 3.0),
+          ),
+          Form(
+            key: formstate,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "New Password",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontFamily: "Manrope",
+                      fontWeight: FontWeight.normal),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(50.0),
-                  borderSide: const BorderSide(color: primaryColor, width: 3.0),
+                SizedBox(
+                  height: 8,
                 ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: const BorderSide(color: errorColor, width: 3.0),
-                ),
-                suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        obscureText = !obscureText;
-                      });
-                    },
-                    icon: Icon(
-                        obscureText ? Icons.visibility : Icons.visibility_off)),
-              ),
-              autocorrect: false,
-              textCapitalization: TextCapitalization.none,
-              validator: (value) {
-                if (value != passwordController.text) {
-                  return 'Please confirm your password';
-                }
-        
-                return null;
-              },
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            const Text(
-              "Confirm Password",
-              style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.black,
-                  fontFamily: "Manrope",
-                  fontWeight: FontWeight.normal),
-            ),
-            TextFormField(
-              obscureText: obscureText2,
-              keyboardType: TextInputType.visiblePassword,
-              decoration: InputDecoration(
-                hintText: "Enter your  Password",
-                hintStyle: const TextStyle(color: borderColor),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(50.0),
-                  borderSide: const BorderSide(color: borderColor, width: 3.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(50.0),
-                  borderSide: const BorderSide(color: primaryColor, width: 3.0),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: const BorderSide(color: errorColor, width: 3.0),
-                ),
-                suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        obscureText2 = !obscureText2;
-                      });
-                    },
-                    icon: Icon(
-                        obscureText2 ? Icons.visibility : Icons.visibility_off)),
-              ),
-              autocorrect: false,
-              textCapitalization: TextCapitalization.none,
-              validator: (value) {
-                if (value != passwordController.text) {
-                  return 'Please confirm your password';
-                }
-        
-                return null;
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+                TextFormField(
+                  controller: passwordController,
+                  obscureText: obscureText,
+                  keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    hintText: "Enter your Password",
+                    hintStyle: const TextStyle(color: borderColor),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                      borderSide:
+                          const BorderSide(color: borderColor, width: 3.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                      borderSide:
+                          const BorderSide(color: primaryColor, width: 3.0),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(color: errorColor, width: 3.0),
+                    ),
+                    suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            obscureText = !obscureText;
+                          });
+                        },
+                        child: Image.asset(obscureText
+                            ? 'assets/images/visiability on.png'
+                            : 'assets/images/visiability off.png')),
+                  ),
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  validator: (value) {
+                    if (value != passwordController.text) {
+                      return 'Please confirm your password';
+                    }
 
-  Widget buildSequare() {
-    return Padding(
-        padding: const EdgeInsets.only(bottom: 17),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(6, (index) {
-            return SizedBox(
-              width: 40,
-              height: 40,
-              child: TextField(
-                textAlign: TextAlign.center,
-                maxLength: 1,
-                decoration: InputDecoration(
-                    counterText: '',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    )),
-                keyboardType: TextInputType.number,
-              ),
-            );
-          }),
-        ));
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  "Confirm Password",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontFamily: "Manrope",
+                      fontWeight: FontWeight.normal),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                TextFormField(
+                  obscureText: obscureText2,
+                  keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    hintText: "Enter your  Password",
+                    hintStyle: const TextStyle(color: borderColor),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                      borderSide:
+                          const BorderSide(color: borderColor, width: 3.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                      borderSide:
+                          const BorderSide(color: primaryColor, width: 3.0),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(color: errorColor, width: 3.0),
+                    ),
+                    suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            obscureText = !obscureText;
+                          });
+                        },
+                        child: Image.asset(obscureText
+                            ? 'assets/images/visiability on.png'
+                            : 'assets/images/visiability off.png')),
+                  ),
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  validator: (value) {
+                    if (value != passwordController.text) {
+                      return 'Please confirm your password';
+                    }
+
+                    return null;
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(6, (index) {
+                    return SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        maxLength: 1,
+                        decoration: InputDecoration(
+                            counterText: '',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            )),
+                        keyboardType: TextInputType.number,
+                      ),
+                    );
+                  }),
+                )
+              ],
+            ),
+          ),
+        ]));
   }
 
   //Button
@@ -354,69 +334,18 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         ),
         child: TextButton(
           onPressed: () {
-          if (currentIndex == 0 &&formstate.currentState!.validate()) {
-          try {
-              _firebase.sendPasswordResetEmail(
-                  email: emailController.text);
-          }on FirebaseAuthException catch(e){
-            ScaffoldMessenger.of(context).clearSnackBars();
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(e.message ?? "An error occurred"),
-                ),
+            if (currentIndex == 0 && formstate.currentState!.validate()) {
+              currentIndex++;
+            } else if (currentIndex == 1) {
+              pageController.nextPage(
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.linearToEaseOut,
               );
-             });
-             } 
-             pageController.nextPage(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.linearToEaseOut,
-                );
-           }
-          else if (currentIndex == 1) {
-          try {
-              _firebase.verifyPasswordResetCode(code);
-          }on FirebaseAuthException catch(e){
-            ScaffoldMessenger.of(context).clearSnackBars();
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(e.message ?? "An error occurred"),
-                ),
-              );
-             });
-             } 
-             pageController.nextPage(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.linearToEaseOut,
-                );
-            
-           }
-          else if (currentIndex == 2&& formstate.currentState!.validate()) {
-          try {
-              _firebase.confirmPasswordReset(
-                    code: "123456", 
-                    newPassword: passwordController.text);
-          }on FirebaseAuthException catch(e){
-            ScaffoldMessenger.of(context).clearSnackBars();
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(e.message ?? "An error occurred"),
-                ),
-              );
-             });
-             } 
-             Navigator.pop(context);
-             
-            
-           }
-          // pageController.nextPage(
-          //         duration: const Duration(milliseconds: 500),
-          //         curve: Curves.linearToEaseOut,
-          //       );
+            } else if (currentIndex == 2 &&
+                formstate.currentState!.validate()) {
+              Navigator.pop(context);
+            }
           },
-          
           child: Text(
             currentIndex == 0
                 ? controller.items[currentIndex].button
@@ -436,35 +365,37 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
 //Resend code
   Widget codeResend() {
-    if (currentIndex == 1){
+    if (currentIndex == 1) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 27.0),
         child: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Don\'t Recieve Code? ',
-              style: TextStyle(fontFamily: "Manrope", fontSize: 18),
-            ),
-            const SizedBox(width: 5),
-            GestureDetector(
-              onTap: () {},
-              child: const Text(
-                'Resend',
-                style: TextStyle(
-                  color: Color(0xff1E6930),
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Don\'t Recieve Code? ',
+                style: TextStyle(fontFamily: "Manrope", fontSize: 18),
+              ),
+              const SizedBox(width: 5),
+              GestureDetector(
+                onTap: () {},
+                child: const Text(
+                  'Resend',
+                  style: TextStyle(
+                    color: Color(0xff1E6930),
+                    fontSize: 18,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-            ),
       );
-    }else{
-      return const SizedBox(height: 2,);
+    } else {
+      return const SizedBox(
+        height: 2,
+      );
     }
   }
 }

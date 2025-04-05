@@ -154,10 +154,19 @@ class _DashBoardState extends State<DashBoard> {
                           ],
                         ))),
                 SizedBox(height: 24),
-                Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(25),
+                Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 8,
+                      spreadRadius: 0.5,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
+
+                    
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -171,8 +180,8 @@ class _DashBoardState extends State<DashBoard> {
                                   Text('Field 2',
                                       style: TextStyle(
                                         color: Colors.green[900],
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w600,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w900,
                                         fontFamily: 'manrope',
                                       )),
                                   Spacer(),
