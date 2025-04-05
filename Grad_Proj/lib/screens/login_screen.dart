@@ -252,7 +252,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     topRight: Radius.circular(40.0),
                                   ),
                                 ),
-                                builder: (context) => ForgetPasswordScreen(),
+                                builder: (context) {
+                                  return Container(
+                                    height: 400,
+                                    child: ForgetPasswordScreen(),
+                                  );
+                                },
                               );
                             },
                             child: const Text(

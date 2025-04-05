@@ -17,7 +17,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   bool obscureText = true;
   bool obscureText2 = true;
   final controller = ForgetPasswordData();
-  final pageController = PageController();
   int currentIndex = 0;
 
   @override
@@ -26,7 +25,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
           child: Container(
-              margin: EdgeInsets.all(22),
+              margin: const EdgeInsets.all(22),
               child: Column(children: [
                 head(),
                 currentIndex == 0
@@ -34,7 +33,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     : currentIndex == 1
                         ? vCode()
                         : resetPassword(),
-                button()
+                
               ]))),
     );
   }
@@ -46,7 +45,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         padding: const EdgeInsets.only(top: 3.0, right: 300),
         child: IconButton(
             onPressed: () {
-              setState(() {});
+              setState(() {
+                currentIndex--;
+              });
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -66,12 +67,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     }
   }
 
-  //Body
 
   Widget forget_password() {
     return Container(
         margin: const EdgeInsets.all(10),
-        child: Column(children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           //Titles
           Text(
             controller.items[currentIndex].title,
@@ -109,6 +111,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                     hintText: "Enter your Email",
                     hintStyle: const TextStyle(color: borderColor),
                     enabledBorder: OutlineInputBorder(
@@ -141,13 +144,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               ],
             ),
           ),
+          const SizedBox(height: 16,),
+          Center(child: button())
         ]));
   }
 
   Widget vCode() {
     return Container(
         margin: const EdgeInsets.all(10),
-        child: Column(children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           //Titles
           Text(
             controller.items[currentIndex].title,
@@ -164,15 +171,40 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
             controller.items[currentIndex].description,
             style: const TextStyle(
                 color: Colors.black, fontSize: 16, fontFamily: "Manrope"),
-          )
+          ),
+          const SizedBox(height: 14,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: List.generate(6, (index) {
+              return SizedBox(
+                width: 40,
+                height: 40,
+                child: TextField(
+                  textAlign: TextAlign.center,
+                  maxLength: 1,
+                  decoration: InputDecoration(
+                      counterText: '',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      )),
+                  keyboardType: TextInputType.number,
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 16,),
+          Center(child: button()),
+          const SizedBox(height: 16,),
+          codeResend()
         ]));
   }
 
-//reset password
   Widget resetPassword() {
     return Container(
         margin: const EdgeInsets.all(10),
-        child: Column(children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           //Titles
           Text(
             controller.items[currentIndex].title,
@@ -183,6 +215,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               fontWeight: FontWeight.w600,
             ),
           ),
+          const SizedBox(height: 14),
           Form(
             key: formstate,
             child: Column(
@@ -191,12 +224,12 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 const Text(
                   "New Password",
                   style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       color: Colors.black,
                       fontFamily: "Manrope",
-                      fontWeight: FontWeight.normal),
+                      fontWeight: FontWeight.w500),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 TextFormField(
@@ -204,6 +237,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   obscureText: obscureText,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                     hintText: "Enter your Password",
                     hintStyle: const TextStyle(color: borderColor),
                     enabledBorder: OutlineInputBorder(
@@ -247,19 +281,20 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 const Text(
                   "Confirm Password",
                   style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       color: Colors.black,
                       fontFamily: "Manrope",
-                      fontWeight: FontWeight.normal),
+                      fontWeight: FontWeight.w500),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 TextFormField(
                   obscureText: obscureText2,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
-                    hintText: "Enter your  Password",
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                    hintText: "Enter your Password",
                     hintStyle: const TextStyle(color: borderColor),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(50.0),
@@ -279,10 +314,10 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     suffixIcon: GestureDetector(
                         onTap: () {
                           setState(() {
-                            obscureText = !obscureText;
+                            obscureText2 = !obscureText2;
                           });
                         },
-                        child: Image.asset(obscureText
+                        child: Image.asset(obscureText2
                             ? 'assets/images/visiability on.png'
                             : 'assets/images/visiability off.png')),
                   ),
@@ -296,67 +331,45 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     return null;
                   },
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(6, (index) {
-                    return SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        maxLength: 1,
-                        decoration: InputDecoration(
-                            counterText: '',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            )),
-                        keyboardType: TextInputType.number,
-                      ),
-                    );
-                  }),
-                )
               ],
             ),
           ),
+          const SizedBox(height: 16,),
+          Center(child: button())
         ]));
   }
 
   //Button
   Widget button() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 37.0),
-      child: Container(
-        width: MediaQuery.of(context).size.width * .6,
-        height: 47,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-          color: primaryColor,
-        ),
-        child: TextButton(
-          onPressed: () {
+    return Container(
+      width: MediaQuery.of(context).size.width * .6,
+      height: 47,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(100),
+        color: primaryColor,
+      ),
+      child: TextButton(
+        onPressed: () {
+          setState(() {
             if (currentIndex == 0 && formstate.currentState!.validate()) {
               currentIndex++;
             } else if (currentIndex == 1) {
-              pageController.nextPage(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.linearToEaseOut,
-              );
-            } else if (currentIndex == 2 &&
-                formstate.currentState!.validate()) {
+              currentIndex++;
+            } else if (currentIndex == 2 && formstate.currentState!.validate()) {
               Navigator.pop(context);
             }
-          },
-          child: Text(
-            currentIndex == 0
-                ? controller.items[currentIndex].button
-                : currentIndex == 1
-                    ? controller.items[currentIndex].button
-                    : controller.items[currentIndex].button,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w400,
-            ),
+          });
+        },
+        child: Text(
+          currentIndex == 0
+              ? controller.items[currentIndex].button
+              : currentIndex == 1
+                  ? controller.items[currentIndex].button
+                  : controller.items[currentIndex].button,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
           ),
         ),
       ),
