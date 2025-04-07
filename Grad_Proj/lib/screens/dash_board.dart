@@ -86,10 +86,17 @@ class _DashBoardState extends State<DashBoard> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(25),
+                Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -160,13 +167,11 @@ class _DashBoardState extends State<DashBoard> {
                     borderRadius: BorderRadius.circular(25),
                     boxShadow: const [BoxShadow(
                       color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 8,
-                      spreadRadius: 0.5,
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
                       offset: Offset(0, 2.25)
                     )]
                    ),
-
-                    
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -231,10 +236,17 @@ class _DashBoardState extends State<DashBoard> {
                           ],
                         ))),
                 SizedBox(height: 24),
-                Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(25),
+                Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -300,10 +312,17 @@ class _DashBoardState extends State<DashBoard> {
                         ))),
                 SizedBox(height: 20),
                 //Weather
-                Material(
+                Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(35),
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -314,10 +333,17 @@ class _DashBoardState extends State<DashBoard> {
                 const SizedBox(height: 60),
 
                 //Alerts
-                Material(
+                Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    elevation: 10,
                     borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -333,10 +359,17 @@ class _DashBoardState extends State<DashBoard> {
                       fontFamily: 'manrope'),
                 ),
                 SizedBox(height: 20),
-                Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(25),
+                Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -375,10 +408,17 @@ class _DashBoardState extends State<DashBoard> {
                           ],
                         ))),
                 SizedBox(height: 24),
-                Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(25),
+               Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -417,10 +457,17 @@ class _DashBoardState extends State<DashBoard> {
                           ],
                         ))),
                 SizedBox(height: 24),
-                Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(25),
+                Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -459,10 +506,17 @@ class _DashBoardState extends State<DashBoard> {
                           ],
                         ))),
                 SizedBox(height: 24),
-                Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(25),
+                Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -502,10 +556,17 @@ class _DashBoardState extends State<DashBoard> {
                         ))),
                 SizedBox(height: 50),
                 //Recent Activity
-                Material(
+                Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    elevation: 10,
                     borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
                     child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 22),
@@ -514,10 +575,17 @@ class _DashBoardState extends State<DashBoard> {
                         child: const Activitybar())),
                 const SizedBox(height: 50),
                 //To-Do List
-                Material(
+                Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    elevation: 10,
                     borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 10,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2.25)
+                    )]
+                   ),
                     child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 22),
