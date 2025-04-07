@@ -55,6 +55,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
             TextFormField(
               keyboardType: TextInputType.name,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                 hintText: "Enter Field Name",
                 hintStyle: const TextStyle(color: borderColor),
                 enabledBorder: OutlineInputBorder(
@@ -98,6 +99,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
             TextFormField(
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                 hintText: "Enter Field Size",
                 hintStyle: const TextStyle(color: borderColor),
                 enabledBorder: OutlineInputBorder(
@@ -141,6 +143,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
             TextFormField(
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                 hintText: "Enter Crop Type",
                 hintStyle: const TextStyle(color: borderColor),
                 enabledBorder: OutlineInputBorder(

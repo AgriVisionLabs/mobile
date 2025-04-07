@@ -53,6 +53,7 @@ class _TeamState extends State<Team> {
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                 hintText: widget.editFarm? myRoleListEdit['name'] : "Enter Email or Username",
                 hintStyle: const TextStyle(color: borderColor),
                 enabledBorder: OutlineInputBorder(

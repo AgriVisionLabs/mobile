@@ -16,18 +16,18 @@ class FarmsScreen extends StatefulWidget {
 }
 
 class _FarmsScreen extends State<FarmsScreen> {
+  bool tell =false;
   void _onInputChanged(List farm) {
-    setState(() {
-      widget.farms.add(farm);
-      print("===========${widget.farms}==========");
-    });
+      setState(() {
+          tell = true;
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: _buildFarmsList(),
+      body: tell ? _buildFarmsList() : _buildEmptyState(context),
     );
   }
 
@@ -863,63 +863,67 @@ class _FarmsScreen extends State<FarmsScreen> {
     );
   }
 
-  /// Function to build the empty state
-  // Widget _buildEmptyState(context) {
-  //   return Scaffold(
-  //     backgroundColor: Colors.white,
-  //     appBar: AppBar(
-  //       backgroundColor: Colors.white,
-  //       title: const Text(
-  //         "Farms & Fields Management",
-  //         style: TextStyle(
-  //           fontSize: 22,
-  //           fontWeight: FontWeight.w600,
-  //           fontFamily: "manrope",
-  //         ),
-  //       ),
-  //     ),
-  //     body: SizedBox(
-  //       width: double.infinity,
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           const Text(
-  //             "You don’t have any farms yet",
-  //             style: TextStyle(
-  //               fontSize: 20,
-  //               fontWeight: FontWeight.w500,
-  //               fontFamily: "manrope",
-  //             ),
-  //           ),
-  //           const SizedBox(height: 24),
-  //           ElevatedButton.icon(
-  //             onPressed: () {
-  //               // Add farm logic here
-  //               Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                       builder: (context) => NewFarm(
-  //                             onInputChanged: _onInputChanged,
-  //                           )));
-  //             },
-  //             icon: const Icon(Icons.add),
-  //             label: const Text(
-  //               "Add New Farm",
-  //               style: TextStyle(
-  //                 fontSize: 18,
-  //                 fontWeight: FontWeight.w500,
-  //                 fontFamily: "manrope",
-  //               ),
-  //             ),
-  //             style: ElevatedButton.styleFrom(
-  //               minimumSize: const Size(207, 54),
-  //               backgroundColor: Color(0xFF1E6930),
-  //               foregroundColor: Colors.white,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  // Function to build the empty state
+  Widget _buildEmptyState(context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: const Text(
+          "Farms & Fields Management",
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            fontFamily: "manrope",
+          ),
+        ),
+      ),
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "You don’t have any farms yet",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                fontFamily: "manrope",
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () {
+                // Add farm logic here
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NewFarm(
+                              onInputChanged: _onInputChanged,
+                            )));
+                setState(() {
+                  tell = true;
+                });
+              },
+              icon: const Icon(Icons.add,
+              color: Colors.white,),
+              label: const Text(
+                "Add New Farm",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: "manrope",
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(207, 54),
+                backgroundColor: Color(0xFF1E6930),
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

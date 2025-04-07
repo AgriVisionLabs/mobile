@@ -64,6 +64,7 @@ class _SensorState extends State<Sensor> {
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                 hintText: "Enter Sensor Unit Name",
                 hintStyle: const TextStyle(color: borderColor),
                 enabledBorder: OutlineInputBorder(
@@ -117,6 +118,7 @@ class _SensorState extends State<Sensor> {
                       controller: serialNumberController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                         hintText: "Enter Serial Number",
                         hintStyle: const TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(
@@ -231,7 +233,7 @@ class _SensorState extends State<Sensor> {
               height: 10,
             ),
             mySensorList.isNotEmpty
-                ? _buildIrrigationList()
+                ? _buildSensorList()
                 : const SizedBox(
                     height: 1,
                   ),
@@ -255,7 +257,7 @@ class _SensorState extends State<Sensor> {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text("Please Enter Irrigation Unit"),
+                                  content: Text("Please Enter Sensor Unit"),
                                 ),
                               );
                             });
@@ -293,14 +295,14 @@ class _SensorState extends State<Sensor> {
     );
   }
 
-  Widget _buildIrrigationList() {
+  Widget _buildSensorList() {
     return SizedBox(
       width: 380,
       height: 260,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Added Irrigation Unit',
+          const Text('Added Sensor Unit',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 18,

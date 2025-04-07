@@ -62,6 +62,7 @@ class _IrrigationState extends State<Irrigation> {
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                 hintText: "Enter Irrigation Unit Name",
                 hintStyle: const TextStyle(color: borderColor),
                 enabledBorder: OutlineInputBorder(
@@ -115,6 +116,7 @@ class _IrrigationState extends State<Irrigation> {
                       controller: serialNumberController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                         hintText: "Enter Serial Number",
                         hintStyle: const TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(

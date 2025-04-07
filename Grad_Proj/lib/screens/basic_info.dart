@@ -55,6 +55,7 @@ class _BasicInfoState extends State<BasicInfo> {
             TextFormField(
               keyboardType: TextInputType.name,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                 hintText: widget.editFarm ? editFarm[0] :
                 "Enter Farm Name",
                 hintStyle: const TextStyle(color: borderColor),
@@ -99,6 +100,7 @@ class _BasicInfoState extends State<BasicInfo> {
             TextFormField(
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                 hintText: widget.editFarm ? editFarm[1] :"Enter Farm Size",
                 hintStyle: const TextStyle(color: borderColor),
                 enabledBorder: OutlineInputBorder(
@@ -142,6 +144,7 @@ class _BasicInfoState extends State<BasicInfo> {
             TextFormField(
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                 hintText: widget.editFarm ? editFarm[2] :"Enter Farm Location",
                 hintStyle: const TextStyle(color: borderColor),
                 enabledBorder: OutlineInputBorder(
