@@ -6,7 +6,6 @@ import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/cubit/user_cubit.dart';
 import 'package:grd_proj/cubit/user_state.dart';
 
-
 import '../models/unauthorize_model.dart';
 
 class Rigester extends StatefulWidget {
@@ -19,14 +18,13 @@ String phonepattern = r'^[+]{1}(?:[0-9\-\(\)\/\.]\s?){6, 15}[0-9]{1}$';
 RegExp phoneNumber = RegExp(phonepattern);
 
 class _RigesterState extends State<Rigester> {
-  GlobalKey<FormState> formstate = GlobalKey();
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool obscureText = true;
   bool obscureText2 = true;
   bool isChecked = false;
   String description = '';
-  UnAuthorizeModel ? response;
+  UnAuthorizeModel? response;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +42,6 @@ class _RigesterState extends State<Rigester> {
       } else if (state is SignUpFailure) {
         if (state.errMessage == 'Conflict') {
           description = state.errors[0]['description'];
-          response = UnAuthorizeModel();
         } else {
           response = UnAuthorizeModel.fromJson(state.errors);
         }
@@ -101,11 +98,10 @@ class _RigesterState extends State<Rigester> {
                               controller:
                                   context.read<UserCubit>().signUpFirstName,
                               keyboardType: TextInputType.name,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
+                              style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 17),
                                 hintText: "First Name",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -122,6 +118,11 @@ class _RigesterState extends State<Rigester> {
                                   borderRadius: BorderRadius.circular(30.0),
                                   borderSide:
                                       BorderSide(color: errorColor, width: 3.0),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: const BorderSide(
+                                      color: errorColor, width: 3.0),
                                 ),
                               ),
                               autocorrect: false,
@@ -143,11 +144,10 @@ class _RigesterState extends State<Rigester> {
                               controller:
                                   context.read<UserCubit>().signUpLastName,
                               keyboardType: TextInputType.name,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
+                              style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 17),
                                 hintText: "Last Name",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -164,6 +164,11 @@ class _RigesterState extends State<Rigester> {
                                   borderRadius: BorderRadius.circular(30.0),
                                   borderSide:
                                       BorderSide(color: errorColor, width: 3.0),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: const BorderSide(
+                                      color: errorColor, width: 3.0),
                                 ),
                               ),
                               autocorrect: false,
@@ -184,14 +189,12 @@ class _RigesterState extends State<Rigester> {
                             TextFormField(
                               controller: context.read<UserCubit>().signUpName,
                               keyboardType: TextInputType.name,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
+                              style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 17),
                                 hintText: "User Name",
-                                hintStyle: TextStyle(
-                                  color: borderColor),
+                                hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30.0),
                                   borderSide: BorderSide(
@@ -207,6 +210,11 @@ class _RigesterState extends State<Rigester> {
                                   borderSide:
                                       BorderSide(color: errorColor, width: 3.0),
                                 ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: const BorderSide(
+                                      color: errorColor, width: 3.0),
+                                ),
                               ),
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
@@ -218,7 +226,9 @@ class _RigesterState extends State<Rigester> {
                                       value.length > 32) {
                                     return response!.userName![0];
                                   }
-                                } else if (description.isNotEmpty && description != "A user with this email already exists." ) {
+                                } else if (description.isNotEmpty &&
+                                    description !=
+                                        "A user with this email already exists.") {
                                   return description;
                                 }
                                 return null;
@@ -228,11 +238,10 @@ class _RigesterState extends State<Rigester> {
                             TextFormField(
                               controller: context.read<UserCubit>().signUpEmail,
                               keyboardType: TextInputType.emailAddress,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
+                              style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 17),
                                 hintText: "Enter your Email",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -250,6 +259,11 @@ class _RigesterState extends State<Rigester> {
                                   borderSide:
                                       BorderSide(color: errorColor, width: 3.0),
                                 ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: const BorderSide(
+                                      color: errorColor, width: 3.0),
+                                ),
                               ),
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
@@ -257,10 +271,12 @@ class _RigesterState extends State<Rigester> {
                                 if (response!.email != null) {
                                   if (value!.isEmpty) {
                                     return response!.email![0];
-                                  } else if(!value.contains("@")) {
+                                  } else if (!value.contains("@")) {
                                     return response!.email![0];
                                   }
-                                }else if(description.isNotEmpty && description != "A user with this username already exists."){
+                                } else if (description.isNotEmpty &&
+                                    description !=
+                                        "A user with this username already exists.") {
                                   return description;
                                 }
                                 return null;
@@ -271,11 +287,10 @@ class _RigesterState extends State<Rigester> {
                               controller: passwordController,
                               obscureText: obscureText,
                               keyboardType: TextInputType.visiblePassword,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
+                              style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 17),
                                 hintText: "Enter your Password",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -292,6 +307,11 @@ class _RigesterState extends State<Rigester> {
                                   borderRadius: BorderRadius.circular(30.0),
                                   borderSide:
                                       BorderSide(color: errorColor, width: 3.0),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: const BorderSide(
+                                      color: errorColor, width: 3.0),
                                 ),
                                 suffixIcon: IconButton(
                                     onPressed: () {
@@ -327,11 +347,10 @@ class _RigesterState extends State<Rigester> {
                               obscureText: obscureText2,
                               controller: confirmPasswordController,
                               keyboardType: TextInputType.visiblePassword,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
+                              style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 17),
                                 hintText: "Confirm Your Password",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -348,6 +367,11 @@ class _RigesterState extends State<Rigester> {
                                   borderRadius: BorderRadius.circular(30.0),
                                   borderSide:
                                       BorderSide(color: errorColor, width: 3.0),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: const BorderSide(
+                                      color: errorColor, width: 3.0),
                                 ),
                                 suffixIcon: IconButton(
                                     onPressed: () {
@@ -372,13 +396,12 @@ class _RigesterState extends State<Rigester> {
                             const SizedBox(height: 16),
                             TextFormField(
                               controller:
-                              context.read<UserCubit>().signUpPhoneNumber,
+                                  context.read<UserCubit>().signUpPhoneNumber,
                               keyboardType: TextInputType.phone,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
+                              style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 17),
                                 hintText: "Phone Number",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -396,13 +419,18 @@ class _RigesterState extends State<Rigester> {
                                   borderSide:
                                       BorderSide(color: errorColor, width: 3.0),
                                 ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: const BorderSide(
+                                      color: errorColor, width: 3.0),
+                                ),
                               ),
                               autocorrect: false,
                               validator: (value) {
                                 if (response!.phoneNumber != null) {
                                   if (value!.isEmpty) {
                                     return response!.phoneNumber![0];
-                                  }else{
+                                  } else {
                                     return response!.phoneNumber![0];
                                   }
                                 }
@@ -450,11 +478,10 @@ class _RigesterState extends State<Rigester> {
                             child: const Text(
                               ' Terms and Conditions and Privacy Statement',
                               style: TextStyle(
-                                color: Color(0xff1E6930),
-                                fontSize: 13,
-                                fontFamily: "Manrope",
-                                fontWeight: FontWeight.bold
-                              ),
+                                  color: Color(0xff1E6930),
+                                  fontSize: 13,
+                                  fontFamily: "Manrope",
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
@@ -462,11 +489,9 @@ class _RigesterState extends State<Rigester> {
                     ),
                     const SizedBox(height: 23),
 
-                    
                     state is SignUpLoading
                         ? CircularProgressIndicator()
-                        :
-                         Padding(
+                        : Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: SizedBox(
                               width: 227,

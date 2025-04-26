@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-
+//error type in response
 class UnAuthorizeModel {
   List ? email;
   List ? password;
@@ -7,6 +7,7 @@ class UnAuthorizeModel {
   List ? lasttName;
   List ? userName;
   List ? phoneNumber;
+  List ? otp;
 
   UnAuthorizeModel({
     this.email,
@@ -15,6 +16,7 @@ class UnAuthorizeModel {
     this.lasttName,
     this.userName,
     this.phoneNumber,
+    this.otp
   });
 
   factory UnAuthorizeModel.fromJson(Map<dynamic, dynamic> jsonData) {
@@ -25,6 +27,7 @@ class UnAuthorizeModel {
         lasttName: jsonData["LastName"],
         userName: jsonData["UserName"],
         phoneNumber: jsonData["PhoneNumber"],
+        otp : jsonData["Otp"]
         );
   }
 

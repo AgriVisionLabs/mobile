@@ -9,7 +9,6 @@ import 'package:grd_proj/screens/home_screen.dart';
 import 'package:grd_proj/screens/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 import '../models/unauthorize_model.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -51,9 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialPageRoute(builder: (context) => HomeScreen()),
             );
           } else if (state is SignInFailure) {
-            if (state.errMessage == 'Unauthorized'){
+            if (state.errMessage == 'Unauthorized') {
               description = state.errors[0]['description'];
-              response = UnAuthorizeModel();
             } else {
               response = UnAuthorizeModel.fromJson(state.errors);
             }
@@ -122,11 +120,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             TextFormField(
                               controller: context.read<UserCubit>().signInEmail,
                               keyboardType: TextInputType.emailAddress,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
+                              style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 17),
                                 hintText: "Enter your Email",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -144,6 +141,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderSide:
                                       BorderSide(color: errorColor, width: 3.0),
                                 ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: const BorderSide(
+                                      color: errorColor, width: 3.0),
+                                ),
                               ),
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
@@ -154,8 +156,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   } else if (!value.contains("@")) {
                                     return response!.email![0];
                                   }
-                                  }else if(description.isNotEmpty && description != "A user with this username already exists."){
-                                    return description;
+                                } else if (description.isNotEmpty &&
+                                    description !=
+                                        "A user with this username already exists.") {
+                                  return description;
                                 }
                                 return null;
                               },
@@ -166,11 +170,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context.read<UserCubit>().signInPassword,
                               obscureText: obscureText,
                               keyboardType: TextInputType.visiblePassword,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
+                              style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 17),
                                 hintText: "Enter your Password",
                                 hintStyle: TextStyle(color: borderColor),
                                 enabledBorder: OutlineInputBorder(
@@ -188,16 +191,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderSide:
                                       BorderSide(color: errorColor, width: 3.0),
                                 ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: const BorderSide(
+                                      color: errorColor, width: 3.0),
+                                ),
                                 suffixIcon: GestureDetector(
                                     onTap: () {
                                       setState(() {
                                         obscureText = !obscureText;
                                       });
                                     },
-                                    child: Image.asset(
-                                      obscureText ? 'assets/images/visiability on.png' : 'assets/images/visiability off.png'
-                                    )
-                                    ),
+                                    child: Image.asset(obscureText
+                                        ? 'assets/images/visiability on.png'
+                                        : 'assets/images/visiability off.png')),
                               ),
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,

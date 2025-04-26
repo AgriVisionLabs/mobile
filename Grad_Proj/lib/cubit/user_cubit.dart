@@ -34,10 +34,18 @@ class UserCubit extends Cubit<UserState> {
   TextEditingController signUpPassword = TextEditingController();
   //Sign up confirm password
   TextEditingController confirmPassword = TextEditingController();
-  //Sign up confirm password
-  TextEditingController confirmToken = TextEditingController();
-  //Confirm Form key
-  GlobalKey<FormState> confirmFormKey = GlobalKey();
+  //Forgrt Password Form key
+  GlobalKey<FormState> forgetPasswordFormKey = GlobalKey();
+  //Forgrt Password email
+  TextEditingController forgetPasswordEmail = TextEditingController();
+  //otp Form key
+  GlobalKey<FormState> otpFormKey = GlobalKey();
+  //otp
+  TextEditingController forgetPasswordOtp = TextEditingController();
+  //Reset Password Form key
+  GlobalKey<FormState> resetFormKey = GlobalKey();
+  //New Password
+  TextEditingController newPassword = TextEditingController();
 
   
   SignInModel? user;
@@ -77,22 +85,6 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  confirmEmail() async {
-    try {
-      emit(ConfirmEmailLoading());
-      String url = confirmToken.text;
-      String token = url.substring(url.indexOf("token="));
-      print(token);
-      // ignore: unused_local_variable
-      final response = await api
-          .post(EndPoints.confirmEmail, data: {
-            ApiKey.token: token});
-      emit(ConfirmEmailSuccess());
-    } on ServerException catch (e) {
-      emit(ConfirmEmailFailure(errMessage: e.errorModel.message));
-    }
-  }
-
 
 confirmEmailResand() async {
     try {
@@ -105,4 +97,44 @@ confirmEmailResand() async {
       emit(ConfirmEmailFailure(errMessage: e.errorModel.message));
     }
   }
+
+
+sendCode() async{
+  try{
+    final response = await api
+          .post(EndPoints.forgetPassword, data: {
+            ApiKey.email : forgetPasswordEmail.text});
+    print(response);
+    emit(ForgetPasswordSuccess());
+  }on ServerException catch (e) {
+      emit(ForgetPasswordFailure(errMessage: e.errorModel.message , errors: e.errorModel.error));
+    }
+}
+
+otp() async{
+  try{
+    final response = await api
+          .post(EndPoints.otp, data: {
+            ApiKey.otp : forgetPasswordOtp.text,
+            ApiKey.email : forgetPasswordEmail.text});
+    print(response);
+    emit(OTPSuccess());
+  }on ServerException catch (e) {
+      emit(OTPFailure(errMessage: e.errorModel.message, errors: e.errorModel.error));
+    }
+}
+
+resetPassword() async{
+  try{
+    final response = await api
+          .post(EndPoints.resetPassword, data: {
+            ApiKey.email : forgetPasswordEmail.text,
+            ApiKey.otp : forgetPasswordOtp.text,
+            ApiKey.newPassword : newPassword.text});
+    print(response);
+    emit(OTPSuccess());
+  }on ServerException catch (e) {
+      emit(OTPFailure(errMessage: e.errorModel.message, errors: e.errorModel.error));
+    }
+}
 }

@@ -2,8 +2,10 @@ class EndPoints {
   static const String baseUrl = 'https://agrivision.tryasp.net/';
   static const String login = 'Auth';
   static const String register = 'Auth/register';
-  static const String confirmEmail = 'Auth/confirm-email';
   static const String confirmEmailResand = '/Auth/resend-confirmation-email';
+  static const String forgetPassword = '/Auth/forget-password';
+  static const String otp = '/Auth/verify-otp';
+  static const String resetPassword= '/Auth/reset-password';
 }
 
 class ApiKey{
@@ -21,4 +23,6 @@ class ApiKey{
   static String refreshToken = 'refreshToken';
   static String refreshTokenExpiration = 'refreshTokenExpiration';
   static String errorMessage = 'title';
+  static String otp = 'Otp';
+  static String newPassword = 'newPassword';
 }

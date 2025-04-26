@@ -1,5 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/components/forget_password_data.dart';
+import 'package:grd_proj/cubit/user_cubit.dart';
+import 'package:grd_proj/cubit/user_state.dart';
+import 'package:grd_proj/models/unauthorize_model.dart';
 
 import '../components/color.dart';
 
@@ -12,30 +18,172 @@ class ForgetPasswordScreen extends StatefulWidget {
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   GlobalKey<FormState> formstate = GlobalKey();
-  TextEditingController emailController = TextEditingController();
+  TextEditingController otpController1 = TextEditingController();
+  TextEditingController otpController2 = TextEditingController();
+  TextEditingController otpController3 = TextEditingController();
+  TextEditingController otpController4 = TextEditingController();
+  TextEditingController otpController5 = TextEditingController();
+  TextEditingController otpController6 = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
   bool obscureText = true;
   bool obscureText2 = true;
   final controller = ForgetPasswordData();
   int currentIndex = 0;
+  String description = '';
+  UnAuthorizeModel? response;
+  String? currentOTP;
+  bool _isButtonEnabled = false; // Button state
+  Timer? _timer;
+  // Timer instance
+  void _startTimer() {
+    // Set the button to be disabled initially
+    setState(() {
+      _isButtonEnabled = false;
+    });
+
+    // Start a timer that will enable the button after 10 minutes
+    _timer = Timer(const Duration(minutes: 10), () {
+      setState(() {
+        _isButtonEnabled = true; // Enable the button after 10 minutes
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Cancel the timer when the widget is disposed
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-          child: Container(
-              margin: const EdgeInsets.all(22),
-              child: Column(children: [
-                head(),
-                currentIndex == 0
-                    ? forget_password()
-                    : currentIndex == 1
-                        ? vCode()
-                        : resetPassword(),
-                
-              ]))),
-    );
+    return BlocConsumer<UserCubit, UserState>(listener: (context, state) {
+      if (state is ForgetPasswordSuccess) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("success"),
+            ),
+          );
+        });
+        _startTimer();
+        // ignore: avoid_print
+        currentIndex == 0 ? currentIndex++ : print('rigth pos');
+      } else if (state is ForgetPasswordFailure) {
+        if (state.errMessage == 'Bad Request') {
+          description = state.errors[0]['description'];
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(description),
+              ),
+            );
+          });
+        } else {
+          response = UnAuthorizeModel.fromJson(state.errors);
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
+        }
+        context
+            .read<UserCubit>()
+            .forgetPasswordFormKey
+            .currentState!
+            .validate();
+      } else if (state is OTPSuccess) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("success"),
+            ),
+          );
+        });
+        currentIndex++;
+      } else if (state is OTPFailure) {
+        if (state.errMessage == 'Bad Request') {
+          description = state.errors[0]['description'];
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(description),
+              ),
+            );
+          });
+        } else {
+          response = UnAuthorizeModel.fromJson(state.errors);
+
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(response!.otp![0]),
+              ),
+            );
+          });
+        }
+        context.read<UserCubit>().otpFormKey.currentState!.validate();
+      } else if (state is OTPSuccess) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("success"),
+            ),
+          );
+        });
+        currentIndex++;
+      } else if (state is OTPFailure) {
+        if (state.errMessage == 'Bad Request') {
+          description = state.errors[0]['description'];
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(description),
+              ),
+            );
+          });
+        } else {
+          response = UnAuthorizeModel.fromJson(state.errors);
+
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(response!.otp![0]),
+              ),
+            );
+          });
+        }
+        context.read<UserCubit>().otpFormKey.currentState!.validate();
+      }
+    }, builder: (context, state) {
+      return Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: SingleChildScrollView(
+            child: Container(
+                margin: const EdgeInsets.all(22),
+                child: Column(children: [
+                  head(),
+                  currentIndex == 0
+                      ? forgetPassword()
+                      : currentIndex == 1
+                          ? vCode()
+                          : resetPassword()
+                ]))),
+      );
+    });
   }
 
 //back and close arrow
@@ -67,13 +215,10 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     }
   }
 
-
-  Widget forget_password() {
+  Widget forgetPassword() {
     return Container(
         margin: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           //Titles
           Text(
             controller.items[currentIndex].title,
@@ -92,7 +237,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 color: Colors.black, fontSize: 16, fontFamily: "Manrope"),
           ),
           Form(
-            key: formstate,
+            key: context.read<UserCubit>().forgetPasswordFormKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -108,10 +253,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   height: 8,
                 ),
                 TextFormField(
-                  controller: emailController,
+                  controller: context.read<UserCubit>().forgetPasswordEmail,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 30, vertical: 17),
                     hintText: "Enter your Email",
                     hintStyle: const TextStyle(color: borderColor),
                     enabledBorder: OutlineInputBorder(
@@ -129,32 +275,62 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       borderSide:
                           const BorderSide(color: errorColor, width: 3.0),
                     ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(color: errorColor, width: 3.0),
+                    ),
                   ),
                   autocorrect: false,
                   textCapitalization: TextCapitalization.none,
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Please enter your email";
-                    } else if (!value.contains("@")) {
-                      return 'Please enter a valid email address';
+                    if (response!.email != null) {
+                      if (value!.isEmpty) {
+                        return response!.email![0];
+                      } else {
+                        return response!.email![0];
+                      }
                     }
                     return null;
                   },
                 ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Center(
+                  child: SizedBox(
+                    width: 227,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff1E6930),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      onPressed: () {
+                        BlocProvider.of<UserCubit>(context).sendCode();
+                      },
+                      child: Text(
+                        controller.items[0].button,
+                        style: const TextStyle(
+                            fontSize: 24,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 16,),
-          Center(child: button())
         ]));
   }
 
   Widget vCode() {
     return Container(
         margin: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           //Titles
           Text(
             controller.items[currentIndex].title,
@@ -172,29 +348,60 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
             style: const TextStyle(
                 color: Colors.black, fontSize: 16, fontFamily: "Manrope"),
           ),
-          const SizedBox(height: 14,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(6, (index) {
-              return SizedBox(
-                width: 40,
-                height: 40,
-                child: TextField(
-                  textAlign: TextAlign.center,
-                  maxLength: 1,
-                  decoration: InputDecoration(
-                      counterText: '',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
-                  keyboardType: TextInputType.number,
-                ),
-              );
-            }),
+          const SizedBox(
+            height: 14,
           ),
-          const SizedBox(height: 16,),
-          Center(child: button()),
-          const SizedBox(height: 16,),
+          Form(
+            key: context.read<UserCubit>().otpFormKey,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  square(controller: otpController1),
+                  square(controller: otpController2),
+                  square(controller: otpController3),
+                  square(controller: otpController4),
+                  square(controller: otpController5),
+                  square(controller: otpController6)
+                ]),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          Center(
+            child: SizedBox(
+              width: 227,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff1E6930),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: () {
+                  currentOTP = otpController1.text +
+                      otpController2.text +
+                      otpController3.text +
+                      otpController4.text +
+                      otpController5.text +
+                      otpController6.text;
+                  context.read<UserCubit>().forgetPasswordOtp.text =
+                      currentOTP!;
+                  BlocProvider.of<UserCubit>(context).otp();
+                },
+                child: Text(
+                  controller.items[1].button,
+                  style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
           codeResend()
         ]));
   }
@@ -202,9 +409,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   Widget resetPassword() {
     return Container(
         margin: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           //Titles
           Text(
             controller.items[currentIndex].title,
@@ -217,7 +422,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           ),
           const SizedBox(height: 14),
           Form(
-            key: formstate,
+            key: context.read<UserCubit>().resetFormKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -237,7 +442,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   obscureText: obscureText,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 17),
                     hintText: "Enter your Password",
                     hintStyle: const TextStyle(color: borderColor),
                     enabledBorder: OutlineInputBorder(
@@ -255,6 +461,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       borderSide:
                           const BorderSide(color: errorColor, width: 3.0),
                     ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(color: errorColor, width: 3.0),
+                    ),
                     suffixIcon: GestureDetector(
                         onTap: () {
                           setState(() {
@@ -268,10 +479,18 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   autocorrect: false,
                   textCapitalization: TextCapitalization.none,
                   validator: (value) {
-                    if (value != passwordController.text) {
-                      return 'Please confirm your password';
+                    if (response!.password != null) {
+                      if (value!.isEmpty) {
+                        return response!.password![0];
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("${response!.password![0]}"),
+                          ),
+                        );
+                        return response!.password![0];
+                      }
                     }
-
                     return null;
                   },
                 ),
@@ -290,10 +509,12 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   height: 8,
                 ),
                 TextFormField(
+                  controller: confirmPasswordController,
                   obscureText: obscureText2,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 17),
                     hintText: "Enter your Password",
                     hintStyle: const TextStyle(color: borderColor),
                     enabledBorder: OutlineInputBorder(
@@ -307,6 +528,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           const BorderSide(color: primaryColor, width: 3.0),
                     ),
                     errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(color: errorColor, width: 3.0),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                       borderSide:
                           const BorderSide(color: errorColor, width: 3.0),
@@ -331,47 +557,94 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     return null;
                   },
                 ),
+                SizedBox(height: 10,),
+                Center(
+                  child: SizedBox(
+                    width: 227,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff1E6930),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      ),
+                      onPressed: () {
+                        if (confirmPasswordController.text ==
+                            passwordController.text) {
+                          context.read<UserCubit>().signUpPassword =
+                              passwordController;
+
+                          BlocProvider.of<UserCubit>(context).resetPassword();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content:
+                                      Text('Please Confirm Your Password')));
+                        }
+                      },
+                      child: Text(
+                        controller.items[2].button,
+                        style: const TextStyle(
+                            fontSize: 22,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 16,),
-          Center(child: button())
+          const SizedBox(
+            height: 16,
+          ),
+          // Center(child: button())
         ]));
   }
 
-  //Button
-  Widget button() {
-    return Container(
-      width: MediaQuery.of(context).size.width * .6,
-      height: 47,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(100),
-        color: primaryColor,
-      ),
-      child: TextButton(
-        onPressed: () {
-          setState(() {
-            if (currentIndex == 0 && formstate.currentState!.validate()) {
-              currentIndex++;
-            } else if (currentIndex == 1) {
-              currentIndex++;
-            } else if (currentIndex == 2 && formstate.currentState!.validate()) {
-              Navigator.pop(context);
-            }
-          });
-        },
-        child: Text(
-          currentIndex == 0
-              ? controller.items[currentIndex].button
-              : currentIndex == 1
-                  ? controller.items[currentIndex].button
-                  : controller.items[currentIndex].button,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
+  Widget square({required TextEditingController controller}) {
+    return SizedBox(
+      width: 55,
+      height: 55,
+      child: TextFormField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        maxLength: 1,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          counterText: '',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: borderColor, width: 3.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: primaryColor, width: 3.0),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: errorColor, width: 3.0),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: errorColor, width: 3.0),
           ),
         ),
+        validator: (value) {
+          if (response!.otp != null) {
+            if (value!.isEmpty) {
+              return '';
+            } else {
+              return '';
+            }
+          }
+          return null;
+        },
       ),
     );
   }
@@ -391,13 +664,19 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               ),
               const SizedBox(width: 5),
               GestureDetector(
-                onTap: () {},
-                child: const Text(
+                onTap: _isButtonEnabled
+                    ? () {
+                        BlocProvider.of<UserCubit>(context).sendCode();
+                      }
+                    : () {},
+                child: Text(
                   'Resend',
                   style: TextStyle(
-                    color: Color(0xff1E6930),
-                    fontSize: 18,
-                    fontWeight: FontWeight.normal,
+                    color: _isButtonEnabled
+                        ? const Color(0xff1E6930)
+                        : borderColor,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),

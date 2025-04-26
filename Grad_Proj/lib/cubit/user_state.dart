@@ -37,3 +37,31 @@ final class ConfirmEmailFailure extends UserState {
 
 final class ConfirmEmailResand extends UserState {}
 
+
+final class ForgetPasswordSuccess extends UserState {}
+final class ForgetPasswordFailure extends UserState {
+  final String errMessage;
+  final dynamic errors;
+  
+  ForgetPasswordFailure({required this.errMessage,required this.errors});
+}
+
+final class OTPSuccess extends UserState {}
+
+final class OTPFailure extends UserState {
+  final String errMessage;
+  final dynamic errors;
+  
+  OTPFailure({required this.errMessage,required this.errors});
+}
+
+final class ResetPasswordSuccess extends UserState {}
+
+final class ResetPasswordFailure extends UserState {
+  final String errMessage;
+  final dynamic errors;
+  
+  ResetPasswordFailure({required this.errMessage,required this.errors});
+}
+
+

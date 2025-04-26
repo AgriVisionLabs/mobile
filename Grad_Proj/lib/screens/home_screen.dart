@@ -13,33 +13,7 @@ import 'tasks_screen.dart';
 import 'more_screen.dart';
 import '../models/farms.dart';
 
-// class HomePage extends StatelessWidget {
-//   const HomePage({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       title: 'Agrivision',
-//       home: StreamBuilder(
-//           stream: FirebaseAuth.instance.authStateChanges(),
-//           builder: ((context, snapshot) {
-//             if (snapshot.connectionState == ConnectionState.waiting) {
-//               return const Center(child: CircularProgressIndicator());
-//             }
-//             if (snapshot.hasData) {
-//               // ignore: avoid_print
-//               print("user signed in");
-//               return HomeScreen();
-//             } else {
-//               // ignore: avoid_print
-//               print("user signed out");
-//               return const LoginScreen();
-//             }
-//           })),
-//     );
-//   }
-// }
 
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
