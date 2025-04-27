@@ -208,12 +208,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               Icons.arrow_back,
             )),
       );
-    } else{
+    } else {
       return Padding(
         padding: const EdgeInsets.only(top: 8.0, left: 300),
         child: IconButton(
             onPressed: () {
               Navigator.pop(context);
+              context.read<UserCubit>().forgetPasswordEmail.clear();
             },
             icon: const Icon(
               Icons.close,
@@ -263,8 +264,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   controller: context.read<UserCubit>().forgetPasswordEmail,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 30, vertical: 17),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 17),
                     hintText: "Enter your Email",
                     hintStyle: const TextStyle(color: borderColor),
                     enabledBorder: OutlineInputBorder(
@@ -559,7 +560,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 Center(
                   child: SizedBox(
                     width: 227,
@@ -638,7 +641,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           ),
         ),
         validator: (value) {
-          if (response!.otp!= null) {
+          if (response!.otp != null) {
             if (value!.isEmpty) {
               return '';
             } else {
