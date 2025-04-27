@@ -8,6 +8,7 @@ class UnAuthorizeModel {
   List ? userName;
   List ? phoneNumber;
   List ? otp;
+  List ? newPassword;
 
   UnAuthorizeModel({
     this.email,
@@ -16,7 +17,8 @@ class UnAuthorizeModel {
     this.lasttName,
     this.userName,
     this.phoneNumber,
-    this.otp
+    this.otp,
+    this.newPassword
   });
 
   factory UnAuthorizeModel.fromJson(Map<dynamic, dynamic> jsonData) {
@@ -27,7 +29,8 @@ class UnAuthorizeModel {
         lasttName: jsonData["LastName"],
         userName: jsonData["UserName"],
         phoneNumber: jsonData["PhoneNumber"],
-        otp : jsonData["Otp"]
+        otp : jsonData["Otp"],
+        newPassword : jsonData["NewPassword"]
         );
   }
 

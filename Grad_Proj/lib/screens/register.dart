@@ -39,6 +39,8 @@ class _RigesterState extends State<Rigester> {
           );
         });
         Navigator.pop(context);
+        confirmPasswordController.clear();
+        passwordController.clear();
       } else if (state is SignUpFailure) {
         if (state.errMessage == 'Conflict') {
           description = state.errors[0]['description'];

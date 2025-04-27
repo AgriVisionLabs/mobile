@@ -80,6 +80,12 @@ class UserCubit extends Cubit<UserState> {
         ApiKey.lastName: signUpLastName.text,
       });
       emit(SignUpSuccess());
+      signUpName.clear();
+      signUpEmail.clear();
+      signInPassword.clear();
+      signUpPhoneNumber.clear();
+      signUpFirstName.clear();
+      signUpLastName.clear();
     } on ServerException catch (e) {
       emit(SignUpFailure(errMessage: e.errorModel.message , errors: e.errorModel.error));
     }
@@ -132,9 +138,12 @@ resetPassword() async{
             ApiKey.otp : forgetPasswordOtp.text,
             ApiKey.newPassword : newPassword.text});
     print(response);
-    emit(OTPSuccess());
+    emit(ResetPasswordSuccess());
+    forgetPasswordEmail.clear();
+    forgetPasswordOtp.clear();
+    newPassword.clear();
   }on ServerException catch (e) {
-      emit(OTPFailure(errMessage: e.errorModel.message, errors: e.errorModel.error));
+      emit(ResetPasswordFailure(errMessage: e.errorModel.message, errors: e.errorModel.error));
     }
 }
 }

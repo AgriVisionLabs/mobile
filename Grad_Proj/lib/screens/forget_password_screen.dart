@@ -109,6 +109,12 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           );
         });
         currentIndex++;
+        otpController1.clear();
+        otpController2.clear();
+        otpController3.clear();
+        otpController4.clear();
+        otpController5.clear();
+        otpController6.clear();
       } else if (state is OTPFailure) {
         if (state.errMessage == 'Bad Request') {
           description = state.errors[0]['description'];
@@ -122,7 +128,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           });
         } else {
           response = UnAuthorizeModel.fromJson(state.errors);
-
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -133,7 +138,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           });
         }
         context.read<UserCubit>().otpFormKey.currentState!.validate();
-      } else if (state is OTPSuccess) {
+      } else if (state is ResetPasswordSuccess) {
         ScaffoldMessenger.of(context).clearSnackBars();
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -142,8 +147,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
             ),
           );
         });
-        currentIndex++;
-      } else if (state is OTPFailure) {
+        Navigator.pop(context);
+      } else if (state is ResetPasswordFailure) {
         if (state.errMessage == 'Bad Request') {
           description = state.errors[0]['description'];
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -156,17 +161,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           });
         } else {
           response = UnAuthorizeModel.fromJson(state.errors);
-
+          // print("===========STATE========== ${response!.newPassword![0]}");
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(response!.otp![0]),
+                content: Text(state.errMessage),
               ),
             );
           });
         }
-        context.read<UserCubit>().otpFormKey.currentState!.validate();
+        context.read<UserCubit>().resetFormKey.currentState!.validate();
       }
     }, builder: (context, state) {
       return Scaffold(
@@ -195,13 +200,15 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
             onPressed: () {
               setState(() {
                 currentIndex--;
+                passwordController.clear();
+                confirmPasswordController.clear();
               });
             },
             icon: const Icon(
               Icons.arrow_back,
             )),
       );
-    } else {
+    } else{
       return Padding(
         padding: const EdgeInsets.only(top: 8.0, left: 300),
         child: IconButton(
@@ -479,16 +486,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   autocorrect: false,
                   textCapitalization: TextCapitalization.none,
                   validator: (value) {
-                    if (response!.password != null) {
+                    if (response!.newPassword != null) {
                       if (value!.isEmpty) {
-                        return response!.password![0];
+                        return response!.newPassword![0];
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("${response!.password![0]}"),
-                          ),
-                        );
-                        return response!.password![0];
+                        return response!.newPassword![0];
                       }
                     }
                     return null;
@@ -572,7 +574,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       onPressed: () {
                         if (confirmPasswordController.text ==
                             passwordController.text) {
-                          context.read<UserCubit>().signUpPassword =
+                          context.read<UserCubit>().newPassword =
                               passwordController;
 
                           BlocProvider.of<UserCubit>(context).resetPassword();
@@ -636,7 +638,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           ),
         ),
         validator: (value) {
-          if (response!.otp != null) {
+          if (response!.otp!= null) {
             if (value!.isEmpty) {
               return '';
             } else {
