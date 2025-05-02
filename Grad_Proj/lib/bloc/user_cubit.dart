@@ -6,7 +6,7 @@ import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/core/api/api_consumer.dart';
 import 'package:grd_proj/core/api/end_points.dart';
 import 'package:grd_proj/core/errors/exception.dart';
-import 'package:grd_proj/cubit/user_state.dart';
+import 'package:grd_proj/bloc/user_state.dart';
 import 'package:grd_proj/models/sign_in_model.dart';
 
 class UserCubit extends Cubit<UserState> {

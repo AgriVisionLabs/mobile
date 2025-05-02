@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/components/forget_password_data.dart';
-import 'package:grd_proj/cubit/user_cubit.dart';
-import 'package:grd_proj/cubit/user_state.dart';
+import 'package:grd_proj/bloc/user_cubit.dart';
+import 'package:grd_proj/bloc/user_state.dart';
 import 'package:grd_proj/models/unauthorize_model.dart';
 
 import '../components/color.dart';
