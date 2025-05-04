@@ -8,6 +8,7 @@ import 'package:grd_proj/core/api/end_points.dart';
 import 'package:grd_proj/core/errors/exception.dart';
 import 'package:grd_proj/bloc/user_state.dart';
 import 'package:grd_proj/models/sign_in_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserCubit extends Cubit<UserState> {
   UserCubit(this.api) : super(UserInitial());
@@ -47,7 +48,10 @@ class UserCubit extends Cubit<UserState> {
   //New Password
   TextEditingController newPassword = TextEditingController();
 
-  
+  TextEditingController token = TextEditingController();
+
+  TextEditingController refreshedToken = TextEditingController();
+
   SignInModel? user;
   singIn() async {
     try {
@@ -58,20 +62,22 @@ class UserCubit extends Cubit<UserState> {
       });
       user = SignInModel.fromJson(response);
       // final decodedToken = JwtDecoder.decode(user!.token);
-      CacheHelper().saveData(key: ApiKey.token, value: user!.token);
+      CacheHelper().put(key: ApiKey.token, value: user!.token);
+      CacheHelper().put(key: ApiKey.refreshToken, value: user!.refreshToken);
+      CacheHelper().put(key: ApiKey.expiresIn, value: user!.expiresIn);
       CacheHelper().saveData(key: ApiKey.id, value: user!.id);
       emit(SignInSuccess());
     } on ServerException catch (e) {
-      emit(SignInFailure(errMessage: e.errorModel.message , errors: e.errorModel.error));
+      emit(SignInFailure(
+          errMessage: e.errorModel.message, errors: e.errorModel.error));
     }
   }
-
 
   singUp() async {
     try {
       emit(SignUpLoading());
       // ignore: unused_local_variable
-        final response = await api.post(EndPoints.register, data: {
+      final response = await api.post(EndPoints.register, data: {
         ApiKey.userName: signUpName.text,
         ApiKey.email: signUpEmail.text,
         ApiKey.password: signUpPassword.text,
@@ -87,16 +93,15 @@ class UserCubit extends Cubit<UserState> {
       signUpFirstName.clear();
       signUpLastName.clear();
     } on ServerException catch (e) {
-      emit(SignUpFailure(errMessage: e.errorModel.message , errors: e.errorModel.error));
+      emit(SignUpFailure(
+          errMessage: e.errorModel.message, errors: e.errorModel.error));
     }
   }
 
-
-confirmEmailResand() async {
+  confirmEmailResand() async {
     try {
-      final response = await api
-          .post(EndPoints.confirmEmailResand, data: {
-            ApiKey.email : signUpEmail.text});
+      final response = await api.post(EndPoints.confirmEmailResand,
+          data: {ApiKey.email: signUpEmail.text});
       print(response);
       emit(ConfirmEmailSuccess());
     } on ServerException catch (e) {
@@ -104,46 +109,69 @@ confirmEmailResand() async {
     }
   }
 
+  refreshToken() async {
+    emit(RefreshTokenLoading());
+    final prefs = await SharedPreferences.getInstance();
+    String currentToken = prefs.getString('token') ?? '';
+    String refreshToken = prefs.getString('refreshToken') ?? '';
 
-sendCode() async{
-  try{
-    final response = await api
-          .post(EndPoints.forgetPassword, data: {
-            ApiKey.email : forgetPasswordEmail.text});
-    print(response);
-    emit(ForgetPasswordSuccess());
-  }on ServerException catch (e) {
-      emit(ForgetPasswordFailure(errMessage: e.errorModel.message , errors: e.errorModel.error));
+    try {
+      final response = await api.post(EndPoints.refreshToken, data: {
+        ApiKey.token: currentToken,
+        ApiKey.refreshToken: refreshToken,
+      });
+      user = SignInModel.fromJson(response);
+      CacheHelper().put(key: ApiKey.token, value: user!.token);
+      CacheHelper().put(key: ApiKey.refreshToken, value: user!.refreshToken);
+      print(response);
+      emit(RefreshTokenSuccess());
+    } on ServerException catch (e) {
+      emit(RefreshTokenFailure(
+          errMessage: e.errorModel.message, errors: e.errorModel.error));
     }
-}
+  }
 
-otp() async{
-  try{
-    final response = await api
-          .post(EndPoints.otp, data: {
-            ApiKey.otp : forgetPasswordOtp.text,
-            ApiKey.email : forgetPasswordEmail.text});
-    print(response);
-    emit(OTPSuccess());
-  }on ServerException catch (e) {
-      emit(OTPFailure(errMessage: e.errorModel.message, errors: e.errorModel.error));
+  sendCode() async {
+    try {
+      final response = await api.post(EndPoints.forgetPassword,
+          data: {ApiKey.email: forgetPasswordEmail.text});
+      print(response);
+      emit(ForgetPasswordSuccess());
+    } on ServerException catch (e) {
+      emit(ForgetPasswordFailure(
+          errMessage: e.errorModel.message, errors: e.errorModel.error));
     }
-}
+  }
 
-resetPassword() async{
-  try{
-    final response = await api
-          .post(EndPoints.resetPassword, data: {
-            ApiKey.email : forgetPasswordEmail.text,
-            ApiKey.otp : forgetPasswordOtp.text,
-            ApiKey.newPassword : newPassword.text});
-    print(response);
-    emit(ResetPasswordSuccess());
-    forgetPasswordEmail.clear();
-    forgetPasswordOtp.clear();
-    newPassword.clear();
-  }on ServerException catch (e) {
-      emit(ResetPasswordFailure(errMessage: e.errorModel.message, errors: e.errorModel.error));
+  otp() async {
+    try {
+      final response = await api.post(EndPoints.otp, data: {
+        ApiKey.otp: forgetPasswordOtp.text,
+        ApiKey.email: forgetPasswordEmail.text
+      });
+      print(response);
+      emit(OTPSuccess());
+    } on ServerException catch (e) {
+      emit(OTPFailure(
+          errMessage: e.errorModel.message, errors: e.errorModel.error));
     }
-}
+  }
+
+  resetPassword() async {
+    try {
+      final response = await api.post(EndPoints.resetPassword, data: {
+        ApiKey.email: forgetPasswordEmail.text,
+        ApiKey.otp: forgetPasswordOtp.text,
+        ApiKey.newPassword: newPassword.text
+      });
+      print(response);
+      emit(ResetPasswordSuccess());
+      forgetPasswordEmail.clear();
+      forgetPasswordOtp.clear();
+      newPassword.clear();
+    } on ServerException catch (e) {
+      emit(ResetPasswordFailure(
+          errMessage: e.errorModel.message, errors: e.errorModel.error));
+    }
+  }
 }

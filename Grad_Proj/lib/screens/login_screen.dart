@@ -49,6 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
               context,
               MaterialPageRoute(builder: (context) => HomeScreen()),
             );
+            context.read<UserCubit>().signInEmail.clear();
+             context.read<UserCubit>().signInPassword.clear();
           } else if (state is SignInFailure) {
             if (state.errMessage == 'Unauthorized') {
               description = state.errors[0]['description'];
@@ -260,7 +262,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 builder: (context) {
-                                  return Container(
+                                  return SizedBox(
                                     height: 400,
                                     child: ForgetPasswordScreen(),
                                   );

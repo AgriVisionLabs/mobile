@@ -560,7 +560,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     return null;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Center(
@@ -618,7 +618,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         textAlign: TextAlign.center,
         maxLength: 1,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           counterText: '',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),

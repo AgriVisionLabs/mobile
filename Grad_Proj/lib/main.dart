@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/core/api/dio_consumer.dart';
+import 'package:grd_proj/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'bloc/user_cubit.dart';
 import 'screens/register.dart';
@@ -16,6 +17,7 @@ void main() async{
   CacheHelper().init();
   runApp(
     BlocProvider(
+      
       create: (context) =>
           UserCubit(DioConsumer(dio : Dio())),
       child: const MyApp(),

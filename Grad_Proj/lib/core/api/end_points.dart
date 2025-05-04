@@ -3,6 +3,7 @@ class EndPoints {
   static const String login = 'Auth';
   static const String register = 'Auth/register';
   static const String confirmEmailResand = '/Auth/resend-confirmation-email';
+  static const String refreshToken = '/Auth/refresh' ;
   static const String forgetPassword = '/Auth/forget-password';
   static const String otp = '/Auth/verify-otp';
   static const String resetPassword= '/Auth/reset-password';

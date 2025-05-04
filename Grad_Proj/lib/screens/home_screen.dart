@@ -1,7 +1,11 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 // ignore_for_file: prefer_const_constructors, avoid_print
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/user_cubit.dart';
 import 'package:grd_proj/screens/Login_Screen.dart';
 import 'package:grd_proj/screens/fields_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +31,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Timer? _timer;
+
+
+  void _startTimer() {
+     // Start a timer that will call function to refresh token after 30 minutes
+    _timer = Timer.periodic(const Duration(minutes:30), (timer) {
+      setState(() {     
+        context.read<UserCubit>().refreshToken();
+       });
+    });
+  }
+
+  
+  @override
+  void dispose() {
+    _timer?.cancel();
+    print("===========stop===========");
+    super.dispose();
+  }
+  
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int indexing = 0;
   late int initialIndex;
@@ -42,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _startTimer();
     // Set initial index from widget parameter
     indexing = widget.initialIndex;
     // Initialize the screens list AFTER creating the farm list
@@ -49,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
       DashBoard(), // Dashboard Screen
       FarmsScreen(farms: farmsList), // Pass farms list to FarmsScreen
     ]);
+    super.initState();
   }
 
   // String? selectedValue;

@@ -37,6 +37,16 @@ final class ConfirmEmailFailure extends UserState {
 
 final class ConfirmEmailResand extends UserState {}
 
+final class RefreshTokenSuccess extends UserState {}
+
+final class RefreshTokenLoading extends UserState {}
+
+final class RefreshTokenFailure extends UserState {
+  final String errMessage;
+  final dynamic errors;
+  
+  RefreshTokenFailure({required this.errMessage,required this.errors});
+}
 
 final class ForgetPasswordSuccess extends UserState {}
 final class ForgetPasswordFailure extends UserState {
