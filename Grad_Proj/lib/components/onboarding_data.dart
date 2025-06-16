@@ -1,4 +1,4 @@
-import 'package:grd_proj/components/onboarding_Info.dart';
+import 'package:grd_proj/components/onboarding_info.dart';
 
 class OnboardingData {
   List<OnboardingInfo> items = [

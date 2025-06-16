@@ -1,4 +1,6 @@
 
+
+
 class UserState {}
 
 final class UserInitial extends UserState {}
@@ -74,4 +76,5 @@ final class ResetPasswordFailure extends UserState {
   ResetPasswordFailure({required this.errMessage,required this.errors});
 }
 
+final class SignOut extends UserState {}
 

@@ -21,7 +21,7 @@ class _ReviewState extends State<Review> {
     farm = widget.farm;
     return SizedBox(
       width: 380,
-      height: 630,
+      height: 680,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center, 
         children: [

@@ -57,9 +57,11 @@ class _EditFarmState extends State<EditFarm> {
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                      BasicInfo(onInputChanged: _onInputChanged, currentIndex: currentIndex , editFarm: true,)
+                    Text('a')
+                      // BasicInfo(onInputChanged: _onInputChanged, currentIndex: currentIndex , editFarm: true,)
                     else if (currentIndex == 1)
-                      Team(onInputChanged: _onInputChanged, currentIndex: currentIndex ,editFarm: true,)
+                      Text('a')
+                      // Team(onInputChanged: _onInputChanged, currentIndex: currentIndex ,editFarm: true,)
                     else
                       Review(farm: farm,editFarm: true,),
                     const SizedBox(height: 20),

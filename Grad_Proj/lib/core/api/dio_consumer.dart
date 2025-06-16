@@ -3,13 +3,16 @@ import 'package:grd_proj/core/api/api_consumer.dart';
 import 'package:grd_proj/core/api/api_intercepotrs.dart';
 import 'package:grd_proj/core/errors/exception.dart';
 
+
 import 'end_points.dart';
 
 class DioConsumer extends ApiConsumer {
   final Dio dio;
+
+
   DioConsumer({required this.dio}) {
     dio.options.baseUrl = EndPoints.baseUrl;
-    dio.interceptors.add(ApiIntercepotrs());
+    dio.interceptors.add(ApiIntercepotrs(dio: dio));
 
     ///to print respon and request details in consol
     dio.interceptors.add(LogInterceptor(
@@ -19,12 +22,13 @@ class DioConsumer extends ApiConsumer {
         responseBody: true,
         responseHeader: true,
         error: true));
+        
   }
   @override
   Future delete(String path,
       {Object? data,
       Map<String, dynamic>? queryParameters,
-      bool isFormData = false}) async {
+      bool isNotAuth = false}) async {
     try {
       final response =
           await dio.delete(path, data: data, queryParameters: queryParameters);
@@ -38,7 +42,8 @@ class DioConsumer extends ApiConsumer {
   Future get(String path,
       {Object? data,
       Map<String, dynamic>? queryParameters,
-      bool isFormData = false}) async {
+      Object? options,
+      bool isNotAuth = false}) async {
     try {
       final response =
           await dio.get(path, data: data, queryParameters: queryParameters);
@@ -66,13 +71,14 @@ class DioConsumer extends ApiConsumer {
   Future post(String path,
       {dynamic data,
       Map<String, dynamic>? queryParameters,
-      bool isFormData = false}) async {
+      bool isNotAuth = false}) async {
     try {
       final response =
           await dio.post(
             path, 
-            data: isFormData ? FormData.fromMap(data) : data, 
-            queryParameters: queryParameters);
+            data: data, 
+            queryParameters: queryParameters,
+            );
       return response.data;
     } on DioException catch (e) {
       handelDioException(e);

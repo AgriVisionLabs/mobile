@@ -6,7 +6,9 @@ class EndPoints {
   static const String refreshToken = '/Auth/refresh' ;
   static const String forgetPassword = '/Auth/forget-password';
   static const String otp = '/Auth/verify-otp';
-  static const String resetPassword= '/Auth/reset-password';
+  static const String resetPassword = '/Auth/reset-password';
+  static const String farmsInfo = '/Farms';
+  static const String team = '/farms/{farmId}/members/{userId}';
 }
 
 class ApiKey{
@@ -26,4 +28,13 @@ class ApiKey{
   static String errorMessage = 'title';
   static String otp = 'Otp';
   static String newPassword = 'newPassword';
+  static String farmId = 'farmId';
+  static String name = 'name';
+  static String area = 'area';
+  static String location = 'location';
+  static String soilType = 'soilType';
+  static String fieldsNo = 'fieldsNo';
+  static String roleName = 'roleName';
+  static String ownerId = 'ownerId';
+  static String isOwner = 'isOwner';
 }

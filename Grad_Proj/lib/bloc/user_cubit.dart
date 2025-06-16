@@ -62,9 +62,10 @@ class UserCubit extends Cubit<UserState> {
       });
       user = SignInModel.fromJson(response);
       // final decodedToken = JwtDecoder.decode(user!.token);
-      CacheHelper().put(key: ApiKey.token, value: user!.token);
-      CacheHelper().put(key: ApiKey.refreshToken, value: user!.refreshToken);
-      CacheHelper().put(key: ApiKey.expiresIn, value: user!.expiresIn);
+      CacheHelper().saveData(key: ApiKey.token, value: user!.token);
+      CacheHelper().saveData(key: ApiKey.refreshToken, value: user!.refreshToken);
+      CacheHelper().saveData(key: ApiKey.expiresIn, value: user!.expiresIn);
+      CacheHelper().saveData(key: ApiKey.refreshTokenExpiration, value: user!.refreshTokenExpiration);
       CacheHelper().saveData(key: ApiKey.id, value: user!.id);
       emit(SignInSuccess());
     } on ServerException catch (e) {
@@ -111,18 +112,20 @@ class UserCubit extends Cubit<UserState> {
 
   refreshToken() async {
     emit(RefreshTokenLoading());
-    final prefs = await SharedPreferences.getInstance();
-    String currentToken = prefs.getString('token') ?? '';
-    String refreshToken = prefs.getString('refreshToken') ?? '';
-
+    String currentToken = CacheHelper().getData(key: ApiKey.token) ?? '';
+    String refreshToken = CacheHelper().getData(key: ApiKey.refreshToken) ?? '';
     try {
       final response = await api.post(EndPoints.refreshToken, data: {
         ApiKey.token: currentToken,
         ApiKey.refreshToken: refreshToken,
+        
       });
       user = SignInModel.fromJson(response);
-      CacheHelper().put(key: ApiKey.token, value: user!.token);
-      CacheHelper().put(key: ApiKey.refreshToken, value: user!.refreshToken);
+      CacheHelper().saveData(key: ApiKey.token, value: user!.token);
+      CacheHelper().saveData(key: ApiKey.refreshToken, value: user!.refreshToken);
+      final accessExpiry = DateTime.now().add(Duration(minutes: user!.expiresIn));
+      CacheHelper().saveData(key: ApiKey.expiresIn, value: accessExpiry);
+      CacheHelper().saveData(key: ApiKey.refreshTokenExpiration, value: user!.refreshTokenExpiration);
       print(response);
       emit(RefreshTokenSuccess());
     } on ServerException catch (e) {
@@ -173,5 +176,11 @@ class UserCubit extends Cubit<UserState> {
       emit(ResetPasswordFailure(
           errMessage: e.errorModel.message, errors: e.errorModel.error));
     }
+  }
+  void logout() async {
+  CacheHelper().clearData;  
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setBool('isLoggedIn' , false);
+  emit(SignOut()); 
   }
 }

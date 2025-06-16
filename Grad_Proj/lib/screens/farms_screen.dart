@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/screens/new_farm.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../Components/color.dart';
@@ -16,18 +18,31 @@ class FarmsScreen extends StatefulWidget {
 }
 
 class _FarmsScreen extends State<FarmsScreen> {
-  bool tell =false;
+  bool tell = false;
   void _onInputChanged(List farm) {
-      setState(() {
-          tell = true;
-        });
+    setState(() {
+      tell = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: tell ? _buildFarmsList() : _buildEmptyState(context),
+    return BlocBuilder<FarmBloc, FarmState>(
+      builder: (context, state) {
+        if (state is FarmInitial || state is FarmFailure) {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body:_buildEmptyState(context),
+          );
+        }
+        if (state is FarmLoaded) {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body:_buildFarmsList() 
+          );
+        }
+        return CircularPercentIndicator(radius: 15);
+      },
     );
   }
 
@@ -79,21 +94,24 @@ class _FarmsScreen extends State<FarmsScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.push(context,
-                MaterialPageRoute(builder: (context) => HomeScreen(initialIndex: 5,))
-                );
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomeScreen(
+                              initialIndex: 5,
+                            )));
               },
               child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Color.fromARGB(50, 0, 0, 0),
+                            blurRadius: 10,
+                            spreadRadius: 0.7,
+                            offset: Offset(0, 2.25))
+                      ]),
                   child: Container(
                       padding: const EdgeInsets.all(24),
                       width: 380,
@@ -260,16 +278,16 @@ class _FarmsScreen extends State<FarmsScreen> {
             ),
             SizedBox(height: 24),
             Container(
-                  decoration: BoxDecoration(
+                decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Color.fromARGB(50, 0, 0, 0),
+                          blurRadius: 10,
+                          spreadRadius: 0.7,
+                          offset: Offset(0, 2.25))
+                    ]),
                 child: Container(
                     padding: const EdgeInsets.all(24),
                     width: 380,
@@ -384,16 +402,16 @@ class _FarmsScreen extends State<FarmsScreen> {
                     ))),
             SizedBox(height: 24),
             Container(
-                  decoration: BoxDecoration(
+                decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Color.fromARGB(50, 0, 0, 0),
+                          blurRadius: 10,
+                          spreadRadius: 0.7,
+                          offset: Offset(0, 2.25))
+                    ]),
                 child: Container(
                     padding: const EdgeInsets.all(24),
                     width: 380,
@@ -599,17 +617,17 @@ class _FarmsScreen extends State<FarmsScreen> {
                       ],
                     ))),
             SizedBox(height: 24),
-           Container(
-                  decoration: BoxDecoration(
+            Container(
+                decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Color.fromARGB(50, 0, 0, 0),
+                          blurRadius: 10,
+                          spreadRadius: 0.7,
+                          offset: Offset(0, 2.25))
+                    ]),
                 child: Container(
                     padding: const EdgeInsets.all(24),
                     width: 380,
@@ -905,8 +923,10 @@ class _FarmsScreen extends State<FarmsScreen> {
                   tell = true;
                 });
               },
-              icon: const Icon(Icons.add,
-              color: Colors.white,),
+              icon: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
               label: const Text(
                 "Add New Farm",
                 style: TextStyle(

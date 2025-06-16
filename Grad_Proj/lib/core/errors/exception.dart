@@ -31,7 +31,6 @@ void handelDioException(DioException e) {
           ///empty email or password
           throw ServerException(
               errorModel: ErrorModel.fromJson(e.response!.data));
-          
       
         case 401:
 
@@ -65,6 +64,7 @@ void handelDioException(DioException e) {
            //  Unprocessable Entity
           throw ServerException(
               errorModel: ErrorModel.fromJson(e.response!.data));
+
         case 504: 
           // Server exception
           throw ServerException(

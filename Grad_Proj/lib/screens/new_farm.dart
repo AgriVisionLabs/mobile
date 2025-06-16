@@ -17,12 +17,9 @@ class NewFarm extends StatefulWidget {
 class _NewFarmState extends State<NewFarm> {
   int currentIndex = 0;
   List farm = [];
-  void _onInputChanged(List value, int index) {
+  void _onInputChanged(int index) {
     setState(() {
-      farm.add(value);
       currentIndex = index;
-      // ignore: avoid_print
-      print(farm);
     });
   }
 
@@ -39,7 +36,7 @@ class _NewFarmState extends State<NewFarm> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  pageTop(),
+                  top(),
                   const SizedBox(height: 40),
                   buildDots(),
                 ],
@@ -70,7 +67,7 @@ class _NewFarmState extends State<NewFarm> {
     );
   }
 
-  Widget pageTop() {
+  Widget top() {
     return Row(
       children: [
         IconButton(
@@ -79,7 +76,8 @@ class _NewFarmState extends State<NewFarm> {
               if (currentIndex > 0) currentIndex--;
             });
           },
-          icon: const Icon(Icons.arrow_back_rounded, color:  Color(0xff757575), size: 24),
+          
+          icon:  Icon(Icons.arrow_back_rounded, color: currentIndex == 0 ? Colors.white: Color(0xff757575), size: 24),
         ),
         const Spacer(),
         const Text(

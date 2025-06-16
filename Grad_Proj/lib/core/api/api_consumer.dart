@@ -4,7 +4,7 @@ abstract class ApiConsumer {
       Object? data,
       ///query parameters
       Map<String,dynamic>? queryParameters,
-      bool isFormData = false
+      bool isNotAuth = false
     }
   );
  Future <dynamic> post(
@@ -12,7 +12,7 @@ abstract class ApiConsumer {
       Object? data,
       ///query parameters
       Map<String,dynamic>? queryParameters,
-      bool isFormData = false
+      bool isNotAuth = false
     }
   );
   Future <dynamic> patch(
@@ -28,7 +28,7 @@ abstract class ApiConsumer {
       Object? data,
       ///query parameters
       Map<String,dynamic>? queryParameters,
-      bool isFormData = false
+      bool isNotAuth = false
     }
   );
 }
