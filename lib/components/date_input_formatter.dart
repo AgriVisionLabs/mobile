@@ -23,7 +23,7 @@ class DateInputFormatter extends TextInputFormatter {
 
     // تأكيد على اليوم <= 31، الشهر <= 12
     final parts = buffer.toString().split('/');
-    if (parts.length >= 1 && parts[0].length == 2) {
+    if (parts.isNotEmpty && parts[0].length == 2) {
       int day = int.tryParse(parts[0]) ?? 0;
       if (day > 31) {
         buffer.clear();

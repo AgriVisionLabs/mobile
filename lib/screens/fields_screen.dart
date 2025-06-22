@@ -23,7 +23,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: 400,
           height: MediaQuery.of(context).size.height,
           child: Column(children: [
@@ -157,7 +157,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
                               // ignore: prefer_const_constructors
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      NewFeild(feild: const [])));
+                                      const NewFeild(feild: [])));
                         });
                       },
                       child: const Row(

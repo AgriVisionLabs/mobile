@@ -253,7 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 builder: (context) {
-                                  return Container(
+                                  return SizedBox(
                                     height: 400,
                                     child: ForgetPasswordScreen(),
                                   );

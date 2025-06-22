@@ -4,7 +4,7 @@ import 'package:grd_proj/models/farm_list.dart';
 import '../Components/color.dart';
 
 class IrrigationConrtol extends StatefulWidget {
-  const IrrigationConrtol({Key? key}) : super(key: key);
+  const IrrigationConrtol({super.key});
 
   @override
   State<IrrigationConrtol> createState() => _IrrigationConrtolState();

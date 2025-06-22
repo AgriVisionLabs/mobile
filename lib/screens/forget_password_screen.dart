@@ -111,7 +111,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 17),
                     hintText: "Enter your Email",
                     hintStyle: const TextStyle(color: borderColor),
                     enabledBorder: OutlineInputBorder(

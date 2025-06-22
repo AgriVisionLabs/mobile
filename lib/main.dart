@@ -14,7 +14,8 @@ import 'package:grd_proj/screens/more_screen.dart';
 import 'package:grd_proj/screens/new_field.dart';
 import 'package:grd_proj/screens/onboarding.dart';
 import 'package:grd_proj/screens/sensor.dart';
-import 'package:grd_proj/screens/verify_page.dart';
+import 'package:grd_proj/screens/tasks_screen.dart';
+import 'package:grd_proj/screens/verification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'cubit/user_cubit.dart';
 import 'screens/register.dart';
@@ -45,7 +46,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: Verification(),
     );
   }
 }
