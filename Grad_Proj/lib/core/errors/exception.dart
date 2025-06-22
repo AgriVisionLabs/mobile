@@ -56,7 +56,6 @@ void handelDioException(DioException e) {
               errorModel: ErrorModel.fromJson(e.response!.data));
 
         case 409: 
-        
           //cofficient
           throw ServerException(
               errorModel: ErrorModel.fromJson(e.response!.data));

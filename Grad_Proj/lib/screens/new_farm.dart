@@ -1,14 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
+
 import 'package:flutter/material.dart';
+import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/screens/basic_info.dart';
 import 'package:grd_proj/screens/review.dart';
 import 'package:grd_proj/screens/team.dart';
 import '../Components/color.dart';
 
 class NewFarm extends StatefulWidget {
-  final Function(List) onInputChanged;
-  const NewFarm({super.key,required this.onInputChanged});
+  const NewFarm({super.key});
 
   @override
   State<NewFarm> createState() => _NewFarmState();
@@ -16,13 +17,11 @@ class NewFarm extends StatefulWidget {
 
 class _NewFarmState extends State<NewFarm> {
   int currentIndex = 0;
-  List farm = [];
   void _onInputChanged(int index) {
     setState(() {
       currentIndex = index;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -42,20 +41,31 @@ class _NewFarmState extends State<NewFarm> {
                 ],
               ),
             ),
-            
+    
             // Scrollable Form Section
             Expanded(
               child: SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                      BasicInfo(onInputChanged: _onInputChanged, currentIndex: currentIndex)
+                      BasicInfo(
+                          onInputChanged: _onInputChanged,
+                          currentIndex: currentIndex)
                     else if (currentIndex == 1)
-                      Team(onInputChanged: _onInputChanged, currentIndex: currentIndex)
+                      Team(
+                          onInputChanged: _onInputChanged,
+                          currentIndex: currentIndex)
                     else
-                      Review(farm: farm),
+                      Review(
+                        name: CacheHelper.getData(key: 'farmname'),
+                        size: CacheHelper.getData(key: 'area'),
+                        roles: CacheHelper.getData(key: 'invites'),
+                        soil: CacheHelper.getData(key: 'soiltype'),
+                        location: CacheHelper.getData(key: 'location'),
+                      ),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -76,8 +86,9 @@ class _NewFarmState extends State<NewFarm> {
               if (currentIndex > 0) currentIndex--;
             });
           },
-          
-          icon:  Icon(Icons.arrow_back_rounded, color: currentIndex == 0 ? Colors.white: Color(0xff757575), size: 24),
+          icon: Icon(Icons.arrow_back_rounded,
+              color: currentIndex == 0 ? Colors.white : Color(0xff757575),
+              size: 24),
         ),
         const Spacer(),
         const Text(
@@ -92,9 +103,10 @@ class _NewFarmState extends State<NewFarm> {
         Spacer(),
         IconButton(
           onPressed: () {
-        Navigator.pop(context);
+            Navigator.pop(context);
           },
-          icon: const Icon(Icons.close_rounded, color: Color(0xff757575), size: 24),
+          icon: const Icon(Icons.close_rounded,
+              color: Color(0xff757575), size: 24),
         ),
       ],
     );
@@ -133,7 +145,11 @@ class _NewFarmState extends State<NewFarm> {
                   buildIndicatorItem(index),
                   const SizedBox(height: 7),
                   Text(
-                    index == 0 ? 'Basic Info' : index == 1 ? 'Team' : 'Review',
+                    index == 0
+                        ? 'Basic Info'
+                        : index == 1
+                            ? 'Team'
+                            : 'Review',
                     style: const TextStyle(
                       fontFamily: 'Manrope',
                       color: Colors.black,

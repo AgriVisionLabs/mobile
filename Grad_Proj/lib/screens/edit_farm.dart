@@ -1,9 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:grd_proj/screens/basic_info.dart';
-import 'package:grd_proj/screens/review.dart';
-import 'package:grd_proj/screens/team.dart';
 import '../Components/color.dart';
 import 'home_screen.dart';
 
@@ -57,13 +54,13 @@ class _EditFarmState extends State<EditFarm> {
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                    Text('a')
+                    const Text('a')
                       // BasicInfo(onInputChanged: _onInputChanged, currentIndex: currentIndex , editFarm: true,)
                     else if (currentIndex == 1)
-                      Text('a')
+                      const Text('a')
                       // Team(onInputChanged: _onInputChanged, currentIndex: currentIndex ,editFarm: true,)
                     else
-                      Review(farm: farm,editFarm: true,),
+                      // Review(editFarm: true,),
                     const SizedBox(height: 20),
                     button()
                   ],

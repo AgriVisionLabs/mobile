@@ -24,9 +24,11 @@ class _TeamState extends State<Team> {
   GlobalKey<FormState> formstate = GlobalKey();
   String? userName;
   String? selectedValue;
+  String description = '';
   List farm = [];
   bool addedRole = false;
   int index = 0;
+  int? pos;
   List<String> role = ['Manager', 'Owner', 'Worker', 'Export'];
   Map<String, dynamic> myRoleListEdit = {'name': 'Hessian', 'role': 'Manager'};
 
@@ -34,7 +36,77 @@ class _TeamState extends State<Team> {
   Widget build(BuildContext context) {
     return BlocConsumer<FarmBloc, FarmState>(
       listener: (context, state) {
-        // TODO: implement listener
+        if (state is AddingMember) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Member added successfuly"),
+              ),
+            );
+          });
+          myRoleList.add({
+            'name': userName,
+            'role': selectedValue,
+          });
+          context.read<FarmBloc>().add(ViewFarmMembers());
+        } else if (state is AddingMemberFailure) {
+          if (state.errMessage == 'Conflict') {
+            description = state.errors[0]['description'];
+            ScaffoldMessenger.of(context).clearSnackBars();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(description),
+                ),
+              );
+            });
+          } else {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errMessage),
+                ),
+              );
+            });
+            
+          }
+          context.read<FarmBloc>().addMembermKey.currentState!.validate();
+        }
+        if (state is DeletingMember) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Member Deleted successfuly"),
+              ),
+            );
+          });
+          myRoleList.removeAt(pos!);
+        } else if (state is DeletingMemberFailure) {
+          if (state.errMessage == 'Conflict') {
+            description = state.errors[0]['description'];
+            ScaffoldMessenger.of(context).clearSnackBars();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(description),
+                ),
+              );
+            });
+          } else {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errMessage),
+                ),
+              );
+            });
+            context.read<FarmBloc>().addMembermKey.currentState!.validate();
+          }
+        }
       },
       builder: (context, state) {
         return Container(
@@ -42,7 +114,7 @@ class _TeamState extends State<Team> {
           width: 380,
           height: 680,
           child: Form(
-              key: formstate,
+              key: context.read<FarmBloc>().addMembermKey,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -57,6 +129,7 @@ class _TeamState extends State<Team> {
                     const SizedBox(height: 10),
                     TextFormField(
                       keyboardType: TextInputType.emailAddress,
+                      controller: context.read<FarmBloc>().recipient,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
@@ -75,6 +148,11 @@ class _TeamState extends State<Team> {
                               const BorderSide(color: primaryColor, width: 3.0),
                         ),
                         errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: errorColor, width: 3.0),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
                           borderSide:
                               const BorderSide(color: errorColor, width: 3.0),
@@ -111,7 +189,7 @@ class _TeamState extends State<Team> {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
+                                horizontal: 20, vertical: 1),
                             width: 280,
                             height: 50,
                             decoration: BoxDecoration(
@@ -161,9 +239,7 @@ class _TeamState extends State<Team> {
                             child: TextButton(
                               onPressed: () {
                                 setState(() {
-                                  ///add code
                                   if (selectedValue == null) {
-                                    formstate.currentState!.validate();
                                     ScaffoldMessenger.of(context)
                                         .clearSnackBars();
                                     WidgetsBinding.instance
@@ -176,11 +252,10 @@ class _TeamState extends State<Team> {
                                       );
                                     });
                                   } else {
-                                    myRoleList.add({
-                                      'name': userName,
-                                      'role': selectedValue,
-                                    });
                                     addedRole = true;
+                                    context.read<FarmBloc>().roleName.text =
+                                        selectedValue!;
+                                    context.read<FarmBloc>().add(AddMember());
                                   }
                                 });
                               },
@@ -225,8 +300,7 @@ class _TeamState extends State<Team> {
                                 child: TextButton(
                                     onPressed: () {
                                       setState(() {
-                                        if (selectedValue == null) {
-                                          formstate.currentState!.validate();
+                                        if (addedRole == false) {
                                           ScaffoldMessenger.of(context)
                                               .clearSnackBars();
                                           WidgetsBinding.instance
@@ -234,17 +308,15 @@ class _TeamState extends State<Team> {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               const SnackBar(
-                                                content: Text(
-                                                    "Please Enter Soil Type"),
+                                                content:
+                                                    Text("Please Enter Role"),
                                               ),
                                             );
                                           });
                                         } else {
                                           index = widget.currentIndex;
                                           index++;
-                                          if (addedRole) {
-                                            widget.onInputChanged(index);
-                                          }
+                                          widget.onInputChanged(index);
                                         }
                                       });
                                     },
@@ -276,7 +348,7 @@ class _TeamState extends State<Team> {
   Widget _buildRolesList() {
     ///team members part
     return SizedBox(
-      width: 390,
+      width: 400,
       height: 260,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,7 +365,7 @@ class _TeamState extends State<Team> {
 
           ///scrollabel part contain team members
           SizedBox(
-            width: 380,
+            width: 400,
             height: 220,
 
             //list of members
@@ -305,8 +377,9 @@ class _TeamState extends State<Team> {
                 itemBuilder: (context, index) {
                   //green box contain each member
                   return Container(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 12),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 3, horizontal: 1),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     decoration: BoxDecoration(
                       color: const Color.fromRGBO(30, 105, 48, 0.15),
                       borderRadius: BorderRadius.circular(15),
@@ -330,7 +403,9 @@ class _TeamState extends State<Team> {
                             ),
                           ),
 
-                          const Spacer(),
+                          const SizedBox(
+                            width: 150,
+                          ),
 
                           //role
                           Text(
@@ -340,10 +415,25 @@ class _TeamState extends State<Team> {
                               style: const TextStyle(
                                 fontFamily: 'Manrope',
                                 color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
                                 // decoration: TextDecoration.lineThrough
-                              ))
+                              )),
+                          const Spacer(),
+                          IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  context
+                                      .read<FarmBloc>()
+                                      .add(DeleteMember(invitationNum: index));
+                                  pos = index;
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.black,
+                                size: 18,
+                              )),
                         ],
                       ),
                     ),

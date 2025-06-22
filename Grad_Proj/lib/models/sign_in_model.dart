@@ -14,14 +14,14 @@ class SignInModel {
 
   factory SignInModel.fromJson(Map<String,dynamic> jsonData){
     return SignInModel(
-      id: jsonData[ApiKey.id],
+      id: jsonData[ApiKey.id] ?? "",
       email: jsonData[ApiKey.email],
       firstName: jsonData[ApiKey.firstName],
       lasttName: jsonData[ApiKey.lastName],
-      token: jsonData[ApiKey.token],
-      expiresIn: jsonData[ApiKey.expiresIn],
-      refreshToken: jsonData[ApiKey.refreshToken],
-      refreshTokenExpiration: jsonData[ApiKey.refreshTokenExpiration]
+      token: jsonData[ApiKey.token]?? '',
+      expiresIn: jsonData[ApiKey.expiresIn]?? '',
+      refreshToken: jsonData[ApiKey.refreshToken]?? '',
+      refreshTokenExpiration: jsonData[ApiKey.refreshTokenExpiration]?? ''
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/screens/basic_info_field.dart';
 import 'package:grd_proj/screens/irrigation.dart';
 import 'package:grd_proj/screens/review_field.dart';
@@ -6,8 +7,8 @@ import 'package:grd_proj/screens/sensor.dart';
 import '../Components/color.dart';
 
 class NewFeild extends StatefulWidget {
-  final List feild;
-  const NewFeild({super.key, required this.feild});
+  final String farmId;
+  const NewFeild({super.key, required this.farmId});
 
   @override
   State<NewFeild> createState() => _NewFeildState();
@@ -16,9 +17,8 @@ class NewFeild extends StatefulWidget {
 class _NewFeildState extends State<NewFeild> {
   int currentIndex = 0;
   List field = [];
-  void _onInputChanged(List value, int index) {
+  void _onInputChanged( int index) {
     setState(() {
-      field.add(value);
       currentIndex = index;
       // ignore: avoid_print
       print(field);
@@ -60,14 +60,22 @@ class _NewFeildState extends State<NewFeild> {
                     else if (currentIndex == 1)
                       Irrigation(
                           onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex)
+                          currentIndex: currentIndex,
+                          farmId: widget.farmId,
+                          fieldId: CacheHelper.getData(key: 'fieldId'),
+                          form: true,
+                          )
                     else if (currentIndex == 2)
                       Sensor(
                           onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex)
+                          currentIndex: currentIndex,
+                          farmId: widget.farmId,
+                          fieldId: CacheHelper.getData(key: 'fieldId'))
                     else
                       ReviewField(
-                        field: field,
+                        name: CacheHelper.getData(key: 'farmname'),
+                        size: CacheHelper.getData(key: 'area'),
+                        crop: CacheHelper.getData(key: 'crop'),
                       ),
                     const SizedBox(height: 20),
                   ],

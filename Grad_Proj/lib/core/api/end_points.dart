@@ -8,7 +8,14 @@ class EndPoints {
   static const String otp = '/Auth/verify-otp';
   static const String resetPassword = '/Auth/reset-password';
   static const String farmsInfo = '/Farms';
-  static const String team = '/farms/{farmId}/members/{userId}';
+  static const String allFarms = '/Farms';
+  static const String farmControl = '/Farms';
+  static const String team = '/farms';
+  static const String feild = '/farms';
+  static const String irrigation = '/farms';
+  static const String sensor = '/farms';
+  static const String automationRules = '/farms';
+  static const String FarmRoles = '/FarmRoles';
 }
 
 class ApiKey{
@@ -37,4 +44,16 @@ class ApiKey{
   static String roleName = 'roleName';
   static String ownerId = 'ownerId';
   static String isOwner = 'isOwner';
+  static String crop = 'crop';
+  static String recipient = 'recipient';
+  static String serialNumber = 'serialNumber';
+  static String sensorId = 'sensorId';
+  static String newFieldId = 'newFieldId';
+  static String type = 'type';
+  static String minThresholdValue = 'minThresholdValue';
+  static String maxThresholdValue = 'maxThresholdValue';
+  static String targetSensorType = 'targetSensorType';
+  static String startTime = 'startTime';
+  static String endTime = 'endTime';
+  static String activeDays = 'activeDays';
 }

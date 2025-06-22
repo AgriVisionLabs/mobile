@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
@@ -13,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserCubit extends Cubit<UserState> {
   UserCubit(this.api) : super(UserInitial());
   final ApiConsumer api;
+  Timer? _tokenRefreshTimer;
   //Sign in Form key
   GlobalKey<FormState> signInFormKey = GlobalKey();
   //Sign in email
@@ -61,12 +64,14 @@ class UserCubit extends Cubit<UserState> {
         ApiKey.password: signInPassword.text,
       });
       user = SignInModel.fromJson(response);
-      // final decodedToken = JwtDecoder.decode(user!.token);
-      CacheHelper().saveData(key: ApiKey.token, value: user!.token);
-      CacheHelper().saveData(key: ApiKey.refreshToken, value: user!.refreshToken);
-      CacheHelper().saveData(key: ApiKey.expiresIn, value: user!.expiresIn);
-      CacheHelper().saveData(key: ApiKey.refreshTokenExpiration, value: user!.refreshTokenExpiration);
-      CacheHelper().saveData(key: ApiKey.id, value: user!.id);
+      CacheHelper.saveData(key: ApiKey.token, value: user!.token);
+      CacheHelper.saveData(key: ApiKey.refreshToken, value: user!.refreshToken);
+      CacheHelper.saveData(key: ApiKey.expiresIn, value: user!.expiresIn);
+      CacheHelper.saveData(
+          key: ApiKey.refreshTokenExpiration,
+          value: user!.refreshTokenExpiration);
+      CacheHelper.saveData(key: ApiKey.id, value: user!.id);
+      startTokenRefreshTimer();
       emit(SignInSuccess());
     } on ServerException catch (e) {
       emit(SignInFailure(
@@ -110,28 +115,36 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  refreshToken() async {
-    emit(RefreshTokenLoading());
-    String currentToken = CacheHelper().getData(key: ApiKey.token) ?? '';
-    String refreshToken = CacheHelper().getData(key: ApiKey.refreshToken) ?? '';
+  Future<void> refreshToken() async {
+    final currentToken = CacheHelper.getData(key: ApiKey.token) ?? '';
+    final refreshToken = CacheHelper.getData(key: ApiKey.refreshToken) ?? '';
+
     try {
       final response = await api.post(EndPoints.refreshToken, data: {
         ApiKey.token: currentToken,
         ApiKey.refreshToken: refreshToken,
-        
       });
-      user = SignInModel.fromJson(response);
-      CacheHelper().saveData(key: ApiKey.token, value: user!.token);
-      CacheHelper().saveData(key: ApiKey.refreshToken, value: user!.refreshToken);
-      final accessExpiry = DateTime.now().add(Duration(minutes: user!.expiresIn));
-      CacheHelper().saveData(key: ApiKey.expiresIn, value: accessExpiry);
-      CacheHelper().saveData(key: ApiKey.refreshTokenExpiration, value: user!.refreshTokenExpiration);
-      print(response);
+
+      // حفظ التوكنات الجديدة مباشرة من CacheHelper
+      await CacheHelper.saveData(key: ApiKey.token, value: response['token']);
+      await CacheHelper.saveData(
+          key: ApiKey.refreshToken, value: response['refreshToken']);
+
       emit(RefreshTokenSuccess());
-    } on ServerException catch (e) {
-      emit(RefreshTokenFailure(
-          errMessage: e.errorModel.message, errors: e.errorModel.error));
+    } catch (e) {
+      emit(RefreshTokenFailure(errMessage: e.toString(), errors: e.toString()));
     }
+  }
+
+  void startTokenRefreshTimer() {
+    _tokenRefreshTimer?.cancel();
+    _tokenRefreshTimer = Timer.periodic(const Duration(minutes: 28), (timer) {
+      refreshToken();
+    });
+  }
+
+  void stopTokenRefreshTimer() {
+    _tokenRefreshTimer?.cancel();
   }
 
   sendCode() async {
@@ -177,10 +190,12 @@ class UserCubit extends Cubit<UserState> {
           errMessage: e.errorModel.message, errors: e.errorModel.error));
     }
   }
-  void logout() async {
-  CacheHelper().clearData;  
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setBool('isLoggedIn' , false);
-  emit(SignOut()); 
+
+  Future<void> logout() async {
+    stopTokenRefreshTimer();
+    await CacheHelper.clearData(key: '');
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', false);
+    emit(SignOut());
   }
 }

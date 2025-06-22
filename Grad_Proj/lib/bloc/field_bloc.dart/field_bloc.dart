@@ -1,46 +1,306 @@
-// import 'package:bloc/bloc.dart';
-// import 'package:flutter/material.dart';
-// import 'package:grd_proj/cache/cache_helper.dart';
-// import 'package:grd_proj/core/api/api_consumer.dart';
-// import 'package:grd_proj/core/api/end_points.dart';
-// import 'package:grd_proj/core/errors/exception.dart';
-// import 'package:grd_proj/models/farm_model.dart';
+// ignore_for_file: avoid_print
 
-// part 'field_event.dart';
-// part 'field_state.dart';
+import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/core/api/api_consumer.dart';
+import 'package:grd_proj/core/api/end_points.dart';
+import 'package:grd_proj/core/errors/exception.dart';
+import 'package:grd_proj/models/field_model.dart';
+import 'package:grd_proj/models/irrigation_model.dart';
 
-// //each time you call the bolc it request event and state
-// class FieldBloc extends Bloc<FieldEvent, FieldState> {
-//   final ApiConsumer api;
-//   GlobalKey<FormState> createFarmFormKey = GlobalKey();
-//   TextEditingController name = TextEditingController();
-//   TextEditingController area = TextEditingController();
-//   TextEditingController location = TextEditingController();
-//   TextEditingController soilType = TextEditingController();
-//   FieldModel? farm;
-//   //default value
-//   FieldBloc(this.api) : super(FieldInitial(const [])) {
-//     //define a bloc event
-//     on<CreateFarmEvent>((event, emit) async {
-//       // bloc takes stream of event and give stream of states
-//       try {
+part 'field_event.dart';
+part 'field_state.dart';
 
-//         final response = await api.post(EndPoints.fieldInfo, data: {
-//           ApiKey.name: name.text,
-//           ApiKey.area: area.text,
-//           ApiKey.location: location.text,
-//           ApiKey.soilType: int.tryParse(soilType.text),
-//         });
-//         //create a var to store the response
-//         farm = FarmModel.fromJson(response);
-//         // save part we will need every time we use the app to cache
-//         CacheHelper().saveData(key: ApiKey.farmId, value: farm!.farmId);
-//         print(response);
-//         emit(FieldInfoSuccess());
-//       } on ServerException catch (e) {
-//         emit(FieldInfoFailure(
-//             errMessage: e.errorModel.message, errors: e.errorModel.error));
-//       }
-//     });
-//   }
-// }
+//each time you call the bolc it request event and state
+class FieldBloc extends Bloc<FieldEvent, FieldState> {
+  final ApiConsumer api;
+  GlobalKey<FormState> createFieldFormKey = GlobalKey();
+  TextEditingController name = TextEditingController();
+  TextEditingController area = TextEditingController();
+  TextEditingController location = TextEditingController();
+  TextEditingController cropType = TextEditingController();
+  GlobalKey<FormState> addIrrigationUnitFormKey = GlobalKey();
+  TextEditingController irrigationUnitName = TextEditingController();
+  TextEditingController irrigationSerialNum = TextEditingController();
+  GlobalKey<FormState> addSensorUnitFormKey = GlobalKey();
+  TextEditingController sensorUnitName = TextEditingController();
+  TextEditingController sensorSerialNum = TextEditingController();
+  FieldModel? fieldmodel;
+  String farmid = CacheHelper.getData(key: 'farmId');
+  //default value
+  FieldBloc(this.api) : super(FieldInitial(const [])) {
+    //get all farms FarmScreen
+    on<OpenFieldEvent>((event, emit) async {
+      try {
+        emit(FieldInitial(const []));
+        if (event.farmname != null) {
+          CacheHelper.saveData(key: 'farmname', value: event.farmname);
+          CacheHelper.saveData(key: 'area', value: event.size);
+          CacheHelper.saveData(key: 'soiltype', value: event.soiltype);
+          CacheHelper.saveData(key: 'location', value: event.location);
+          CacheHelper.saveData(key: 'roleName', value: event.roleName);
+        }
+        CacheHelper.saveData(key: 'farmId', value: event.farmId);
+        emit(FieldLoading());
+        final response =
+            await api.get('${EndPoints.feild}/${event.farmId}/Fields');
+        if (response is List && response.isNotEmpty) {
+          final fields = response
+              .map<FieldModel>((json) => FieldModel.fromJson(json))
+              .toList();
+          emit(FieldLoaded(fields: fields));
+        } else {
+          emit(FieldEmpty());
+        }
+        print(response);
+      } on ServerException catch (e) {
+        emit(FieldFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<CreateFieldEvent>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response =
+            await api.post("${EndPoints.feild}/$farmid/Fields", data: {
+          ApiKey.name: name.text,
+          ApiKey.area: area.text,
+          ApiKey.crop: int.tryParse(cropType.text),
+        });
+        final field = response
+            .map<FieldModel>((json) => FieldModel.fromJson(json))
+            .toList();
+        fieldmodel = FieldModel.fromJson(response);
+        CacheHelper.saveData(key: 'fieldId', value: field!.id);
+        print(response);
+        emit(FieldInfoSuccess(field: field));
+      } on ServerException catch (e) {
+        emit(FieldInfoFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<DeleteFieldEvent>((event, emit) async {
+      try {
+        final response = await api.delete(
+            '${EndPoints.farmControl}/${event.farmId}/Fields/${event.fieldId}}');
+        print(response);
+        emit(DeleteFieldSuccess());
+      } on ServerException catch (e) {
+        emit(DeleteFieldFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<AddSensorUnitEven>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response = await api.post(
+            "${EndPoints.feild}/${event.farmId}/fields/${event.fieldId}/SensorUnits",
+            data: {
+              ApiKey.serialNumber: sensorSerialNum.text,
+              ApiKey.name: sensorUnitName.text,
+            });
+        print(response);
+        emit(AddSensorUnitSuccess());
+      } on ServerException catch (e) {
+        emit(AddSensorUnitFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<ViewFieldDetails>((event, emit) async {
+      try {
+        final response = await api.get(
+            "${EndPoints.farmControl}/${event.farmId}/Fields/${event.fieldId}");
+        print(response);
+        CacheHelper.saveData(key: 'fieldname', value: response['name']);
+        CacheHelper.saveData(key: 'area', value: response['area']);
+        CacheHelper.saveData(key: 'crop', value: response['crop']);
+        emit(FieldSuccess());
+      } on ServerException catch (e) {
+        emit(FieldFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<AddIrrigationUnitEvent>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response = await api.post(
+            "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits",
+            data: {
+              ApiKey.serialNumber: irrigationSerialNum.text,
+              ApiKey.name: irrigationUnitName.text,
+            });
+        final field = response
+            .map<IrrigationDevice>((json) => IrrigationDevice.fromJson(json))
+            .toList();
+
+        CacheHelper.saveData(key: 'fieldId', value: field!.id);
+        print(response);
+        emit(AddIrrigationUnitSuccess());
+      } on ServerException catch (e) {
+        emit(AddIrrigationUnitFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+
+    on<OpenFarmIrrigationUnitsEvent>((event, emit) async {
+      try {
+        final response = await api
+            .get("${EndPoints.irrigation}/${event.farmId}/IrrigationUnits");
+        print(response);
+        if (response is List && response.isNotEmpty) {
+          final irrigationUnits = response
+              .map<IrrigationDevice>((json) => IrrigationDevice.fromJson(json))
+              .toList();
+          emit(ViewIrrigationUnitSuccess(
+            devices: irrigationUnits,
+          ));
+        } else {
+          emit(IrrigationUnitEmpty());
+        }
+      } on ServerException catch (e) {
+        emit(ViewIrrigationUnitFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<OpenFieldIrrigationUnitsEvent>((event, emit) async {
+      try {
+        final response = await api.get(
+            "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits");
+        print(response);
+        if (response is List && response.isNotEmpty) {
+          final irrigationUnits = response
+              .map<IrrigationDevice>((json) => IrrigationDevice.fromJson(json))
+              .toList();
+          emit(ViewIrrigationUnitSuccess(
+            devices: irrigationUnits,
+          ));
+        } else {
+          emit(IrrigationUnitEmpty());
+        }
+      } on ServerException catch (e) {
+        emit(ViewIrrigationUnitFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<IrrigationUnitsEditEvent>((event, emit) async {
+      try {
+        // ignore: unused_local_variable
+        final response = await api.put(
+            "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits",
+            data: {
+              ApiKey.name: event.name,
+              ApiKey.status: event.status,
+              ApiKey.newFieldId: event.newFieldId,
+            });
+        emit(IrrigationUnitEditSuccess());
+      } on ServerException catch (e) {
+        emit(IrrigationUnitEditFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<DeleteIrrigationUnitEvent>((event, emit) async {
+      try {
+        final response = await api.delete('${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits');
+        print(response);
+        emit(DeleteIrrigationUnitSuccess());
+      } on ServerException catch (e) {
+        emit(DeleteIrrigationUnitFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    ///=================================================================
+    ///
+    on<AddAutomationRulesEvent>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response = await api.post(
+            "${EndPoints.automationRules}/${event.farmId}/fields/${event.fieldId}/AutomationRules",
+            data: {
+              ApiKey.serialNumber: irrigationSerialNum.text,
+              ApiKey.name: irrigationUnitName.text,
+            });
+        final field = response
+            .map<IrrigationDevice>((json) => IrrigationDevice.fromJson(json))
+            .toList();
+
+        CacheHelper.saveData(key: 'fieldId', value: field!.id);
+        print(response);
+        emit(AddIrrigationUnitSuccess());
+      } on ServerException catch (e) {
+        emit(AddIrrigationUnitFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    
+    // on<OpenFarmIrrigationUnitsEvent>((event, emit) async {
+    //   try {
+    //     final response = await api
+    //         .get("${EndPoints.irrigation}/${event.farmId}/IrrigationUnits");
+    //     print(response);
+    //     if (response is List && response.isNotEmpty) {
+    //       final irrigationUnits = response
+    //           .map<IrrigationDevice>((json) => IrrigationDevice.fromJson(json))
+    //           .toList();
+    //       emit(ViewIrrigationUnitSuccess(
+    //         devices: irrigationUnits,
+    //       ));
+    //     } else {
+    //       emit(IrrigationUnitEmpty());
+    //     }
+    //   } on ServerException catch (e) {
+    //     emit(ViewIrrigationUnitFailure(
+    //         errMessage: e.errorModel.message, errors: e.errorModel.error));
+    //   }
+    // });
+
+    // on<OpenFieldIrrigationUnitsEvent>((event, emit) async {
+    //   try {
+    //     final response = await api.get(
+    //         "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits");
+    //     print(response);
+    //     if (response is List && response.isNotEmpty) {
+    //       final irrigationUnits = response
+    //           .map<IrrigationDevice>((json) => IrrigationDevice.fromJson(json))
+    //           .toList();
+    //       emit(ViewIrrigationUnitSuccess(
+    //         devices: irrigationUnits,
+    //       ));
+    //     } else {
+    //       emit(IrrigationUnitEmpty());
+    //     }
+    //   } on ServerException catch (e) {
+    //     emit(ViewIrrigationUnitFailure(
+    //         errMessage: e.errorModel.message, errors: e.errorModel.error));
+    //   }
+    // });
+
+    // on<IrrigationUnitsEditEvent>((event, emit) async {
+    //   try {
+    //     // ignore: unused_local_variable
+    //     final response = await api.put(
+    //         "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits",
+    //         data: {
+    //           ApiKey.name: event.name,
+    //           ApiKey.status: event.status,
+    //           ApiKey.newFieldId: event.newFieldId,
+    //         });
+    //     emit(IrrigationUnitEditSuccess());
+    //   } on ServerException catch (e) {
+    //     emit(IrrigationUnitEditFailure(
+    //         errMessage: e.errorModel.message, errors: e.errorModel.error));
+    //   }
+    // });
+  }
+}

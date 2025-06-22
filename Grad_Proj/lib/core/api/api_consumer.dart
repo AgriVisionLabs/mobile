@@ -15,7 +15,7 @@ abstract class ApiConsumer {
       bool isNotAuth = false
     }
   );
-  Future <dynamic> patch(
+  Future <dynamic> put(
     String path,{
       Object? data,
       ///query parameters

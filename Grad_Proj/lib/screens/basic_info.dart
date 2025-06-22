@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
+import 'package:grd_proj/cache/cache_helper.dart';
 
 import '../Components/color.dart';
 
@@ -34,19 +35,23 @@ class _BasicInfoState extends State<BasicInfo> {
           index = widget.currentIndex;
           index++;
           widget.onInputChanged(index);
-        } else if (state is FarmFailure) {
+          context.read<FarmBloc>().add(ViewFarmDetails(
+            farmId: CacheHelper.getData(key: 'farmId'),
+          ));
+        } else if (state is FarmInfoFailure) {
           if (state.errMessage == 'Conflict') {
             description = state.errors[0]['description'];
-          } ScaffoldMessenger.of(context).clearSnackBars();
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errMessage),
-                ),
-              );
-            });
-          context.read<FarmBloc>().createFarmFormKey.currentState!.validate();
+          }
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
         }
+        context.read<FarmBloc>().createFarmFormKey.currentState!.validate();
       },
       builder: (context, state) {
         return Container(
@@ -92,17 +97,19 @@ class _BasicInfoState extends State<BasicInfo> {
                               const BorderSide(color: errorColor, width: 3.0),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: const BorderSide(
-                                      color: errorColor, width: 3.0),
-                                ),
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: errorColor, width: 3.0),
+                        ),
                       ),
                       autocorrect: false,
                       textCapitalization: TextCapitalization.none,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Farm Name";
-                        }else if(description.isNotEmpty){
+                        } else if (value.length < 3 || value.length > 32) {
+                          return "Name must be between 3 and 100 characters.";
+                        } else if (description.isNotEmpty) {
                           return description;
                         }
                         return null;
@@ -144,10 +151,10 @@ class _BasicInfoState extends State<BasicInfo> {
                               const BorderSide(color: errorColor, width: 3.0),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: const BorderSide(
-                                      color: errorColor, width: 3.0),
-                                ),
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: errorColor, width: 3.0),
+                        ),
                       ),
                       autocorrect: false,
                       textCapitalization: TextCapitalization.none,
@@ -195,17 +202,20 @@ class _BasicInfoState extends State<BasicInfo> {
                               const BorderSide(color: errorColor, width: 3.0),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: const BorderSide(
-                                      color: errorColor, width: 3.0),
-                                ),
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: errorColor, width: 3.0),
+                        ),
                       ),
                       autocorrect: false,
                       textCapitalization: TextCapitalization.none,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Farm Location";
+                        } else if (value.length < 3 || value.length > 32) {
+                          return "Location must be between 3 and 100 characters. You entered 2 characters.";
                         }
+
                         return null;
                       },
                     ),

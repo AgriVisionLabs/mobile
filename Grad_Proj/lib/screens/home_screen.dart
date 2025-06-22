@@ -1,6 +1,8 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 // ignore_for_file: prefer_const_constructors, avoid_print
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/user_cubit.dart';
@@ -13,7 +15,6 @@ import 'farms_screen.dart';
 import 'scan_screen.dart';
 import 'tasks_screen.dart';
 import 'more_screen.dart';
-import '../models/farms.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
@@ -27,19 +28,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int indexing = 0;
   late int initialIndex;
-  final List farmsList = [
-    Farm(name: "Green farm", location: "SpringField, IL"),
-    Farm(name: "blue farm", location: "Texas, TX"),
-    Farm(name: "white farm", location: "Egypt, CA"),
-  ];
+  
 
   // Define screens
   final List<Widget> _screens = [];
@@ -52,27 +45,46 @@ class _HomeScreenState extends State<HomeScreen> {
     // Initialize the screens list AFTER creating the farm list
     _screens.addAll([
       DashBoard(), // Dashboard Screen
-      FarmsScreen(farms: farmsList), // Pass farms list to FarmsScreen
+      FarmsScreen(), // Pass farms list to FarmsScreen
     ]);
+    _startTimer();
     super.initState();
   }
 
   // String? selectedValue;
   final List<Widget> screens = [
     const DashBoard(),
-    const FarmsScreen(
-      farms: [],
-    ),
+    const FarmsScreen(),
     const ScanScreen(),
     const TaskScreen(),
     const MoreScreen(),
-    const FieldsScreen(field: [])
+    const FieldsScreen()
   ];
 
   void _onItemTapped(int index) {
     setState(() {
       indexing = index;
     });
+  }
+
+   Timer? _timer;
+
+
+  void _startTimer() {
+     // Start a timer that will call function to refresh token after 30 minutes
+    _timer = Timer.periodic(const Duration(minutes:30), (timer) {
+      setState(() {     
+        context.read<UserCubit>().refreshToken();
+       });
+    });
+  }
+
+  
+  @override
+  void dispose() {
+    _timer?.cancel();
+    print("===========stop===========");
+    super.dispose();
   }
 
   // Future<void> _login() async {
@@ -121,6 +133,12 @@ class _HomeScreenState extends State<HomeScreen> {
               GestureDetector(
                 onTap: () {
                   print("call acc");
+                  context.read<UserCubit>().logout();
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    (Route<dynamic> route) =>
+                        false, // This will remove all previous routes
+                  );
                 },
                 child: Image.asset('assets/images/image 6.png',
                     width: 30, height: 30),
@@ -149,13 +167,15 @@ class _HomeScreenState extends State<HomeScreen> {
               label: 'Dashboard',
             ),
             BottomNavigationBarItem(
-              icon: Image.asset('assets/images/farms.png',
+              icon: 
+              Image.asset('assets/images/farms.png',
                   height: 30,
                   width: 30,
-                  color: indexing == 1 || indexing == 5
+                  color: indexing == 1 
                       ? Colors.green[900]
                       : Colors.black),
               label: 'Farms',
+              
             ),
             BottomNavigationBarItem(
               icon: Image.asset('assets/images/Scan.png',
