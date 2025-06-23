@@ -3,6 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
@@ -59,6 +60,9 @@ void main() async{
       ),
       BlocProvider<FieldBloc>(
         create: (BuildContext context) => FieldBloc(DioConsumer(dio : Dio())),
+      ),
+      BlocProvider<ControlBloc>(
+        create: (BuildContext context) => ControlBloc(DioConsumer(dio : Dio())),
       )
 ],
       child: const MyApp(),
@@ -92,7 +96,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(initialIndex: 6,)
+      home: SplashScreen()
+      // LoginScreen()
+      // HomeScreen(initialIndex: 4,)
     );
   }
 }

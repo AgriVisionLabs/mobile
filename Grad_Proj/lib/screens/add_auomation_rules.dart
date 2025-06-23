@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
-import 'package:grd_proj/screens/irrigation.dart';
 import 'package:grd_proj/screens/rules.dart';
 import 'package:grd_proj/screens/select_field.dart';
 import '../Components/color.dart';
@@ -35,12 +34,11 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
           children: [
             // Fixed Top Section
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(5.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   pageTop(),
-                  const SizedBox(height: 40),
                   buildDots(),
                 ],
               ),
@@ -50,16 +48,16 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
               child: SingleChildScrollView(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                       SelectField(farmId: widget.farmId , onInputChanged: _onInputChanged,
+                       SelectField(farmId: "ccf1416e-d0cf-4d07-9a91-856aa85e5bb6" , onInputChanged: _onInputChanged,
                           currentIndex: currentIndex)
                     else if (currentIndex == 1)
                       Rules(
                          fieldId: CacheHelper.getData(key: 'fieldId'),
-                          farmId: widget.farmId,
+                          farmId: "ccf1416e-d0cf-4d07-9a91-856aa85e5bb6",
                           onInputChanged: _onInputChanged,
                           currentIndex: currentIndex,
                           form: false,),
@@ -78,10 +76,10 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
     return Align(
       alignment: Alignment.topLeft,
       child: SizedBox(
-        width: 390,
+        width: 414,
         height: 95,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -104,7 +102,7 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                       size: 24,
                     )),
                 const Spacer(),
-                const Text('Add New Irrigation Unit',
+                const Text('Add Or Edit Automation Rule',
                     style: TextStyle(
                       fontFamily: 'Manrope',
                       color: primaryColor,
@@ -121,16 +119,7 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Text('Add new irrigation unit to a field',
-                style: TextStyle(
-                  fontFamily: 'Manrope',
-                  color: Colors.black,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                )),
+            
           ],
         ),
       ),
@@ -158,7 +147,7 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
 
   Widget buildDots() {
     return SizedBox(
-        width: 317,
+        width: 330,
         height: 60,
         child: ListView.builder(
             itemCount: 2,
@@ -171,7 +160,7 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                     children: [
                       buildIndicatorItem(index),
                       const SizedBox(height: 7),
-                      Text(index == 0 ? 'select field' : 'Add irrigation',
+                      Text(index == 0 ? 'select field' : 'Automation Rule',
                           style: const TextStyle(
                               fontFamily: 'Manrope',
                               color: Colors.black,

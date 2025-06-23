@@ -36,6 +36,7 @@ class ApiKey{
   static String otp = 'Otp';
   static String newPassword = 'newPassword';
   static String farmId = 'farmId';
+  static String fieldId = 'fieldId';
   static String name = 'name';
   static String area = 'area';
   static String location = 'location';
@@ -56,4 +57,7 @@ class ApiKey{
   static String startTime = 'startTime';
   static String endTime = 'endTime';
   static String activeDays = 'activeDays';
+  static String automationRuleId = 'automationRuleId';
+  static String requesterId = 'requesterId';
+  static String isEnabled = 'isEnabled';
 }

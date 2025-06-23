@@ -47,7 +47,8 @@ class _IrrigationState extends State<Irrigation> {
   @override
   Widget build(BuildContext context) {
     if (widget.form == true) {
-      if (context.read<FieldBloc>().irrigationUnitName.text.isNotEmpty&&context.read<FieldBloc>().nextStep1.text.isNotEmpty) {
+      if (context.read<FieldBloc>().irrigationUnitName.text.isNotEmpty &&
+          context.read<FieldBloc>().nextStep1.text.isNotEmpty) {
         addOne = false;
         myIrrigationList.add({
           'name': context.read<FieldBloc>().irrigationUnitName.text,
@@ -86,6 +87,9 @@ class _IrrigationState extends State<Irrigation> {
             index = widget.currentIndex;
             index++;
             widget.onInputChanged(index);
+            context.read<FieldBloc>().add(OpenFarmIrrigationUnitsEvent(
+                  farmId: widget.farmId,
+                ));
             Navigator.pop(context);
           } else {
             addOne = !addOne;
@@ -278,7 +282,8 @@ class _IrrigationState extends State<Irrigation> {
                                         AddIrrigationUnitEvent(
                                             farmId: widget.farmId,
                                             fieldId: widget.fieldId));
-                                  context.read<FieldBloc>().nextStep1.text = 'moved';
+                                    context.read<FieldBloc>().nextStep1.text =
+                                        'moved';
                                   } else {
                                     print('Please Enter requested info');
                                   }
@@ -356,12 +361,6 @@ class _IrrigationState extends State<Irrigation> {
                                         AddIrrigationUnitEvent(
                                             farmId: widget.farmId,
                                             fieldId: widget.fieldId));
-
-                                    context
-                                        .read<FieldBloc>()
-                                        .add(OpenFarmIrrigationUnitsEvent(
-                                          farmId: widget.farmId,
-                                        ));
                                   },
                                   child: const SizedBox(
                                     width: 60,

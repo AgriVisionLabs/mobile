@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/models/farm_model.dart';
+import 'package:grd_proj/screens/add_auomation_rules.dart';
 import 'package:grd_proj/screens/add_irrigation_unit.dart';
+import 'package:grd_proj/screens/automation_rules.dart';
 import 'package:grd_proj/screens/filter_screen.dart';
 import 'package:grd_proj/screens/irrigation_devices.dart';
 import '../Components/color.dart';
@@ -257,140 +259,7 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                             : IrrigationDevices(
                                 farmName: selectedFarmName!,
                                 farmId: selectedFarmId!)),
-                    // SizedBox(height: 24),
-                    // Container(
-                    //       decoration: BoxDecoration(
-                    //         color: Colors.white,
-                    //         borderRadius: BorderRadius.circular(25),
-                    //         border: Border.all(color: Color(0xff0D121C).withOpacity(0.25),width: 1),
-                    //         boxShadow: const [BoxShadow(
-                    //           color: Color.fromARGB(50, 0, 0, 0),
-                    //           blurRadius: 15,
-                    //           spreadRadius: 0.7,
-                    //           offset: Offset(0, 2.25)
-                    //         )]
-                    //       ),
-                    //     child: Container(
-                    //         padding: const EdgeInsets.all(24),
-                    //         width: 400,
-                    //         height: 255,
-                    //         decoration: BoxDecoration(
-                    //           color: Colors.white,
-                    //           borderRadius: BorderRadius.circular(25),
-                    //         ),
-                    //         child: Column(
-                    //           children: [
-                    //             Column(
-                    //               crossAxisAlignment: CrossAxisAlignment.start,
-                    //               children: [
-                    //                 Row(
-                    //                   children: [
-                    //                     Text('Tech Fram',
-                    //                         style: TextStyle(
-                    //                           color: Color(0xff1E6930),
-                    //                           fontSize: 20,
-                    //                           fontWeight: FontWeight.bold,
-                    //                           fontFamily: "manrope",
-                    //                         )),
-                    //                         Spacer(),
-                    //                         Container(
-                    //                       width: 77,
-                    //                       height: 30,
-                    //                       decoration: BoxDecoration(
-                    //                           color: Colors.white,
-                    //                           borderRadius: BorderRadius.circular(25),
-                    //                           border: Border.all(
-                    //                               color: borderColor, width: 1)),
-                    //                       child: Center(
-                    //                         child: Text(
-                    //                           active ? "Active": "Inactive",
-                    //                           style: TextStyle(
-                    //                               color: Colors.black,
-                    //                               fontSize: 16,
-                    //                               fontWeight: FontWeight.w400),
-                    //                         ),
-                    //                       ),
-                    //                     ),
-                    //                   ],
-                    //                 ),
-                    //                 SizedBox(height: 16),
-                    //                 Row(
-                    //                   children: [
-                    //                     Image.asset(
-                    //                       'assets/images/location.png',
-                    //                     ),
-                    //                     SizedBox(width: 8),
-                    //                     Text("Field 2",
-                    //                         style: TextStyle(
-                    //                           color: Color(0xff616161),
-                    //                           fontSize: 18,
-                    //                           fontWeight: FontWeight.w500,
-                    //                           fontFamily: "manrope",
-                    //                         )),
-                    //                   ],
-                    //                 ),
-                    //                 SizedBox(height: 16),
-                    //                 Row(
-                    //                   children: [
-                    //                     Image.asset(
-                    //                       'assets/images/ha4tag.png',
-                    //                       width: 24,
-                    //                       height: 24,
-                    //                     ),
-                    //                     SizedBox(width: 8),
-                    //                     Text("SN002",
-                    //                         style: TextStyle(
-                    //                           color: Color(0xff0D121C),
-                    //                           fontSize: 18,
-                    //                           fontWeight: FontWeight.w500,
-                    //                           fontFamily: "manrope",
-                    //                         )),
-                    //                   ],
-                    //                 ),
-                    //                 SizedBox(height: 10),
-                    //                 Divider(
-                    //                   color: Color(0xff0D121C).withOpacity(0.25),
-                    //                   thickness: 1,
-                    //                 ),
-                    //                 SizedBox(height: 10),
-                    //                 Row(
-                    //                   children: [
-                    //                       GestureDetector(
-                    //                       onTap: () {
-                    //                         print("edit it");
-                    //                       },
-                    //                       child: Image.asset('assets/images/edit.png',
-                    //                           width: 30, height: 30),
-                    //                     ),
-                    //                     SizedBox(width: 20),
-                    //                     GestureDetector(
-                    //                       onTap: () {
-                    //                         print("delete it");
-                    //                       },
-                    //                       child: Image.asset('assets/images/delete.png',
-                    //                           width: 30, height: 30),
-                    //                     ),
-                    //                     Spacer(),
-                    //                     Switch(
-                    //                         value: active,
-                    //                         onChanged: (value) {
-                    //                           setState(() {
-                    //                             active = value;
-                    //                           });
-                    //                         },
-                    //                         activeColor: Colors.white,
-                    //                         activeTrackColor: primaryColor,
-                    //                         inactiveTrackColor: Colors.grey[300],
-                    //                         inactiveThumbColor: Colors.white,
-                    //                         ),
-                    //                   ],
-                    //                 )
-                    //               ],
-                    //             )
-                    //           ],
-                    //         ),
-                    //         ),
-                    //         ),
+                    
                     SizedBox(height: 44),
                     Row(
                       children: [
@@ -431,6 +300,13 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                     ),
                                   );
                                 });
+                              }else{
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AddAuomationRules(
+                                          farmId: selectedFarmId!)),
+                                );
                               }
                             },
                           ),
@@ -441,139 +317,19 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
 
                     SizedBox(height: 30),
                     Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                          border: Border.all(
-                              color: Color(0xff0D121C).withOpacity(0.25),
-                              width: 1),
-                          boxShadow: const [
-                            BoxShadow(
-                                color: Color.fromARGB(50, 0, 0, 0),
-                                blurRadius: 15,
-                                spreadRadius: 0.7,
-                                offset: Offset(0, 2.25))
-                          ]),
-                      child: Container(
-                        padding: const EdgeInsets.all(24),
-                        width: 400,
-                        height: 275,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Column(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Morning Moisture Check',
+                        child: selectedFarmId == null
+                            ? Center(
+                                child: Text('Please Choose Farm',
                                     style: TextStyle(
                                       color: Color(0xff1E6930),
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: "manrope",
                                     )),
-                                SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/alert.png',
-                                      height: 24,
-                                      width: 24,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text("Type : Threshold",
-                                        style: TextStyle(
-                                          color: Color(0xff616161),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "manrope",
-                                        )),
-                                  ],
-                                ),
-                                SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/location.png',
-                                      height: 24,
-                                      width: 24,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text("Field : Field 1",
-                                        style: TextStyle(
-                                          color: Color(0xff616161),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "manrope",
-                                        )),
-                                  ],
-                                ),
-                                SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/Performance_indicators.png',
-                                      height: 24,
-                                      width: 24,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text("Threshold : 50-80 %",
-                                        style: TextStyle(
-                                          color: Color(0xff616161),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "manrope",
-                                        )),
-                                  ],
-                                ),
-                                Divider(
-                                  color: Color(0xff0D121C).withOpacity(0.25),
-                                  thickness: 1,
-                                ),
-                                Row(
-                                  children: [
-                                    Switch(
-                                      value: isSwitched,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          isSwitched = value;
-                                        });
-                                      },
-                                      activeColor: Colors.white,
-                                      activeTrackColor: primaryColor,
-                                      inactiveTrackColor: Colors.grey[300],
-                                      inactiveThumbColor: Colors.white,
-                                    ),
-                                    Spacer(),
-                                    GestureDetector(
-                                      onTap: () {
-                                        print("edit it");
-                                      },
-                                      child: Image.asset(
-                                          'assets/images/edit.png',
-                                          width: 30,
-                                          height: 30),
-                                    ),
-                                    SizedBox(width: 20),
-                                    GestureDetector(
-                                      onTap: () {
-                                        print("delete it");
-                                      },
-                                      child: Image.asset(
-                                          'assets/images/delete.png',
-                                          width: 30,
-                                          height: 30),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                              )
+                            : AutomationRules(
+                                farmName: selectedFarmName!,
+                                farmId: selectedFarmId!)),
                     SizedBox(height: 21),
                   ],
                 ),

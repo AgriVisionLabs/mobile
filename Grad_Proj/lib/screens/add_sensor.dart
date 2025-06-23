@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
-import 'package:grd_proj/screens/irrigation.dart';
 import 'package:grd_proj/screens/select_field.dart';
 import 'package:grd_proj/screens/sensor.dart';
 import '../Components/color.dart';

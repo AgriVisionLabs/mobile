@@ -41,8 +41,7 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                     (context, index) {
                       final item = state.devices[index];
                       return Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 20, horizontal: 15),
+                        margin: const EdgeInsets.only(bottom: 20),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(25),
@@ -60,69 +59,84 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Text(widget.farmName,
-                                    style: const TextStyle(
-                                      color: Color(0xff1E6930),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "manrope",
-                                    )),
-                                const Spacer(),
-                                Container(
-                                  width: 77,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(25),
-                                      border: Border.all(
-                                          color: borderColor, width: 1)),
-                                  child: Center(
-                                    child: Text(
-                                      item.status == 2 ? "Active" : "Inactive",
+                            SizedBox(height: 24,),
+                            Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 24),
+                              child: Row(
+                                children: [
+                                  Text(widget.farmName,
                                       style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400),
+                                        color: Color(0xff1E6930),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "manrope",
+                                      )),
+                                  const Spacer(),
+                                  Container(
+                                    width: 77,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(25),
+                                        border: Border.all(
+                                            color: borderColor, width: 1)),
+                                    child: Center(
+                                      child: Text(
+                                        item.status == 2
+                                            ? "Active"
+                                            : "Inactive",
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'assets/images/location.png',
-                                ),
-                                const SizedBox(width: 8),
-                                Text(item.fieldName,
-                                    style: TextStyle(
-                                      color: Color(0xff616161),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "manrope",
-                                    )),
-                              ],
+                            Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 24),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/location.png',
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(item.fieldName,
+                                      style: TextStyle(
+                                        color: Color(0xff616161),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "manrope",
+                                      )),
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'assets/images/ha4tag.png',
-                                  width: 24,
-                                  height: 24,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(item.name,
-                                    style: TextStyle(
-                                      color: Color(0xff0D121C),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "manrope",
-                                    )),
-                              ],
+                            Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 24),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/ha4tag.png',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(item.name,
+                                      style: TextStyle(
+                                        color: Color(0xff0D121C),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "manrope",
+                                      )),
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 10),
                             Divider(
@@ -130,51 +144,58 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                               thickness: 1,
                             ),
                             const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    print("edit it");
-                                  },
-                                  child: Image.asset('assets/images/edit.png',
-                                      width: 30, height: 30),
-                                ),
-                                const SizedBox(width: 20),
-                                GestureDetector(
-                                  onTap: () {
-                                    context
-                                        .read<FieldBloc>()
-                                        .add(DeleteIrrigationUnitEvent(
-                                          farmId: item.farmId,
-                                          fieldId: item.fieldId,
-                                        ));
-                                    context.read<FieldBloc>().add(
-                                        OpenFarmIrrigationUnitsEvent(
-                                            farmId: item.farmId));
-                                  },
-                                  child: Image.asset('assets/images/delete.png',
-                                      width: 30, height: 30),
-                                ),
-                                const Spacer(),
-                                Switch(
-                                  value: item.status == 2,
-                                  onChanged: (value) {
-                                    context.read<FieldBloc>().add(
-                                        IrrigationUnitsEditEvent(
-                                            fieldId: item.fieldId,
+                            Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 24),
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      print("edit it");
+                                    },
+                                    child: Image.asset('assets/images/edit.png',
+                                        width: 30, height: 30),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  GestureDetector(
+                                    onTap: () {
+                                      context
+                                          .read<FieldBloc>()
+                                          .add(DeleteIrrigationUnitEvent(
                                             farmId: item.farmId,
-                                            name: item.name,
-                                            status: item.status == 2 ? 1 : 2,
-                                            newFieldId: item.fieldId));
-                                    context.read<FieldBloc>().add(OpenFarmIrrigationUnitsEvent(farmId: item.farmId));
-                                  },
-                                  activeColor: Colors.white,
-                                  activeTrackColor: primaryColor,
-                                  inactiveTrackColor: Colors.grey[300],
-                                  inactiveThumbColor: Colors.white,
-                                ),
-                              ],
-                            )
+                                            fieldId: item.fieldId,
+                                          ));
+                                      context.read<FieldBloc>().add(
+                                          OpenFarmIrrigationUnitsEvent(
+                                              farmId: item.farmId));
+                                    },
+                                    child: Image.asset('assets/images/delete.png',
+                                        width: 30, height: 30),
+                                  ),
+                                  const Spacer(),
+                                  Switch(
+                                    value: item.status == 2,
+                                    onChanged: (value) {
+                                      context.read<FieldBloc>().add(
+                                          IrrigationUnitsEditEvent(
+                                              fieldId: item.fieldId,
+                                              farmId: item.farmId,
+                                              name: item.name,
+                                              status: item.status == 2 ? 1 : 2,
+                                              newFieldId: item.fieldId));
+                                      context.read<FieldBloc>().add(
+                                          OpenFarmIrrigationUnitsEvent(
+                                              farmId: item.farmId));
+                                    },
+                                    activeColor: Colors.white,
+                                    activeTrackColor: primaryColor,
+                                    inactiveTrackColor: Colors.grey[300],
+                                    inactiveThumbColor: Colors.white,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 16),
                           ],
                         ),
                       );

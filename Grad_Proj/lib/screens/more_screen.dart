@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
-import 'package:grd_proj/screens/irrigation_control.dart';
+import 'package:grd_proj/screens/home_screen.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -17,7 +17,7 @@ Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       
-      body: Padding(padding: const EdgeInsets.symmetric(horizontal: 16),
+      body: Padding(padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 80),
       child:Column( 
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +37,7 @@ Widget build(BuildContext context) {
         GestureDetector(
             onTap: () {
               Navigator.push(context,
-              MaterialPageRoute(builder: (context) => IrrigationConrtol()));
+              MaterialPageRoute(builder: (context) => HomeScreen(initialIndex: 6,)));
             },
             child : Container(
               width: 180,
@@ -48,7 +48,7 @@ Widget build(BuildContext context) {
                 border: Border.all(color: const Color.fromARGB(135, 159, 159, 159), width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
+                    color: const Color(0x3E9E9E9E),
                     spreadRadius: 2,
                     blurRadius: 5,
                     offset: Offset(0, 3), // changes position of shadow
@@ -85,7 +85,7 @@ Widget build(BuildContext context) {
                 border: Border.all(color: const Color.fromARGB(135, 159, 159, 159), width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
+                    color: const Color(0x3E9E9E9E),
                     spreadRadius: 2,
                     blurRadius: 5,
                     offset: Offset(0, 3), // changes position of shadow
@@ -116,7 +116,10 @@ Widget build(BuildContext context) {
         SizedBox(height: 22),
         Row( children: [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+             Navigator.push(context,
+              MaterialPageRoute(builder: (context) => HomeScreen(initialIndex: 6,)));
+          },
           child : Container(
             width: 180,
             height: 125,
@@ -126,7 +129,7 @@ Widget build(BuildContext context) {
               border: Border.all(color: const Color.fromARGB(135, 159, 159, 159), width: 2),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: const Color(0x3E9E9E9E),
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: Offset(0, 3), // changes position of shadow
@@ -163,7 +166,7 @@ Widget build(BuildContext context) {
               border: Border.all(color: const Color.fromARGB(135, 159, 159, 159), width: 2),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: const Color(0x3E9E9E9E),
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: Offset(0, 3), // changes position of shadow
@@ -203,7 +206,7 @@ Widget build(BuildContext context) {
               border: Border.all(color: const Color.fromARGB(135, 159, 159, 159), width: 2),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: const Color(0x3E9E9E9E),
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: Offset(0, 3), // changes position of shadow
