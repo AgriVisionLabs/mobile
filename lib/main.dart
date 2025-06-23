@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/core/api/dio_consumer.dart';
+import 'package:grd_proj/screens/disease_detection.dart';
 import 'package:grd_proj/screens/edit_farm.dart';
 import 'package:grd_proj/screens/irrigation_conrtol.dart';
 import 'package:grd_proj/screens/fields_screen.dart';
@@ -46,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Verification(),
+      home: HomeScreen(),
     );
   }
 }

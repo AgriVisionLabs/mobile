@@ -27,7 +27,6 @@ class _ResendButtonState extends State<ResendButton> {
       setState(() {
         _seconds--;
         if (_seconds == 00) {
-// هنا تحط كود إرسال التفعيل الجديد
           _canResend = true;
           timer.cancel();
         }

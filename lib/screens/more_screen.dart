@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/screens/disease_detection.dart';
 import 'package:grd_proj/screens/irrigation_conrtol.dart';
 
 class MoreScreen extends StatefulWidget {
@@ -74,7 +75,10 @@ Widget build(BuildContext context) {
           ),
         SizedBox(width:32),
         GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context,
+              MaterialPageRoute(builder: (context) => DiseaseDetection()));
+            },
             child : Container(
               width: 192,
               height: 125,
