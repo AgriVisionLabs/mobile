@@ -98,15 +98,64 @@ class DeleteIrrigationUnitEvent extends FieldEvent {
 }
 
 
-class AddSensorUnitEven extends FieldEvent {
+class AddSensorUnitEvent extends FieldEvent {
   final String fieldId;
   final String farmId;
-  AddSensorUnitEven({
+  AddSensorUnitEvent({
     required this.fieldId,
     required this.farmId,
   });
   
 }
+
+class OpenFarmSensorUnitsEvent extends FieldEvent {
+  final String farmId;
+  OpenFarmSensorUnitsEvent({
+    required this.farmId,
+  });
+}
+
+class OpenFieldSensorUnitsEvent extends FieldEvent {
+  final String fieldId;
+  final String farmId;
+  final String sensorId;
+  OpenFieldSensorUnitsEvent({
+    required this.fieldId,
+    required this.farmId,
+    required this.sensorId,
+  });
+}
+
+class SensorUnitEditEvent extends FieldEvent {
+  final String fieldId;
+  final String farmId;
+  final String name;
+  final String newFieldId;
+  final int status;
+  final String sensorId;
+  SensorUnitEditEvent({
+    required this.fieldId,
+    required this.farmId,
+    required this.name,
+    required this.newFieldId,
+    required this.status,
+    required this.sensorId,
+  });
+  
+}
+
+class DeleteSensorUnitEvent extends FieldEvent {
+  final String farmId;
+  final String fieldId;
+  final String sensorId;
+  DeleteSensorUnitEvent({
+    required this.farmId,
+    required this.fieldId,
+    required this.sensorId,
+  });
+  
+}
+
 class AddAutomationRulesEvent extends FieldEvent {
   final String fieldId;
   final String farmId;

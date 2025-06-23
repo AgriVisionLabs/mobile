@@ -70,7 +70,8 @@ class _NewFeildState extends State<NewFeild> {
                           onInputChanged: _onInputChanged,
                           currentIndex: currentIndex,
                           farmId: widget.farmId,
-                          fieldId: CacheHelper.getData(key: 'fieldId'))
+                          fieldId: CacheHelper.getData(key: 'fieldId',),
+                          form: true,)
                     else
                       ReviewField(
                         name: CacheHelper.getData(key: 'farmname'),

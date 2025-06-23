@@ -75,16 +75,17 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                         Spacer(),
                         GestureDetector(
                           onTap: () {
-                            if (selectedFarmId == null ||
-                                selectedFarmId!.isEmpty) {
-                              ScaffoldMessenger.of(context).clearSnackBars();
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Please Choose Farm'),
-                                  ),
-                                );
-                              });
+                            if (selectedFarmId == null ) {
+                              print("===================Forbidden=======================");
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Please choose farm first"),
+                                    ),
+                                  );
+                                });
                             } else {
                               showDialog(
                                   context: context,
@@ -215,12 +216,25 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                               size: 24,
                             ),
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AddIrrigationUnit(
-                                        farmId: selectedFarmId!)),
-                              );
+                              if (selectedFarmId != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AddIrrigationUnit(
+                                          farmId: selectedFarmId!)),
+                                );
+                              } else {
+                                print("===================Forbidden=======================");
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Please choose farm first"),
+                                    ),
+                                  );
+                                });
+                              }
                             },
                           ),
                         ),
@@ -406,6 +420,18 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                             ),
                             onPressed: () {
                               // Add your onPressed code here!
+                              if(selectedFarmId == null){
+                                print("===================Forbidden=======================");
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Please choose farm first"),
+                                    ),
+                                  );
+                                });
+                              }
                             },
                           ),
                         ),

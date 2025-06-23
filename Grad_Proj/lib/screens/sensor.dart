@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
+import 'package:grd_proj/models/sensor_model.dart';
 import 'package:grd_proj/screens/qr_scan.dart';
 
 import '../Components/color.dart';
@@ -13,12 +13,14 @@ class Sensor extends StatefulWidget {
   final int currentIndex;
   final String fieldId;
   final String farmId;
+  final bool form;
   const Sensor(
       {super.key,
       required this.onInputChanged,
       required this.currentIndex,
       required this.farmId,
-      required this.fieldId});
+      required this.fieldId,
+      required this.form});
 
   @override
   State<Sensor> createState() => _SensorState();
@@ -30,9 +32,10 @@ class _SensorState extends State<Sensor> {
   String? sensorUnitName;
   String serialNum = ' ';
   List field = [];
+  bool addOne = true;
   int index = 0;
-  bool add1 = true;
-
+  String description = '';
+  SensorDevices ? devices;
   void _onInputChanged(String serialNumScaned) {
     setState(() {
       print(
@@ -44,12 +47,62 @@ class _SensorState extends State<Sensor> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FarmBloc, FarmState>(
+    if (widget.form == true) {
+      if (context.read<FieldBloc>().sensorSerialNum.text.isNotEmpty&&context.read<FieldBloc>().nextStep2.text.isNotEmpty) {
+        addOne = false;
+        mySensorList.add({
+          'name': context.read<FieldBloc>().sensorUnitName.text,
+          'number': context.read<FieldBloc>().sensorSerialNum.text,
+        });
+      }
+    }
+    return BlocConsumer<FieldBloc, FieldState>(
+      listener: (context, state) {
+        if (state is AddSensorUnitFailure) {
+          context
+              .read<FieldBloc>()
+              .addSensorUnitFormKey
+              .currentState!
+              .validate();
+          if (state.errMessage == 'Conflict' ||
+              state.errMessage == 'Not Found') {
+            description = state.errors[0]['description'];
+          }
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
+        }
+        if (state is AddSensorUnitSuccess) {
+          context
+              .read<FieldBloc>()
+              .addSensorUnitFormKey
+              .currentState!
+              .validate();
+          if (widget.form == false) {
+            index = widget.currentIndex;
+            index++;
+            widget.onInputChanged(index);
+            Navigator.pop(context);
+          } else {
+            devices = state.devices;
+            addOne = !addOne;
+            mySensorList.add({
+              'name': context.read<FieldBloc>().sensorUnitName.text,
+              'number': context.read<FieldBloc>().sensorSerialNum.text,
+            });
+          }
+        }
+      },
       builder: (context, state) {
         return Container(
           color: Colors.white,
           width: 380,
-          height: 680,
+          height: widget.form ? 670 : 630,
           child: Form(
               key: context.read<FieldBloc>().addSensorUnitFormKey,
               child: Column(
@@ -98,6 +151,8 @@ class _SensorState extends State<Sensor> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Sensor Unit Name";
+                        } else if (value.length < 3 || value.length > 100) {
+                          return "must be between 30 and 100 characters. You entered 2 characters.";
                         }
                         return null;
                       },
@@ -117,8 +172,7 @@ class _SensorState extends State<Sensor> {
                           fontSize: 18,
                           fontWeight: FontWeight.w400,
                         )),
-                    const SizedBox(height: 10),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: 380,
                       height: 60,
@@ -128,7 +182,8 @@ class _SensorState extends State<Sensor> {
                             width: 297,
                             height: 60,
                             child: TextFormField(
-                              controller: context.read<FieldBloc>().sensorSerialNum,
+                              controller:
+                                  context.read<FieldBloc>().sensorSerialNum,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
@@ -161,6 +216,11 @@ class _SensorState extends State<Sensor> {
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "Please Enter Serial Number";
+                                } else if (description.isNotEmpty) {
+                                  return description;
+                                } else if (value.length < 10 ||
+                                    value.length > 25) {
+                                  return "must be between 10 and 25 characters. You entered 2 characters.";
                                 }
                                 return null;
                               },
@@ -205,53 +265,51 @@ class _SensorState extends State<Sensor> {
                     const SizedBox(
                       height: 24,
                     ),
-                    Container(
-                        height: 60,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: add1 ? primaryColor : borderColor,
-                        ),
-                        child: TextButton(
-                            onPressed: () {
-                              setState(() {
-                                if (add1 == true) {
-                                  mySensorList.add({
-                                    'name': sensorUnitName,
-                                    'number': serialNum,
-                                  });
-
-                                  print(mySensorList);
-
-                                  add1 = false;
-                                  context.read<FieldBloc>().add(AddSensorUnitEven(
-                                      farmId: widget.farmId,
-                                      fieldId: widget.fieldId));
-                                } else {
-                                  print('Please Enter requested info');
-                                }
-                              });
-                            },
-                            child: const SizedBox(
-                              width: 380,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(width: 3),
-                                  Icon(Icons.add,
-                                      color: Colors.white, size: 20),
-                                  Text(
-                                    'Add',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                    widget.form
+                        ? Container(
+                            height: 60,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 7),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: addOne ? primaryColor : borderColor,
+                            ),
+                            child: TextButton(
+                                onPressed: () {
+                                  
+                                    if (addOne == true) {
+                                      context.read<FieldBloc>().add(
+                                          AddSensorUnitEvent(
+                                              farmId: widget.farmId,
+                                              fieldId: widget.fieldId));
+                                    context.read<FieldBloc>().nextStep2.text = 'moved';
+                                    } else {
+                                      print('Please Enter requested info');
+                                    }
+                                
+                                },
+                                child: const SizedBox(
+                                  width: 380,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(width: 3),
+                                      Icon(Icons.add,
+                                          color: Colors.white, size: 20),
+                                      Text(
+                                        'Add',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ))),
+                                )))
+                        : const SizedBox(
+                            height: 0,
+                          ),
                     const SizedBox(
                       height: 10,
                     ),
@@ -271,30 +329,59 @@ class _SensorState extends State<Sensor> {
                             borderRadius: BorderRadius.circular(15),
                             color: primaryColor,
                           ),
-                          child: TextButton(
-                              onPressed: () {
-                                index = widget.currentIndex;
-                                index++;
-                                widget.onInputChanged(index);
-                              },
-                              child: const SizedBox(
-                                width: 70,
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Next',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                          child: widget.form
+                              ? TextButton(
+                                  onPressed: () {
+                                    index = widget.currentIndex;
+                                    index++;
+                                    widget.onInputChanged(index);
+                                  },
+                                  child: const SizedBox(
+                                    width: 70,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          'Next',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        SizedBox(width: 3),
+                                        Icon(Icons.arrow_forward_ios,
+                                            color: Colors.white, size: 20),
+                                      ],
                                     ),
-                                    SizedBox(width: 3),
-                                    Icon(Icons.arrow_forward_ios,
-                                        color: Colors.white, size: 20),
-                                  ],
-                                ),
-                              ))),
+                                  ))
+                              : TextButton(
+                                  onPressed: () {
+                                    context.read<FieldBloc>().add(
+                                        AddIrrigationUnitEvent(
+                                            farmId: widget.farmId,
+                                            fieldId: widget.fieldId));
+
+                                    context
+                                        .read<FieldBloc>()
+                                        .add(OpenFarmSensorUnitsEvent(
+                                          farmId: widget.farmId,
+                                        ));
+                                  },
+                                  child: const SizedBox(
+                                    width: 60,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          'Save',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ))),
                     )
                   ])),
         );
@@ -361,7 +448,13 @@ class _SensorState extends State<Sensor> {
                                   onPressed: () {
                                     setState(() {
                                       mySensorList.removeAt(index);
-                                      add1 = !add1;
+                                      mySensorList.removeAt(index);
+                                      context.read<FieldBloc>().add(
+                                          DeleteSensorUnitEvent(
+                                              farmId: widget.farmId,
+                                              fieldId: widget.fieldId,
+                                              sensorId: devices!.id));
+                                      addOne = !addOne;
                                     });
                                   },
                                   icon: const Icon(
@@ -371,7 +464,7 @@ class _SensorState extends State<Sensor> {
                                   )),
                             ),
                           ),
-                          
+
                           Text('${mySensorList[index]['number']}',
                               style: const TextStyle(
                                 fontFamily: 'Manrope',

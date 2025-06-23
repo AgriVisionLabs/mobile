@@ -15,7 +15,7 @@ abstract class ApiConsumer {
       bool isNotAuth = false
     }
   );
-  Future <dynamic> put(
+  Future <dynamic> patch(
     String path,{
       Object? data,
       ///query parameters
@@ -29,6 +29,14 @@ abstract class ApiConsumer {
       ///query parameters
       Map<String,dynamic>? queryParameters,
       bool isNotAuth = false
+    }
+  );
+  Future <dynamic> put(
+    String path,{
+      Object? data,
+      ///query parameters
+      Map<String,dynamic>? queryParameters,
+      bool isFormData = false
     }
   );
 }

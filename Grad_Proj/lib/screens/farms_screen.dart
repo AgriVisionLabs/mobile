@@ -86,7 +86,14 @@ class _FarmsScreen extends State<FarmsScreen> {
             );
           });
         }
-        return Text('data');
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: Center(
+            child: CircularProgressIndicator(
+              color: primaryColor,
+            ),
+          ),
+        );
       },
     );
   }
@@ -200,8 +207,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                     Text("Fields : ${farm.fieldsNo}",
                         style: TextStyle(fontSize: 18)),
                     Spacer(),
-                    Text("Area : ${farm.area}",
-                        style: TextStyle(fontSize: 18)),
+                    Text("Area : ${farm.area}", style: TextStyle(fontSize: 18)),
                   ],
                 ),
                 const SizedBox(height: 16),

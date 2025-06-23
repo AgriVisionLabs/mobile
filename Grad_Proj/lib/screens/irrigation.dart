@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
+import 'package:grd_proj/models/irrigation_model.dart';
 import 'package:grd_proj/screens/qr_scan.dart';
 
 import '../Components/color.dart';
@@ -33,6 +34,7 @@ class _IrrigationState extends State<Irrigation> {
   bool addOne = true;
   int index = 0;
   String description = '';
+  List<IrrigationDevice>? devices;
   void _onInputChanged(String serialNumScaned) {
     setState(() {
       print(
@@ -44,10 +46,27 @@ class _IrrigationState extends State<Irrigation> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.form == true) {
+      if (context.read<FieldBloc>().irrigationUnitName.text.isNotEmpty&&context.read<FieldBloc>().nextStep1.text.isNotEmpty) {
+        addOne = false;
+        myIrrigationList.add({
+          'name': context.read<FieldBloc>().irrigationUnitName.text,
+          'number': context.read<FieldBloc>().irrigationSerialNum.text,
+        });
+      }
+    }
     return BlocConsumer<FieldBloc, FieldState>(
       listener: (context, state) {
         if (state is AddIrrigationUnitFailure) {
-          description = state.errors[0]['description'];
+          context
+              .read<FieldBloc>()
+              .addIrrigationUnitFormKey
+              .currentState!
+              .validate();
+          if (state.errMessage == 'Conflict' ||
+              state.errMessage == 'Not Found') {
+            description = state.errors[0]['description'];
+          }
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -57,20 +76,31 @@ class _IrrigationState extends State<Irrigation> {
             );
           });
         }
-        if (state is FieldInfoSuccess) {
+        if (state is AddIrrigationUnitSuccess) {
+          context
+              .read<FieldBloc>()
+              .addIrrigationUnitFormKey
+              .currentState!
+              .validate();
           if (widget.form == false) {
             index = widget.currentIndex;
             index++;
             widget.onInputChanged(index);
+            Navigator.pop(context);
+          } else {
+            addOne = !addOne;
+            myIrrigationList.add({
+              'name': context.read<FieldBloc>().irrigationUnitName.text,
+              'number': context.read<FieldBloc>().irrigationSerialNum.text,
+            });
           }
         }
-        context.read<FieldBloc>().addIrrigationUnitFormKey.currentState!.validate();
       },
       builder: (context, state) {
         return Container(
           color: Colors.white,
           width: 380,
-          height: 700,
+          height: widget.form ? 670 : 630,
           child: Form(
               key: context.read<FieldBloc>().addIrrigationUnitFormKey,
               child: Column(
@@ -86,7 +116,7 @@ class _IrrigationState extends State<Irrigation> {
                         )),
                     const SizedBox(height: 10),
                     TextFormField(
-                      keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.name,
                       controller: context.read<FieldBloc>().irrigationUnitName,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
@@ -119,6 +149,8 @@ class _IrrigationState extends State<Irrigation> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Irrigation Unit Name";
+                        } else if (value.length < 3 || value.length > 100) {
+                          return "must be between 30 and 100 characters. You entered 2 characters.";
                         }
                         return null;
                       },
@@ -138,8 +170,7 @@ class _IrrigationState extends State<Irrigation> {
                           fontSize: 18,
                           fontWeight: FontWeight.w400,
                         )),
-                    const SizedBox(height: 10),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: 380,
                       height: 60,
@@ -147,11 +178,11 @@ class _IrrigationState extends State<Irrigation> {
                         children: [
                           SizedBox(
                             width: 297,
-                            height: 60,
+                            height: 70,
                             child: TextFormField(
                               controller:
                                   context.read<FieldBloc>().irrigationSerialNum,
-                              keyboardType: TextInputType.emailAddress,
+                              keyboardType: TextInputType.name,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 30, vertical: 17),
@@ -185,6 +216,9 @@ class _IrrigationState extends State<Irrigation> {
                                   return "Please Enter Serial Number";
                                 } else if (description.isNotEmpty) {
                                   return description;
+                                } else if (value.length < 10 ||
+                                    value.length > 25) {
+                                  return "must be between 10 and 25 characters. You entered 2 characters.";
                                 }
                                 return null;
                               },
@@ -240,15 +274,11 @@ class _IrrigationState extends State<Irrigation> {
                             child: TextButton(
                                 onPressed: () {
                                   if (addOne) {
-                                    addOne = !addOne;
-                                    myIrrigationList.add({
-                                      'name': irrigationUnitName,
-                                      'number': serialNum,
-                                    });
                                     context.read<FieldBloc>().add(
                                         AddIrrigationUnitEvent(
                                             farmId: widget.farmId,
                                             fieldId: widget.fieldId));
+                                  context.read<FieldBloc>().nextStep1.text = 'moved';
                                   } else {
                                     print('Please Enter requested info');
                                   }
@@ -284,6 +314,7 @@ class _IrrigationState extends State<Irrigation> {
                             height: 1,
                           ),
                     const Spacer(),
+
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Container(
@@ -325,9 +356,15 @@ class _IrrigationState extends State<Irrigation> {
                                         AddIrrigationUnitEvent(
                                             farmId: widget.farmId,
                                             fieldId: widget.fieldId));
+
+                                    context
+                                        .read<FieldBloc>()
+                                        .add(OpenFarmIrrigationUnitsEvent(
+                                          farmId: widget.farmId,
+                                        ));
                                   },
                                   child: const SizedBox(
-                                    width: 70,
+                                    width: 60,
                                     child: Row(
                                       children: [
                                         Text(
@@ -338,9 +375,6 @@ class _IrrigationState extends State<Irrigation> {
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                        SizedBox(width: 3),
-                                        Icon(Icons.arrow_forward_ios,
-                                            color: Colors.white, size: 20),
                                       ],
                                     ),
                                   ))),
@@ -412,6 +446,10 @@ class _IrrigationState extends State<Irrigation> {
                                     onPressed: () {
                                       setState(() {
                                         myIrrigationList.removeAt(index);
+                                        context.read<FieldBloc>().add(
+                                            DeleteIrrigationUnitEvent(
+                                                farmId: widget.farmId,
+                                                fieldId: widget.fieldId));
                                         addOne = !addOne;
                                       });
                                     },

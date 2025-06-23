@@ -1,22 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
+import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/field_model.dart';
 
-class SelectField extends StatelessWidget {
+class SelectField extends StatefulWidget {
   final String farmId;
-  final String operation;
   final Function(int) onInputChanged;
   final int currentIndex;
-  const SelectField({super.key, required this.farmId, required this.operation,required this.onInputChanged, required this.currentIndex,});
+  const SelectField({
+    super.key,
+    required this.farmId,
+    required this.onInputChanged,
+    required this.currentIndex,
+  });
 
   @override
+  State<SelectField> createState() => _SelectFieldState();
+}
+
+class _SelectFieldState extends State<SelectField> {
+  String? selectedValue;
+  String? selectedFieldName;
+  List<FieldModel>? fields;
+  @override
   Widget build(BuildContext context) {
-    String? selectedValue;
     int index = 0;
-    context.read<FieldBloc>().add(OpenFieldEvent(farmId: farmId));
-    List<FieldModel>? fields;
+    context.read<FieldBloc>().add(OpenFieldEvent(farmId: widget.farmId));
     return BlocConsumer<FieldBloc, FieldState>(
       listener: (context, state) {
         if (state is FieldEmpty) {
@@ -45,10 +56,11 @@ class SelectField extends StatelessWidget {
         return Container(
           width: 380,
           height: 630,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 10,),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const SizedBox(
+              height: 10,
+            ),
             const Text('Field',
                 style: TextStyle(
                   fontFamily: 'Manrope',
@@ -56,7 +68,9 @@ class SelectField extends StatelessWidget {
                   fontSize: 21,
                   fontWeight: FontWeight.w600,
                 )),
-                SizedBox(height: 14,),
+            const SizedBox(
+              height: 14,
+            ),
             Container(
               padding: const EdgeInsets.fromLTRB(17, 0, 17, 0),
               width: 380,
@@ -64,7 +78,9 @@ class SelectField extends StatelessWidget {
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(25),
-                  border: Border.all(color: const Color.fromARGB(138, 159, 159, 159), width: 3)),
+                  border: Border.all(
+                      color: const Color.fromARGB(138, 159, 159, 159),
+                      width: 3)),
               child: DropdownButton(
                 hint: const Text('select field'),
                 dropdownColor: Colors.white,
@@ -83,9 +99,22 @@ class SelectField extends StatelessWidget {
                     child: Text(field.name),
                   );
                 }).toList(),
-                onChanged: (String? value) {
-                  selectedValue = value;
-                },
+                onChanged: (fields == null || fields!.isEmpty)
+                    ? null
+                    : (String? newValue) {
+                        setState(() {
+                          final selectedField = fields!
+                              .where((field) => field.id == newValue)
+                              .toList();
+                          if (selectedField.isNotEmpty) {
+                            setState(() {
+                              selectedValue = newValue;
+                              selectedFieldName = selectedField.first.name;
+                            });
+                          }
+                          CacheHelper.saveData(key: "FieldId", value: newValue);
+                        });
+                      },
               ),
             ),
             const Spacer(),
@@ -94,7 +123,8 @@ class SelectField extends StatelessWidget {
               child: Container(
                   width: 100,
                   height: 60,
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: primaryColor,
@@ -111,9 +141,9 @@ class SelectField extends StatelessWidget {
                             );
                           });
                         } else {
-                          index = currentIndex;
+                          index = widget.currentIndex;
                           index++;
-                          onInputChanged(index);
+                          widget.onInputChanged(index);
                         }
                       },
                       child: const SizedBox(
@@ -128,7 +158,9 @@ class SelectField extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(width: 5,),
+                            SizedBox(
+                              width: 5,
+                            ),
                             Icon(
                               Icons.arrow_forward_ios,
                               color: Colors.white,

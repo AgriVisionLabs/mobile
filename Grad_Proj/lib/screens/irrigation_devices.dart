@@ -6,7 +6,7 @@ import 'package:grd_proj/components/color.dart';
 class IrrigationDevices extends StatefulWidget {
   final String farmName;
   final String farmId;
-  
+
   const IrrigationDevices(
       {super.key, required this.farmName, required this.farmId});
 
@@ -148,21 +148,25 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                                           farmId: item.farmId,
                                           fieldId: item.fieldId,
                                         ));
+                                    context.read<FieldBloc>().add(
+                                        OpenFarmIrrigationUnitsEvent(
+                                            farmId: item.farmId));
                                   },
                                   child: Image.asset('assets/images/delete.png',
                                       width: 30, height: 30),
                                 ),
                                 const Spacer(),
                                 Switch(
-                                  value: item.status == 1,
+                                  value: item.status == 2,
                                   onChanged: (value) {
                                     context.read<FieldBloc>().add(
                                         IrrigationUnitsEditEvent(
                                             fieldId: item.fieldId,
                                             farmId: item.farmId,
                                             name: item.name,
-                                            status: value ? 2 : 1,
+                                            status: item.status == 2 ? 1 : 2,
                                             newFieldId: item.fieldId));
+                                    context.read<FieldBloc>().add(OpenFarmIrrigationUnitsEvent(farmId: item.farmId));
                                   },
                                   activeColor: Colors.white,
                                   activeTrackColor: primaryColor,

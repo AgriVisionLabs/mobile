@@ -138,7 +138,7 @@ class UserCubit extends Cubit<UserState> {
 
   void startTokenRefreshTimer() {
     _tokenRefreshTimer?.cancel();
-    _tokenRefreshTimer = Timer.periodic(const Duration(minutes: 28), (timer) {
+    _tokenRefreshTimer = Timer.periodic(const Duration(minutes:15), (timer) {
       refreshToken();
     });
   }

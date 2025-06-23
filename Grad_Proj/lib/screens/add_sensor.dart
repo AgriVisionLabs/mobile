@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/screens/irrigation.dart';
 import 'package:grd_proj/screens/select_field.dart';
+import 'package:grd_proj/screens/sensor.dart';
 import '../Components/color.dart';
 
-class AddIrrigationUnit extends StatefulWidget {
+class AddSensor extends StatefulWidget {
   final String farmId;
-  const AddIrrigationUnit({super.key , required this.farmId});
+  const AddSensor({super.key , required this.farmId});
 
   @override
-  State<AddIrrigationUnit> createState() => _AddIrrigationUnitState();
+  State<AddSensor> createState() => _AddSensorState();
 }
 
-class _AddIrrigationUnitState extends State<AddIrrigationUnit> {
+class _AddSensorState extends State<AddSensor> {
   String? selectedValue;
   
   int currentIndex = 0;
@@ -53,10 +54,10 @@ class _AddIrrigationUnitState extends State<AddIrrigationUnit> {
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                       SelectField(farmId: widget.farmId , onInputChanged: _onInputChanged,
+                       SelectField(farmId: widget.farmId ,  onInputChanged: _onInputChanged,
                           currentIndex: currentIndex)
                     else if (currentIndex == 1)
-                      Irrigation(
+                      Sensor(
                          fieldId: CacheHelper.getData(key: 'fieldId'),
                           farmId: widget.farmId,
                           onInputChanged: _onInputChanged,

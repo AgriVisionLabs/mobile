@@ -27,13 +27,7 @@ class FieldEmpty extends FieldState {
 class FieldSuccess extends FieldState{}
 
 // دخلنا data و اتقبلت في basic info
-class FieldInfoSuccess extends FieldState {
-  final List<FieldModel> field ;
-  FieldInfoSuccess({
-    required this.field,
-  });
-
-}
+class FieldInfoSuccess extends FieldState {}
 
 //حصل مشكلة و احنا بنعرض ال fields
 final class FieldFailure extends FieldState {
@@ -67,17 +61,11 @@ class FarmDetailsFailure extends FieldState {
   FarmDetailsFailure({required this.errMessage, required this.errors});
 }
 
-class AddSensorUnitSuccess extends FieldState{}
-class AddSensorUnitFailure extends FieldState {
-  final String errMessage;
-  final dynamic errors;
-  AddSensorUnitFailure({
-    required this.errMessage,
-    required this.errors,
-  });
 
-}
 
+//=========================================================================
+//========================= IrrigationDeviceState =========================
+//=========================================================================
 
 class AddIrrigationUnitSuccess extends FieldState{}
 class AddIrrigationUnitFailure extends FieldState {
@@ -127,6 +115,68 @@ final class DeleteIrrigationUnitFailure extends FieldState {
 
   DeleteIrrigationUnitFailure({required this.errMessage, required this.errors});
 }
+
+//=====================================================================
+//========================= SensorDeviceState =========================
+//=====================================================================
+class AddSensorUnitSuccess extends FieldState {
+  final SensorDevices devices;
+  AddSensorUnitSuccess({
+    required this.devices,
+  });
+}
+
+class AddSensorUnitFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+  AddSensorUnitFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
+
+class ViewSensorUnitsSuccess extends FieldState{
+  final List<SensorDevices> devices;
+  ViewSensorUnitsSuccess({
+    required this.devices});
+}
+class ViewSensorUnitsFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+  ViewSensorUnitsFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
+class SensorUnitsEmpty extends FieldState{}
+
+class ISensorUnitEditSuccess extends FieldState{}
+
+class SensorUnitEditFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+  SensorUnitEditFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+  
+
+}
+
+class DeleteSensorUnitSuccess extends FieldState {}
+
+final class DeleteSensorUnitFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+
+  DeleteSensorUnitFailure({required this.errMessage, required this.errors});
+}
+
+//=======================================================================
+//========================= AutomatedRulesState =========================
+//=======================================================================
 
 class AddAutomationRulesSuccess extends FieldState{}
 class AddAutomationRulesFailure extends FieldState {

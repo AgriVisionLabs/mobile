@@ -54,7 +54,7 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                       SelectField(farmId: widget.farmId , operation: 'irrigation', onInputChanged: _onInputChanged,
+                       SelectField(farmId: widget.farmId , onInputChanged: _onInputChanged,
                           currentIndex: currentIndex)
                     else if (currentIndex == 1)
                       Rules(

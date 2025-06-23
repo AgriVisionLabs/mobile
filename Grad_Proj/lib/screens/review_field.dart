@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
@@ -19,7 +20,6 @@ class ReviewField extends StatefulWidget {
 }
 
 class _ReviewFieldState extends State<ReviewField> {
-  List field = [];
   int currentIndex = 1;
   @override
   Widget build(BuildContext context) {
@@ -108,6 +108,8 @@ class _ReviewFieldState extends State<ReviewField> {
             const SizedBox(
               height: 24,
             ),
+            context.read<FieldBloc>().irrigationSerialNum.text.isNotEmpty?_buildDevicesList(false):SizedBox(height: 0,),
+            context.read<FieldBloc>().sensorSerialNum.text.isNotEmpty?_buildDevicesList(true):SizedBox(height: 0,),
             const Spacer(),
             Align(
               alignment: Alignment.bottomRight,
@@ -124,13 +126,12 @@ class _ReviewFieldState extends State<ReviewField> {
                       onPressed: () {
                         Navigator.pop(context);
                         context.read<FieldBloc>().add(OpenFieldEvent(
-                          farmname: CacheHelper.getData(key: 'farmname'),
-                          farmId: CacheHelper.getData(key: 'farmId'),
-                          roleName: CacheHelper.getData(key: 'roleName'),
-                          size: CacheHelper.getData(key: 'area'),
-                          location: CacheHelper.getData(key: 'location'),
-                          soiltype: CacheHelper.getData(key: 'soiltype')
-                        ));
+                            farmname: CacheHelper.getData(key: 'farmname'),
+                            farmId: CacheHelper.getData(key: 'farmId'),
+                            roleName: CacheHelper.getData(key: 'roleName'),
+                            size: CacheHelper.getData(key: 'area'),
+                            location: CacheHelper.getData(key: 'location'),
+                            soiltype: CacheHelper.getData(key: 'soiltype')));
                       },
                       child: Text(
                         'Create Feild',
@@ -147,67 +148,58 @@ class _ReviewFieldState extends State<ReviewField> {
     );
   }
 
-  // Widget _buildRolesList() {
-  //   return SizedBox(
-  //     width: 380,
-  //     height: 260,
-  //     child: ListView.builder(
-  //         itemCount: 2,
-  //         scrollDirection: Axis.vertical,
-  //         itemBuilder: (context, index) {
-  //           return SizedBox(
-  //               width: 380,
-  //               height: 140,
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Text(index == 1 ? 'Irrigation Units' : 'Sensor Units',
-  //                       style: TextStyle(
-  //                         color: Colors.black,
-  //                         fontSize: 18,
-  //                         fontWeight: FontWeight.w400,
-  //                       )),
-  //                   Container(
-  //                     height: 76,
-  //                     margin: const EdgeInsets.symmetric(vertical: 12),
-  //                     decoration: BoxDecoration(
-  //                       color: const Color.fromRGBO(30, 105, 48, 0.15),
-  //                       borderRadius: BorderRadius.circular(15),
-  //                     ),
-  //                     child: ListTile(
-  //                       title: Column(
-  //                         crossAxisAlignment: CrossAxisAlignment.start,
-  //                         children: [
-  //                           //Task Descrption
-  //                           Text(
-  //                             field[index + 1][0],
-  //                             style: const TextStyle(
-  //                               fontFamily: 'Manrope',
-  //                               color: Colors.black,
-  //                               fontSize: 16,
-  //                               fontWeight: FontWeight.w400,
-  //                               // decoration: TextDecoration.lineThrough
-  //                             ),
-  //                           ),
-  //                           SizedBox(
-  //                             height: 7,
-  //                           ),
+  Widget _buildDevicesList(bool isSensor) {
+    return SizedBox(
+        width: 380,
+        height: 140,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(!isSensor ? 'Irrigation Units' : 'Sensor Units',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                )),
+            Container(
+              height: 76,
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: const Color.fromRGBO(30, 105, 48, 0.15),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: ListTile(
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //Task Descrption
+                    Text(
+                      !isSensor? context.read<FieldBloc>().irrigationUnitName.text :context.read<FieldBloc>().sensorUnitName.text,
+                      style: const TextStyle(
+                        fontFamily: 'Manrope',
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        // decoration: TextDecoration.lineThrough
+                      ),
+                    ),
+                    SizedBox(
+                      height: 7,
+                    ),
 
-  //                           Text(field[index + 1][(1)],
-  //                               style: const TextStyle(
-  //                                 fontFamily: 'Manrope',
-  //                                 color: borderColor,
-  //                                 fontSize: 16,
-  //                                 fontWeight: FontWeight.w400,
-  //                                 // decoration: TextDecoration.lineThrough
-  //                               ))
-  //                         ],
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ));
-  //         }),
-  //   );
-  // }
+                    Text(!isSensor? context.read<FieldBloc>().irrigationSerialNum.text :context.read<FieldBloc>().sensorSerialNum.text,
+                        style: const TextStyle(
+                          fontFamily: 'Manrope',
+                          color: borderColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          // decoration: TextDecoration.lineThrough
+                        ))
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
 }

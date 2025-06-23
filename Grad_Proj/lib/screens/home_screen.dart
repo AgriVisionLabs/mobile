@@ -9,6 +9,8 @@ import 'package:grd_proj/bloc/user_cubit.dart';
 import 'package:grd_proj/bloc/user_state.dart';
 import 'package:grd_proj/screens/Login_Screen.dart';
 import 'package:grd_proj/screens/fields_screen.dart';
+import 'package:grd_proj/screens/irrigation_control.dart';
+import 'package:grd_proj/screens/sensor_and_devices.dart';
 import '../Components/color.dart';
 import 'dash_board.dart';
 import 'farms_screen.dart';
@@ -47,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
       DashBoard(), // Dashboard Screen
       FarmsScreen(), // Pass farms list to FarmsScreen
     ]);
-    _startTimer();
     super.initState();
   }
 
@@ -58,7 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
     const ScanScreen(),
     const TaskScreen(),
     const MoreScreen(),
-    const FieldsScreen()
+    const FieldsScreen(),
+    const IrrigationConrtol(),
+    const SensorAndDevices()
   ];
 
   void _onItemTapped(int index) {
@@ -72,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _startTimer() {
      // Start a timer that will call function to refresh token after 30 minutes
-    _timer = Timer.periodic(const Duration(minutes:30), (timer) {
+    _timer = Timer.periodic(const Duration(minutes:29), (timer) {
       setState(() {     
         context.read<UserCubit>().refreshToken();
        });
@@ -96,6 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    _startTimer();
     return BlocListener<UserCubit, UserState>(
       listener: (context, state) {
         if (state is SignOut) {
