@@ -124,7 +124,6 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
         final response = await api.delete(
             '${EndPoints.automationRules}/${event.farmId}/fields/${event.fieldId}/AutomationRules/${event.ruleId}');
         print(response);
-        emit(DeleteAutomationRulesSuccess());
       } on ServerException catch (e) {
         emit(DeleteAutomationRulesFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
