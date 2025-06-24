@@ -207,9 +207,9 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
               ApiKey.serialNumber: sensorSerialNum.text,
               ApiKey.name: sensorUnitName.text,
             });
-            final sensorUnits = SensorDevices.fromJson(response);
+            final sensorUnits = SensorDevice.fromJson(response);
         print(response);
-        emit(AddSensorUnitSuccess(devices: sensorUnits));
+        emit(AddSensorUnitSuccess(device: sensorUnits));
       } on ServerException catch (e) {
         emit(AddSensorUnitFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -219,11 +219,11 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
     on<OpenFarmSensorUnitsEvent>((event, emit) async {
       try {
         final response = await api
-            .get("${EndPoints.sensor}/${event.farmId}/SensorUnits}");
+            .get("${EndPoints.sensor}/${event.farmId}/SensorUnits");
         print(response);
         if (response is List && response.isNotEmpty) {
           final sensorUnits = response
-              .map<SensorDevices>((json) => SensorDevices.fromJson(json))
+              .map<SensorDevice>((json) => SensorDevice.fromJson(json))
               .toList();
           emit(ViewSensorUnitsSuccess(
             devices: sensorUnits,
@@ -244,7 +244,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         print(response);
         if (response is List && response.isNotEmpty) {
           final sensirUnits = response
-              .map<SensorDevices>((json) => SensorDevices.fromJson(json))
+              .map<SensorDevice>((json) => SensorDevice.fromJson(json))
               .toList();
           emit(ViewSensorUnitsSuccess(
             devices: sensirUnits,

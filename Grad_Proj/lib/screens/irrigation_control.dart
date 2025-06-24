@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/models/farm_model.dart';
@@ -173,9 +174,9 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                         context.read<FieldBloc>().add(
                                             OpenFarmIrrigationUnitsEvent(
                                                 farmId: selectedFarmId!));
-                                        // context.read<FieldBloc>().add(
-                                        //     OpenFarmAutomationRulesEvent(
-                                        //         farmId: selectedFarmId!));
+                                        context.read<ControlBloc>().add(
+                                            OpenFarmAutomationRulesEvent(
+                                                farmId: selectedFarmId!));
                                       });
                                     }
                                   },
@@ -240,7 +241,6 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                             },
                           ),
                         ),
-                        SizedBox(width: 10),
                       ],
                     ),
 

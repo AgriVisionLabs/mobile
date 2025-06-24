@@ -1,8 +1,13 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
+import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/farm_model.dart';
+import 'package:grd_proj/screens/add_sensor.dart';
+import 'package:grd_proj/screens/sensor_devices.dart';
 
 class SensorAndDevices extends StatefulWidget {
   const SensorAndDevices({super.key});
@@ -20,6 +25,7 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
   bool isSensorSelected = true;
   @override
   Widget build(BuildContext context) {
+    context.read<FarmBloc>().add(OpenFarmEvent());
     return BlocConsumer<FarmBloc, FarmState>(
       listener: (context, state) {
         if (state is FarmEmpty) {
@@ -48,7 +54,7 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
         return Scaffold(
           backgroundColor: Colors.white,
           body: Container(
-            margin: const EdgeInsets.symmetric(vertical: 150, horizontal: 15),
+            margin: const EdgeInsets.only(top: 150, left: 20,right: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -95,6 +101,13 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                                 selectedFarmName = selectedFarm.first.name;
                               });
                             }
+                            isSensorSelected
+                                ? context.read<FieldBloc>().add(
+                                    OpenFarmSensorUnitsEvent(
+                                        farmId: selectedFarmId!))
+                                : context.read<FieldBloc>().add(
+                                    OpenFarmIrrigationUnitsEvent(
+                                        farmId: selectedFarmId!));
                           },
                     items: farms?.map<DropdownMenuItem<String>>((farm) {
                       return DropdownMenuItem<String>(
@@ -120,7 +133,7 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                     children: [
                       // Sensor Button
                       Container(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         width: 105,
                         decoration: BoxDecoration(
                           color: isSensorSelected
@@ -149,10 +162,10 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                       ),
                       // Irrigation Units Button
                       Container(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         width: 157,
                         decoration: BoxDecoration(
-                          color:!isSensorSelected
+                          color: !isSensorSelected
                               ? Colors.white
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
@@ -167,8 +180,9 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                           child: Text(
                             "Irrigation Units",
                             style: TextStyle(
-                              color:
-                                  !isSensorSelected ? primaryColor : borderColor,
+                              color: !isSensorSelected
+                                  ? primaryColor
+                                  : borderColor,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               fontFamily: "manrope",
@@ -179,6 +193,74 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 30),
+                Row(
+                  children: [
+                    const SizedBox(width: 10),
+                    const Text(
+                      'ٍSensor',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "manrope",
+                        color: Color(0xFF333333),
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        onPressed: () {
+                          if (selectedFarmId != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddSensor(farmId: selectedFarmId!)),
+                            );
+                          } else {
+                            print(
+                                "===================Forbidden=======================");
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Please choose farm first"),
+                                ),
+                              );
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Container(
+                    child: selectedFarmId == null
+                        ? const Center(
+                            child: Text('Please Choose Farm',
+                                style: TextStyle(
+                                  color: Color(0xff1E6930),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "manrope",
+                                )),
+                          )
+                        : SensorDevices(
+                            farmName: selectedFarmName!,
+                            farmId: selectedFarmId!)),
               ],
             ),
           ),

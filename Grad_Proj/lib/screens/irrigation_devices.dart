@@ -42,12 +42,12 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                       final item = state.devices[index];
                       return Container(
                         margin: const EdgeInsets.only(bottom: 20),
+                        padding: EdgeInsets.only(top: 24),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(25),
                             border: Border.all(
-                                color:
-                                    const Color(0xff0D121C).withOpacity(0.25),
+                                color: const Color.fromARGB(62, 13, 18, 28),
                                 width: 1),
                             boxShadow: const [
                               BoxShadow(
@@ -59,94 +59,91 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 24,),
                             Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 24),
-                              child: Row(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(widget.farmName,
-                                      style: const TextStyle(
-                                        color: Color(0xff1E6930),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: "manrope",
-                                      )),
-                                  const Spacer(),
-                                  Container(
-                                    width: 77,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(25),
-                                        border: Border.all(
-                                            color: borderColor, width: 1)),
-                                    child: Center(
-                                      child: Text(
-                                        item.status == 2
-                                            ? "Active"
-                                            : "Inactive",
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400),
+                                  Row(
+                                    children: [
+                                      Text(widget.farmName,
+                                          style: const TextStyle(
+                                            color: Color(0xff1E6930),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: "manrope",
+                                          )),
+                                      const Spacer(),
+                                      Container(
+                                        width: 77,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            border: Border.all(
+                                                color: borderColor, width: 1)),
+                                        child: Center(
+                                          child: Text(
+                                            item.status == 2
+                                                ? "Active"
+                                                : "Inactive",
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/location.png',
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(item.fieldName,
+                                          style: TextStyle(
+                                            color: Color(0xff616161),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "manrope",
+                                          )),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/ha4tag.png',
+                                        width: 24,
+                                        height: 24,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(item.name,
+                                          style: TextStyle(
+                                            color: Color(0xff0D121C),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "manrope",
+                                          )),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 24),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/images/location.png',
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(item.fieldName,
-                                      style: TextStyle(
-                                        color: Color(0xff616161),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "manrope",
-                                      )),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 24),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/images/ha4tag.png',
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(item.name,
-                                      style: TextStyle(
-                                        color: Color(0xff0D121C),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "manrope",
-                                      )),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 10),
                             Divider(
                               color: const Color(0xff0D121C).withOpacity(0.25),
                               thickness: 1,
                             ),
                             const SizedBox(height: 10),
                             Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 24),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 24),
                               child: Row(
                                 children: [
                                   GestureDetector(
@@ -169,8 +166,10 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                                           OpenFarmIrrigationUnitsEvent(
                                               farmId: item.farmId));
                                     },
-                                    child: Image.asset('assets/images/delete.png',
-                                        width: 30, height: 30),
+                                    child: Image.asset(
+                                        'assets/images/delete.png',
+                                        width: 30,
+                                        height: 30),
                                   ),
                                   const Spacer(),
                                   Switch(

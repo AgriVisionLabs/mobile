@@ -165,22 +165,22 @@ class _FarmsScreen extends State<FarmsScreen> {
                         )));
           },
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(
-                25,
-              ),
-              boxShadow: const [
-                BoxShadow(
-                    color: Color.fromARGB(50, 0, 0, 0),
-                    blurRadius: 12,
-                    spreadRadius: 1.7,
-                    offset: Offset(-0.2, 0.2),
-                    blurStyle: BlurStyle.solid),
-              ],
-            ),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(
+                  25,
+                ),
+                border: Border.all(
+                    color: const Color.fromARGB(11, 13, 18, 28), width: 2),
+                boxShadow: const [
+                  BoxShadow(
+                      color: Color.fromARGB(50, 0, 0, 0),
+                      blurRadius: 15,
+                      spreadRadius: 3,
+                      offset: Offset(-2, 2))
+                ]),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

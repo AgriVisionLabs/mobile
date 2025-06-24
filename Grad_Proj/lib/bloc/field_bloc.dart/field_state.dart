@@ -120,9 +120,9 @@ final class DeleteIrrigationUnitFailure extends FieldState {
 //========================= SensorDeviceState =========================
 //=====================================================================
 class AddSensorUnitSuccess extends FieldState {
-  final SensorDevices devices;
+  final SensorDevice device;
   AddSensorUnitSuccess({
-    required this.devices,
+    required this.device,
   });
 }
 
@@ -137,7 +137,7 @@ class AddSensorUnitFailure extends FieldState {
 }
 
 class ViewSensorUnitsSuccess extends FieldState{
-  final List<SensorDevices> devices;
+  final List<SensorDevice> devices;
   ViewSensorUnitsSuccess({
     required this.devices});
 }

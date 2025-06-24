@@ -4,9 +4,9 @@ class EndPoints {
   static const String register = 'Auth/register';
   static const String confirmEmailResand = '/Auth/resend-confirmation-email';
   static const String refreshToken = '/Auth/refresh' ;
-  static const String forgetPassword = '/Auth/forget-password';
-  static const String otp = '/Auth/verify-otp';
-  static const String resetPassword = '/Auth/reset-password';
+  static const String forgetPassword = '/Auth/request-password-reset';
+  static const String otp = '/Auth/verify-password-reset-otp';
+  static const String resetPassword = '/Auth/password-reset';
   static const String farmsInfo = '/Farms';
   static const String allFarms = '/Farms';
   static const String farmControl = '/Farms';

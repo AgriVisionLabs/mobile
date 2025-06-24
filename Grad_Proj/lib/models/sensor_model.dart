@@ -1,4 +1,4 @@
-class SensorDevices {
+class SensorDevice {
   final String id;
   final String farmId;
   final String fieldId;
@@ -21,7 +21,7 @@ class SensorDevices {
   final int? humidity;
   final int? batteryLevel;
 
-  SensorDevices({
+  SensorDevice({
     required this.id,
     required this.farmId,
     required this.fieldId,
@@ -45,8 +45,8 @@ class SensorDevices {
     this.batteryLevel,
   });
 
-  factory SensorDevices.fromJson(Map<String, dynamic> json) {
-    return SensorDevices(
+  factory SensorDevice.fromJson(Map<String, dynamic> json) {
+    return SensorDevice(
       id: json['id'],
       farmId: json['farmId'],
       fieldId: json['fieldId'],

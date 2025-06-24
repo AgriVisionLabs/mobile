@@ -48,6 +48,7 @@ void handelDioException(DioException e) {
           ///not found
           throw ServerException(
               errorModel: ErrorModel.fromJson(e.response!.data));
+          // print(e.response!.data);
 
         case 405:
 

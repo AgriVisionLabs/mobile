@@ -35,7 +35,7 @@ class _SensorState extends State<Sensor> {
   bool addOne = true;
   int index = 0;
   String description = '';
-  SensorDevices ? devices;
+  SensorDevice ? devices;
   void _onInputChanged(String serialNumScaned) {
     setState(() {
       print(
@@ -89,7 +89,7 @@ class _SensorState extends State<Sensor> {
             widget.onInputChanged(index);
             Navigator.pop(context);
           } else {
-            devices = state.devices;
+            devices = state.device;
             addOne = !addOne;
             mySensorList.add({
               'name': context.read<FieldBloc>().sensorUnitName.text,

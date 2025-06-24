@@ -19,6 +19,7 @@ import 'package:grd_proj/screens/login_screen.dart';
 import 'package:grd_proj/screens/more_screen.dart';
 import 'package:grd_proj/screens/new_farm.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
+import 'package:grd_proj/screens/verification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'bloc/user_cubit.dart';
@@ -96,9 +97,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen()
-      // LoginScreen()
-      // HomeScreen(initialIndex: 4,)
+      home: 
+      // SplashScreen()
+      LoginScreen()
+      // HomeScreen(initialIndex: 7,)
     );
   }
 }

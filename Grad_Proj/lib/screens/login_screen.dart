@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
             context.read<UserCubit>().signInEmail.clear();
              context.read<UserCubit>().signInPassword.clear();
           } else if (state is SignInFailure) {
-            if (state.errMessage == 'Unauthorized') {
+            if (state.errMessage == 'Unauthorized' || state.errMessage == 'Forbidden') {
               description = state.errors[0]['description'];
             } else {
               response = UnAuthorizeModel.fromJson(state.errors);
@@ -152,15 +152,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
+                                if(response != null){
                                 if (response!.email != null) {
                                   if (value!.isEmpty) {
                                     return response!.email![0];
                                   } else if (!value.contains("@")) {
                                     return response!.email![0];
                                   }
-                                } else if (description.isNotEmpty &&
-                                    description !=
-                                        "A user with this username already exists.") {
+                                } }else if (description.isNotEmpty &&
+                                    description ==
+                                        "Email is not confirmed.") {
                                   return description;
                                 }
                                 return null;
@@ -211,13 +212,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
+                                if( response != null){
                                 if (response!.password != null) {
                                   if (value!.isEmpty) {
                                     return response!.password![0];
                                   } else {
                                     return response!.password![0];
                                   }
-                                }
+                                }}
                                 return null;
                               },
                             ),

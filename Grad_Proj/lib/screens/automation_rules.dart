@@ -17,9 +17,6 @@ class AutomationRules extends StatefulWidget {
 class _AutomationRulesState extends State<AutomationRules> {
   @override
   Widget build(BuildContext context) {
-    context
-        .read<ControlBloc>()
-        .add(OpenFarmAutomationRulesEvent(farmId: widget.farmId));
     return BlocBuilder<ControlBloc, ControlState>(
       builder: (context, state) {
         if (state is ViewAutomationRulesFailure) {
@@ -45,12 +42,12 @@ class _AutomationRulesState extends State<AutomationRules> {
                       final item = state.rules[index];
                       return Container(
                         margin: const EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.only(top: 24),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(25),
                             border: Border.all(
-                                color:
-                                    const Color(0xff0D121C).withOpacity(0.25),
+                                color: const Color.fromARGB(62, 13, 18, 28),
                                 width: 1),
                             boxShadow: const [
                               BoxShadow(
@@ -62,129 +59,125 @@ class _AutomationRulesState extends State<AutomationRules> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              height: 24,
-                            ),
                             Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 24),
-                              child: Text(item.name,
-                                  style: const TextStyle(
-                                    color: Color(0xff1E6930),
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "manrope",
-                                  )),
-                            ),
-                            const SizedBox(height: 16),
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 24),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/images/alert.png',
-                                    height: 20,
-                                    width: 20,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                      item.type == 1
-                                          ? "Type : Schedualed"
-                                          : "Type : Threshold",
-                                      style: const TextStyle(
-                                        color: Color(0xff616161),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "manrope",
-                                      )),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 24),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/images/location.png',
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text("Field : ${item.fieldName}",
-                                      style: const TextStyle(
-                                        color: Color(0xFF616161),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "manrope",
-                                      )),
-                                ],
-                              ),
-                            ),
-                            item.type == 1
-                                ? const SizedBox(
-                                    height: 0,
-                                  )
-                                : 
-            
-                            Row(
-                              children: [
-                                SizedBox(height: 10,),
-                                Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 24),
-                                  child: Row(
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/Performance_indicators.png',
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                          "Threshold : ${item.minThresholdValue} - ${item.maxThresholdValue}",
-                                          style: const TextStyle(
-                                            color: Color(0xff0D121C),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: "manrope",
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 24),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(item.name,
+                                        style: const TextStyle(
+                                          color: Color(0xff1E6930),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: "manrope",
+                                        )),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/alert.png',
+                                          height: 20,
+                                          width: 20,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                            item.type == 1
+                                                ? "Type : Schedualed"
+                                                : "Type : Threshold",
+                                            style: const TextStyle(
+                                              color: Color(0xff616161),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: "manrope",
+                                            )),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/location.png',
+                                          width: 24,
+                                          height: 24,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text("Field : ${item.fieldName}",
+                                            style: const TextStyle(
+                                              color: Color(0xFF616161),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: "manrope",
+                                            )),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    item.type == 1
+                                        ? const SizedBox(
+                                            height: 0,
+                                          )
+                                        : Row(
+                                            children: [
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/Performance_indicators.png',
+                                                    width: 20,
+                                                    height: 20,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                      "Threshold : ${item.minThresholdValue} - ${item.maxThresholdValue}",
+                                                      style: const TextStyle(
+                                                        color:
+                                                            Color(0xff0D121C),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily: "manrope",
+                                                      )),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                    const SizedBox(height: 24),
+                                  ],
+                                )),
                             Divider(
                               color: const Color(0xff0D121C).withOpacity(0.25),
                               thickness: 1,
                             ),
                             const SizedBox(height: 10),
                             Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 24),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 24),
                               child: Row(
                                 children: [
                                   Switch(
                                     value: item.isEnabled,
                                     onChanged: (value) {
+                                      context
+                                          .read<ControlBloc>()
+                                          .add(AutomationRulesEditEvent(
+                                            fieldId: item.fieldId,
+                                            farmId: item.farmId,
+                                            ruleId: item.id,
+                                            name: item.name,
+                                            isEnabled: !item.isEnabled,
+                                            type: item.type,
+                                            min: item.minThresholdValue,
+                                            max: item.maxThresholdValue,
+                                            target: item.targetSensorType,
+                                            start: item.startTime,
+                                            end: item.endTime,
+                                            days: item.activeDays,
+                                          ));
                                       context.read<ControlBloc>().add(
-                                          AutomationRulesEditEvent(
-                                              fieldId: item.fieldId,
-                                              farmId: item.farmId,
-                                              ruleId: item.id,
-                                              name: item.name,
-                                              isEnabled: !item.isEnabled,
-                                              type: item.type,
-                                              min: item.minThresholdValue,
-                                              max: item.maxThresholdValue,
-                                              target: item.targetSensorType,
-                                              start: item.startTime,
-                                              end: item.endTime,
-                                              days: item.activeDays,
-                                            ));
-                                      context.read<ControlBloc>().add(OpenFarmAutomationRulesEvent(farmId: item.farmId));
+                                          OpenFarmAutomationRulesEvent(
+                                              farmId: item.farmId));
                                     },
                                     activeColor: Colors.white,
                                     activeTrackColor: primaryColor,
@@ -202,17 +195,19 @@ class _AutomationRulesState extends State<AutomationRules> {
                                   const SizedBox(width: 20),
                                   GestureDetector(
                                     onTap: () {
-                                      context
-                                          .read<ControlBloc>()
-                                          .add(DeleteAutomationRulesEvent(
-                                            farmId: item.farmId,
-                                            fieldId: item.fieldId,
-                                            ruleId: item.id
-                                          ));
-                                      context.read<ControlBloc>().add(OpenFarmAutomationRulesEvent(farmId: item.farmId));
+                                      context.read<ControlBloc>().add(
+                                          DeleteAutomationRulesEvent(
+                                              farmId: item.farmId,
+                                              fieldId: item.fieldId,
+                                              ruleId: item.id));
+                                      context.read<ControlBloc>().add(
+                                          OpenFarmAutomationRulesEvent(
+                                              farmId: item.farmId));
                                     },
-                                    child: Image.asset('assets/images/delete.png',
-                                        width: 30, height: 30),
+                                    child: Image.asset(
+                                        'assets/images/delete.png',
+                                        width: 30,
+                                        height: 30),
                                   ),
                                 ],
                               ),
