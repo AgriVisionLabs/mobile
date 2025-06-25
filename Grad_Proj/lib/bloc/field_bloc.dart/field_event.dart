@@ -23,7 +23,13 @@ class OpenFieldEvent extends FieldEvent {
   
 }
 
-class CreateFieldEvent extends FieldEvent{}
+class CreateFieldEvent extends FieldEvent {
+  final String farmId;
+  CreateFieldEvent({
+    required this.farmId,
+  });
+
+}
 
 class DeleteFieldEvent extends FieldEvent {
   final String farmId;

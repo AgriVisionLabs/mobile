@@ -15,22 +15,49 @@ class DeleteFarmEvent extends FarmEvent {
   });
 }
 
-class EditFarmEvent extends FarmEvent{}
+class EditFarmEvent extends FarmEvent {
+  final String farmId;
+  final String farmName;
+  final int area;
+  final String location;
+  final int soilType;
+  EditFarmEvent({
+    required this.farmId,
+    required this.farmName,
+    required this.area,
+    required this.location,
+    required this.soilType,
+  });
+}
 
-class AddMember extends FarmEvent{}
+class AddMember extends FarmEvent {
+  final String farmId;
+  AddMember({
+    required this.farmId,
+  });
+}
 
-class DeleteMember extends FarmEvent{
-  final int invitationNum;
-
-  DeleteMember({required this.invitationNum});
+class DeleteMember extends FarmEvent {
+  final String invitationId;
+  final String farmId;
+  DeleteMember({
+    required this.invitationId,
+    required this.farmId,
+  });
 }
 
 class ViewFarmDetails extends FarmEvent{
-  final String farmId;
+  final String? farmId;
   ViewFarmDetails({required this.farmId});
 }
 
-class ViewFarmMembers extends FarmEvent{}
+class ViewFarmMembers extends FarmEvent {
+  final String farmId;
+  ViewFarmMembers({
+    required this.farmId,
+  });
+
+}
 
 
 class RolePermissions extends FarmEvent{}

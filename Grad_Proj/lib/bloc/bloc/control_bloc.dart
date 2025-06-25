@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'package:grd_proj/core/api/api_consumer.dart';
 import 'package:grd_proj/core/api/end_points.dart';
 import 'package:grd_proj/core/errors/exception.dart';
 import 'package:grd_proj/models/automation_rule_model.dart';
-import 'package:meta/meta.dart';
 
 part 'control_event.dart';
 part 'control_state.dart';

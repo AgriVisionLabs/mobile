@@ -1,41 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
+import 'package:grd_proj/models/invation_model.dart';
 
 import '../Components/color.dart';
 
 class Team extends StatefulWidget {
   final Function(int) onInputChanged;
   final int currentIndex;
-  final bool editFarm;
+  final String farmId;
   const Team(
       {super.key,
       required this.onInputChanged,
       required this.currentIndex,
-      this.editFarm = false});
+      required this.farmId});
 
   @override
   State<Team> createState() => _TeamState();
 }
 
-List<Map<String, dynamic>> myRoleList = [];
+List<InvitationModel>? myRoleList = [];
 
 class _TeamState extends State<Team> {
   GlobalKey<FormState> formstate = GlobalKey();
   String? userName;
   String? selectedValue;
   String description = '';
-  List farm = [];
   bool addedRole = false;
   int index = 0;
   int? pos;
   List<String> role = ['Manager', 'Owner', 'Worker', 'Export'];
-  Map<String, dynamic> myRoleListEdit = {'name': 'Hessian', 'role': 'Manager'};
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FarmBloc, FarmState>(
       listener: (context, state) {
+        if (state is LoadingMember) {
+          myRoleList = state.invites;
+        } else if (state is NoMember) {
+          myRoleList = [];
+        }
         if (state is AddingMember) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -45,11 +48,7 @@ class _TeamState extends State<Team> {
               ),
             );
           });
-          myRoleList.add({
-            'name': userName,
-            'role': selectedValue,
-          });
-          context.read<FarmBloc>().add(ViewFarmMembers());
+          context.read<FarmBloc>().add(ViewFarmMembers(farmId: widget.farmId));
         } else if (state is AddingMemberFailure) {
           if (state.errMessage == 'Conflict') {
             description = state.errors[0]['description'];
@@ -70,7 +69,6 @@ class _TeamState extends State<Team> {
                 ),
               );
             });
-            
           }
           context.read<FarmBloc>().addMembermKey.currentState!.validate();
         }
@@ -83,7 +81,7 @@ class _TeamState extends State<Team> {
               ),
             );
           });
-          myRoleList.removeAt(pos!);
+          context.read<FarmBloc>().add(ViewFarmMembers(farmId: widget.farmId));
         } else if (state is DeletingMemberFailure) {
           if (state.errMessage == 'Conflict') {
             description = state.errors[0]['description'];
@@ -104,7 +102,6 @@ class _TeamState extends State<Team> {
                 ),
               );
             });
-            context.read<FarmBloc>().addMembermKey.currentState!.validate();
           }
         }
       },
@@ -133,9 +130,7 @@ class _TeamState extends State<Team> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
-                        hintText: widget.editFarm
-                            ? myRoleListEdit['name']
-                            : "Enter Email or Username",
+                        hintText: "Enter Email or Username",
                         hintStyle: const TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
@@ -200,9 +195,7 @@ class _TeamState extends State<Team> {
                             child: DropdownButton(
                               dropdownColor: Colors.white,
                               isExpanded: true,
-                              hint: Text(widget.editFarm
-                                  ? myRoleListEdit['role']
-                                  : 'Manger'),
+                              hint: Text('Manger'),
                               style: const TextStyle(
                                   fontFamily: 'Manrope',
                                   color: borderColor,
@@ -255,7 +248,9 @@ class _TeamState extends State<Team> {
                                     addedRole = true;
                                     context.read<FarmBloc>().roleName.text =
                                         selectedValue!;
-                                    context.read<FarmBloc>().add(AddMember());
+                                    context
+                                        .read<FarmBloc>()
+                                        .add(AddMember(farmId: widget.farmId));
                                   }
                                 });
                               },
@@ -275,70 +270,47 @@ class _TeamState extends State<Team> {
                     const SizedBox(
                       height: 10,
                     ),
-                    widget.editFarm
+                    myRoleList!.isNotEmpty
                         ? _buildRolesList()
-                        : myRoleList.isNotEmpty
-                            ? _buildRolesList()
-                            : const SizedBox(
-                                height: 1,
-                              ),
-                    const Spacer(),
-                    widget.editFarm
-                        ? const SizedBox(
+                        : const SizedBox(
                             height: 1,
-                          )
-                        : Align(
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                                height: 60,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 7),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: primaryColor,
-                                ),
-                                child: TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        if (addedRole == false) {
-                                          ScaffoldMessenger.of(context)
-                                              .clearSnackBars();
-                                          WidgetsBinding.instance
-                                              .addPostFrameCallback((_) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                content:
-                                                    Text("Please Enter Role"),
-                                              ),
-                                            );
-                                          });
-                                        } else {
-                                          index = widget.currentIndex;
-                                          index++;
-                                          widget.onInputChanged(index);
-                                        }
-                                      });
-                                    },
-                                    child: const SizedBox(
-                                      width: 70,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'Next',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          SizedBox(width: 3),
-                                          Icon(Icons.arrow_forward_ios,
-                                              color: Colors.white, size: 20),
-                                        ],
+                          ),
+                    const Spacer(),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Container(
+                          height: 60,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 7),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: primaryColor,
+                          ),
+                          child: TextButton(
+                              onPressed: () {
+                                index = widget.currentIndex;
+                                index++;
+                                widget.onInputChanged(index);
+                              },
+                              child: const SizedBox(
+                                width: 70,
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Next',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                    ))),
-                          )
+                                    ),
+                                    SizedBox(width: 3),
+                                    Icon(Icons.arrow_forward_ios,
+                                        color: Colors.white, size: 20),
+                                  ],
+                                ),
+                              ))),
+                    )
                   ])),
         );
       },
@@ -372,13 +344,13 @@ class _TeamState extends State<Team> {
             child: ListView.builder(
 
                 ///length is list of all members added by user
-                itemCount: widget.editFarm ? 1 : myRoleList.length,
+                itemCount: myRoleList!.length,
                 scrollDirection: Axis.vertical,
                 itemBuilder: (context, index) {
                   //green box contain each member
                   return Container(
                     margin:
-                        const EdgeInsets.symmetric(vertical: 3, horizontal: 1),
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 1),
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     decoration: BoxDecoration(
                       color: const Color.fromRGBO(30, 105, 48, 0.15),
@@ -391,9 +363,7 @@ class _TeamState extends State<Team> {
                         children: [
                           //name
                           Text(
-                            widget.editFarm
-                                ? 'Hessian'
-                                : myRoleList[index]['name'],
+                            myRoleList![index].receiverUserName,
                             style: const TextStyle(
                               fontFamily: 'Manrope',
                               color: Colors.black,
@@ -408,10 +378,7 @@ class _TeamState extends State<Team> {
                           ),
 
                           //role
-                          Text(
-                              widget.editFarm
-                                  ? 'Manager'
-                                  : myRoleList[index]['role'],
+                          Text(myRoleList![index].roleName,
                               style: const TextStyle(
                                 fontFamily: 'Manrope',
                                 color: Colors.black,
@@ -423,9 +390,9 @@ class _TeamState extends State<Team> {
                           IconButton(
                               onPressed: () {
                                 setState(() {
-                                  context
-                                      .read<FarmBloc>()
-                                      .add(DeleteMember(invitationNum: index));
+                                  context.read<FarmBloc>().add(DeleteMember(
+                                      invitationId: myRoleList![index].id,
+                                      farmId: widget.farmId));
                                   pos = index;
                                 });
                               },

@@ -33,7 +33,6 @@ class _SensorDevicesState extends State<SensorDevices> {
             height: 430,
             child: CustomScrollView(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
               slivers: [
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
@@ -42,7 +41,6 @@ class _SensorDevicesState extends State<SensorDevices> {
                       final item = state.devices[index];
                       return Container(
                         margin: const EdgeInsets.only(bottom: 20),
-                        padding: EdgeInsets.only(top: 24),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(25),
@@ -60,8 +58,8 @@ class _SensorDevicesState extends State<SensorDevices> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 24,vertical: 24),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 24),
                               child: Column(
                                 children: [
                                   Row(
@@ -69,7 +67,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                       Image.asset(
                                         'assets/images/Group.png',
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 5,
                                       ),
                                       Text(item.name,
@@ -112,7 +110,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                       const SizedBox(width: 8),
                                       Text(
                                           "${widget.farmName} - ${item.fieldName}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Color(0xff616161),
                                             fontSize: 18,
                                             fontWeight: FontWeight.w500,
@@ -124,7 +122,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                   Row(
                                     children: [
                                       const SizedBox(width: 8),
-                                      Text("Firmware:  ",
+                                      const Text("Firmware:  ",
                                           style: TextStyle(
                                             color:
                                                 Color.fromARGB(212, 97, 97, 97),
@@ -132,8 +130,8 @@ class _SensorDevicesState extends State<SensorDevices> {
                                             fontWeight: FontWeight.w600,
                                             fontFamily: "manrope",
                                           )),
-                                      Text("${item.firmWareVersion}",
-                                          style: TextStyle(
+                                      Text(item.firmWareVersion,
+                                          style: const TextStyle(
                                             color: Color(0xFF000000),
                                             fontSize: 20,
                                             fontWeight: FontWeight.w600,
@@ -145,7 +143,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                   Row(
                                     children: [
                                       const SizedBox(width: 8),
-                                      Text("Battery:  ",
+                                      const Text("Battery:  ",
                                           style: TextStyle(
                                             color:
                                                 Color.fromARGB(212, 97, 97, 97),
@@ -153,23 +151,23 @@ class _SensorDevicesState extends State<SensorDevices> {
                                             fontWeight: FontWeight.w600,
                                             fontFamily: "manrope",
                                           )),
-                                      Container(
+                                      SizedBox(
                                         width: 90,
                                         height: 10,
                                         child: LinearProgressIndicator(
                                           value: item.batteryLevel! / 100,
                                           backgroundColor:
-                                              Color.fromARGB(63, 97, 97, 97),
+                                              const Color.fromARGB(63, 97, 97, 97),
                                           color: primaryColor,
                                           borderRadius:
                                               BorderRadius.circular(25),
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 10,
                                       ),
                                       Text("${item.batteryLevel}%",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Color(0xFF000000),
                                             fontSize: 20,
                                             fontWeight: FontWeight.w600,
@@ -177,14 +175,14 @@ class _SensorDevicesState extends State<SensorDevices> {
                                           )),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 24,
                                   ),
                                   Row(children: [
                                     Container(
                                         width: 100,
                                         height: 108,
-                                        padding: EdgeInsets.all(15),
+                                        padding: const EdgeInsets.all(15),
                                         decoration: BoxDecoration(
                                           color: const Color.fromARGB(
                                               25, 8, 159, 252),
@@ -200,19 +198,19 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                 // height: 24,
                                                 // width: 24,
                                               ),
-                                              SizedBox(height: 5),
+                                              const SizedBox(height: 5),
                                               Text(
                                                   "${item.moisture!.toStringAsFixed(2)}%",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Color(0xFF000000),
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily: "manrope",
                                                   )),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 5,
                                               ),
-                                              Text("Moisture",
+                                              const Text("Moisture",
                                                   style: TextStyle(
                                                     color: Color(0xFF757575),
                                                     fontSize: 16,
@@ -220,13 +218,19 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                     fontFamily: "manrope",
                                                   )),
                                             ])),
-                                        SizedBox(width: 16,),
+                                    const SizedBox(
+                                      width: 16,
+                                    ),
                                     Container(
                                         width: 100,
                                         height: 108,
-                                        padding: EdgeInsets.all(15),
+                                        padding: const EdgeInsets.all(15),
                                         decoration: BoxDecoration(
-                                          color: const Color.from(alpha: 0.098, red: 0.82, green: 0.165, blue: 0),
+                                          color: const Color.from(
+                                              alpha: 0.098,
+                                              red: 0.82,
+                                              green: 0.165,
+                                              blue: 0),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
@@ -239,19 +243,19 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                 // height: 24,
                                                 // width: 24,
                                               ),
-                                              SizedBox(height: 5),
+                                              const SizedBox(height: 5),
                                               Text(
                                                   "${item.temperature!.toStringAsFixed(2)}°C",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Color(0xFF000000),
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily: "manrope",
                                                   )),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 5,
                                               ),
-                                              Text("Temp",
+                                              const Text("Temp",
                                                   style: TextStyle(
                                                     color: Color(0xFF757575),
                                                     fontSize: 16,
@@ -259,11 +263,13 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                     fontFamily: "manrope",
                                                   )),
                                             ])),
-                                            SizedBox(width: 16,),
+                                    const SizedBox(
+                                      width: 16,
+                                    ),
                                     Container(
                                         width: 100,
                                         height: 108,
-                                        padding: EdgeInsets.all(15),
+                                        padding: const EdgeInsets.all(15),
                                         decoration: BoxDecoration(
                                           color: const Color(0x1825C462),
                                           borderRadius:
@@ -278,19 +284,19 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                 // height: 24,
                                                 // width: 24,
                                               ),
-                                              SizedBox(height: 5),
+                                              const SizedBox(height: 5),
                                               Text(
                                                   "${item.humidity!.toStringAsFixed(2)}°C",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Color(0xFF000000),
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily: "manrope",
                                                   )),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 5,
                                               ),
-                                              Text("Humidity",
+                                              const Text("Humidity",
                                                   style: TextStyle(
                                                     color: Color(0xFF757575),
                                                     fontSize: 16,
@@ -302,8 +308,8 @@ class _SensorDevicesState extends State<SensorDevices> {
                                 ],
                               ),
                             ),
-                            Divider(
-                              color: const Color.fromARGB(63, 13, 18, 28),
+                            const Divider(
+                              color: Color.fromARGB(63, 13, 18, 28),
                               thickness: 1,
                             ),
                             const SizedBox(height: 10),
@@ -314,48 +320,31 @@ class _SensorDevicesState extends State<SensorDevices> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      print("edit it");
+                                      print("maintaince");
                                     },
-                                    child: Image.asset('assets/images/edit.png',
-                                        width: 30, height: 30),
+                                    child: Image.asset(
+                                        'assets/images/Vector2.png',
+                                        width: 30,
+                                        height: 30),
                                   ),
                                   const SizedBox(width: 20),
                                   GestureDetector(
-                                    onTap: () {
-                                      context
-                                          .read<FieldBloc>()
-                                          .add(DeleteIrrigationUnitEvent(
-                                            farmId: item.farmId,
-                                            fieldId: item.fieldId,
-                                          ));
-                                      context.read<FieldBloc>().add(
-                                          OpenFarmIrrigationUnitsEvent(
-                                              farmId: item.farmId));
-                                    },
+                                    onTap: () {},
                                     child: Image.asset(
-                                        'assets/images/delete.png',
+                                        'assets/images/shape.png',
                                         width: 30,
                                         height: 30),
                                   ),
                                   const Spacer(),
-                                  Switch(
-                                    value: item.status == 2,
-                                    onChanged: (value) {
-                                      context.read<FieldBloc>().add(
-                                          IrrigationUnitsEditEvent(
-                                              fieldId: item.fieldId,
-                                              farmId: item.farmId,
-                                              name: item.name,
-                                              status: item.status == 2 ? 1 : 2,
-                                              newFieldId: item.fieldId));
-                                      context.read<FieldBloc>().add(
-                                          OpenFarmIrrigationUnitsEvent(
-                                              farmId: item.farmId));
+                                  GestureDetector(
+                                    onTap: () {
+                                      print("maintaince");
                                     },
-                                    activeColor: Colors.white,
-                                    activeTrackColor: primaryColor,
-                                    inactiveTrackColor: Colors.grey[300],
-                                    inactiveThumbColor: Colors.white,
+                                    child: Image.asset(
+                                        'assets/images/delete.png',
+                                        color: Colors.red,
+                                        width: 30,
+                                        height: 30),
                                   ),
                                 ],
                               ),
@@ -370,10 +359,10 @@ class _SensorDevicesState extends State<SensorDevices> {
               ],
             ),
           );
-        } else if (state is IrrigationUnitEmpty) {
+        } else if (state is SensorUnitsEmpty) {
           return const SizedBox(
               child: Center(
-                  child: Text('No irrigation units found',
+                  child: Text('No Sensor units found',
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w600,

@@ -64,7 +64,7 @@ class _RulesState extends State<Rules> {
         }
       },
       builder: (context, state) {
-        return Container(
+        return SizedBox(
             width: 390,
             height: 665,
             child: Form(
@@ -368,7 +368,7 @@ class _RulesState extends State<Rules> {
                                       .addPostFrameCallback((_) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: const Text("Please Enter Rule Type"),
+                                        content: Text("Please Enter Rule Type"),
                                       ),
                                     );
                                   });

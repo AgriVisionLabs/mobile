@@ -53,7 +53,7 @@ class _SelectFieldState extends State<SelectField> {
         }
       },
       builder: (context, state) {
-        return Container(
+        return SizedBox(
           width: 380,
           height: 630,
           child:

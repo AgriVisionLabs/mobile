@@ -31,7 +31,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
   TextEditingController nextStep2 = TextEditingController();
   
   FieldModel? fieldmodel;
-  String farmid = CacheHelper.getData(key: 'farmId');
+  
   //default value
   FieldBloc(this.api) : super(FieldInitial(const [])) {
     //get all farms FarmScreen
@@ -68,7 +68,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       // bloc takes stream of event and give stream of states
       try {
         final response =
-            await api.post("${EndPoints.feild}/$farmid/Fields", data: {
+            await api.post("${EndPoints.feild}/${event.farmId}/Fields", data: {
           ApiKey.name: name.text,
           ApiKey.area: area.text,
           ApiKey.crop: int.tryParse(cropType.text),

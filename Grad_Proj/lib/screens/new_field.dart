@@ -56,7 +56,8 @@ class _NewFeildState extends State<NewFeild> {
                     if (currentIndex == 0)
                       BasicInfoField(
                           onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex)
+                          currentIndex: currentIndex,
+                          farmId: widget.farmId,)
                     else if (currentIndex == 1)
                       Irrigation(
                           onInputChanged: _onInputChanged,

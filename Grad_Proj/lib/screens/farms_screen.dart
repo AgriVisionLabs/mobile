@@ -244,7 +244,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EditFarm(farm: [])));
+                                builder: (context) => EditFarm(farmId: farm.farmId!)));
                       },
                       child: Image.asset('assets/images/edit.png',
                           width: 30, height: 30),

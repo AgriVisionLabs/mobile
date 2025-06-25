@@ -1,43 +1,90 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
-import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/models/farm_model.dart';
 
 import '../Components/color.dart';
 
 class BasicInfo extends StatefulWidget {
-  final Function(int) onInputChanged;
+  final Function(int, String) onInputChanged;
   final int currentIndex;
   final bool editFarm;
+  final FarmModel? farm;
   const BasicInfo(
       {super.key,
       required this.onInputChanged,
       required this.currentIndex,
-      this.editFarm = false});
+      this.editFarm = false,
+      this.farm});
 
   @override
   State<BasicInfo> createState() => _BasicInfoState();
 }
 
 class _BasicInfoState extends State<BasicInfo> {
-  GlobalKey<FormState> formstate = GlobalKey();
-  String? selectedValue;
+  int? selectedValue;
   int index = 0;
-  List farm = [];
   Map soil = {'Sandy': 1, 'Clay': 2, 'Loamy': 3};
-  List editFarm = ['Green Farm', '900', 'Ismailia', 'Clay'];
+  String? getSoilName(int soiltype) {
+    return soil.entries
+        .firstWhere(
+          (entry) => entry.value == soiltype,
+          orElse: () => const MapEntry('Unknown', null),
+        )
+        .key;
+  }
+
+  String? soilName;
   String description = '';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.editFarm && widget.farm != null) {
+      final farm = widget.farm!;
+      context.read<FarmBloc>().name.text = farm.name ?? '';
+      context.read<FarmBloc>().area.text = farm.area?.toString() ?? '';
+      context.read<FarmBloc>().location.text = farm.location ?? '';
+      selectedValue = farm.soilType;
+      soilName = getSoilName(farm.soilType!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FarmBloc, FarmState>(
       listener: (context, state) {
-        if (state is FarmInfoSuccess) {
+        if (state is FarmEditSuccess) {
           index = widget.currentIndex;
           index++;
-          widget.onInputChanged(index);
-          context.read<FarmBloc>().add(ViewFarmDetails(
-            farmId: CacheHelper.getData(key: 'farmId'),
-          ));
+          widget.onInputChanged(index, widget.farm!.farmId!);
+          context
+              .read<FarmBloc>()
+              .add(ViewFarmMembers(farmId: widget.farm!.farmId!));
+        } else if (state is FarmEditFailure) {
+          if (state.errMessage == 'Conflict') {
+            description = state.errors[0]['description'];
+          }
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
+          context.read<FarmBloc>().createFarmFormKey.currentState!.validate();
+        }
+        if (state is FarmInfoSuccess) {
+          context.read<FarmBloc>().createFarmFormKey.currentState!.validate();
+          context
+              .read<FarmBloc>()
+              .add(ViewFarmMembers(farmId: state.farm.farmId!));
+          index = widget.currentIndex;
+          index++;
+          widget.onInputChanged(index, state.farm.farmId!);
         } else if (state is FarmInfoFailure) {
           if (state.errMessage == 'Conflict') {
             description = state.errors[0]['description'];
@@ -50,14 +97,14 @@ class _BasicInfoState extends State<BasicInfo> {
               ),
             );
           });
+          context.read<FarmBloc>().createFarmFormKey.currentState!.validate();
         }
-        context.read<FarmBloc>().createFarmFormKey.currentState!.validate();
       },
       builder: (context, state) {
         return Container(
           color: Colors.white,
           width: 380,
-          height: 680,
+          height: 660,
           child: Form(
               key: context.read<FarmBloc>().createFarmFormKey,
               child: Column(
@@ -78,9 +125,12 @@ class _BasicInfoState extends State<BasicInfo> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
-                        hintText:
-                            widget.editFarm ? editFarm[0] : "Enter Farm Name",
-                        hintStyle: const TextStyle(color: borderColor),
+                        hintText: widget.editFarm
+                            ? widget.farm!.name
+                            : "Enter Farm Name",
+                        hintStyle: widget.editFarm
+                            ? const TextStyle(color: Colors.black)
+                            : const TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
                           borderSide:
@@ -132,9 +182,12 @@ class _BasicInfoState extends State<BasicInfo> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
-                        hintText:
-                            widget.editFarm ? editFarm[1] : "Enter Farm Size",
-                        hintStyle: const TextStyle(color: borderColor),
+                        hintText: widget.editFarm
+                            ? "${widget.farm?.area} "
+                            : "Enter Farm Size",
+                        hintStyle: widget.editFarm
+                            ? const TextStyle(color: Colors.black)
+                            : const TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
                           borderSide:
@@ -183,9 +236,11 @@ class _BasicInfoState extends State<BasicInfo> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
                         hintText: widget.editFarm
-                            ? editFarm[2]
+                            ? widget.farm!.location
                             : "Enter Farm Location",
-                        hintStyle: const TextStyle(color: borderColor),
+                        hintStyle: widget.editFarm
+                            ? const TextStyle(color: Colors.black)
+                            : const TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
                           borderSide:
@@ -239,10 +294,10 @@ class _BasicInfoState extends State<BasicInfo> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(25),
                           border: Border.all(color: borderColor, width: 3)),
-                      child: DropdownButton(
+                      child: DropdownButtonFormField(
                         dropdownColor: Colors.white,
                         isExpanded: true,
-                        hint: Text(widget.editFarm ? editFarm[3] : 'Soil Type'),
+                        hint: Text(widget.editFarm ? soilName! : 'Soil Type'),
                         style: const TextStyle(
                             fontFamily: 'Manrope',
                             color: borderColor,
@@ -259,80 +314,74 @@ class _BasicInfoState extends State<BasicInfo> {
                             selectedValue = value;
                           });
                         },
-                        items:
-                            soil.entries.map<DropdownMenuItem<String>>((entry) {
+                        items: soil.entries.map<DropdownMenuItem<int>>((entry) {
                           return DropdownMenuItem(
-                            value: entry.value.toString(),
+                            value: entry.value,
                             child: Text(entry.key),
                           );
                         }).toList(),
                       ),
                     ),
                     const Spacer(),
-                    widget.editFarm
-                        ? const SizedBox(
-                            height: 1,
-                          )
-                        : Align(
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                                height: 60,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 7),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: primaryColor,
-                                ),
-                                child: TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        if (selectedValue == null) {
-                                          ScaffoldMessenger.of(context)
-                                              .clearSnackBars();
-                                          WidgetsBinding.instance
-                                              .addPostFrameCallback((_) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                    "Please Enter Soil Type"),
-                                              ),
-                                            );
-                                          });
-                                        } else if (widget.editFarm == true) {
-                                          index = widget.currentIndex;
-                                          index++;
-                                          widget.onInputChanged(index);
-                                        } else {
-                                          context
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Container(
+                          height: 60,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 7),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: primaryColor,
+                          ),
+                          child: TextButton(
+                              onPressed: () {
+                                if (widget.editFarm) {
+                                  // Edit event
+                                  context.read<FarmBloc>().add(
+                                        EditFarmEvent(
+                                          farmId: widget.farm!.farmId!,
+                                          farmName: context
                                               .read<FarmBloc>()
-                                              .soilType
-                                              .text = selectedValue!;
-                                          context
+                                              .name
+                                              .text,
+                                          area: int.tryParse(
+                                            context.read<FarmBloc>().area.text,
+                                          )!,
+                                          location: context
                                               .read<FarmBloc>()
-                                              .add(CreateFarmEvent());
-                                        }
-                                      });
-                                    },
-                                    child: const SizedBox(
-                                      width: 70,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'Next',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          SizedBox(width: 3),
-                                          Icon(Icons.arrow_forward_ios,
-                                              color: Colors.white, size: 20),
-                                        ],
+                                              .location
+                                              .text,
+                                          soilType: selectedValue!,
+                                        ),
+                                      );
+                                } else {
+                                  // Create event
+                                  context.read<FarmBloc>().soilType.text =
+                                      selectedValue.toString();
+                                  context
+                                      .read<FarmBloc>()
+                                      .add(CreateFarmEvent());
+                                }
+                              },
+                              child: const SizedBox(
+                                width: 70,
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Next',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                    ))),
-                          )
+                                    ),
+                                    SizedBox(width: 3),
+                                    Icon(Icons.arrow_forward_ios,
+                                        color: Colors.white, size: 20),
+                                  ],
+                                ),
+                              ))),
+                    )
                   ])),
         );
       },

@@ -8,8 +8,9 @@ import '../Components/color.dart';
 class BasicInfoField extends StatefulWidget {
   final Function(int) onInputChanged;
   final int currentIndex;
+  final String farmId;
   const BasicInfoField(
-      {super.key, required this.onInputChanged, required this.currentIndex});
+      {super.key, required this.onInputChanged, required this.currentIndex ,required this.farmId});
 
   @override
   State<BasicInfoField> createState() => _BasicInfoFieldState();
@@ -223,7 +224,9 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                           ),
                           child: TextButton(
                               onPressed: () {
-                                context.read<FieldBloc>().add(CreateFieldEvent());
+                                context.read<FieldBloc>().add(CreateFieldEvent(
+                                  farmId: widget.farmId
+                                ));
                               },
                               child: const SizedBox(
                                 width: 70,

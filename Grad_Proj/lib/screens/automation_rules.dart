@@ -33,7 +33,6 @@ class _AutomationRulesState extends State<AutomationRules> {
             height: state.rules.length == 1 ? 250 : 520,
             child: CustomScrollView(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
               slivers: [
                 SliverList(
                   delegate: SliverChildBuilderDelegate(

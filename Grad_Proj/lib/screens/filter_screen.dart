@@ -401,8 +401,9 @@ class _FilterScreenState extends State<FilterScreen> {
                                         context.read<FieldBloc>().add(
                                             OpenFarmIrrigationUnitsEvent(
                                                 farmId: widget.farmId));
-                                        if(selectedstatus == null || selectedstatus!.isEmpty)
-                                        Navigator.pop(context);
+                                        if(selectedstatus == null || selectedstatus!.isEmpty) {
+                                          Navigator.pop(context);
+                                        }
                                       } else {
                                         context.read<FieldBloc>().add(
                                             OpenFieldIrrigationUnitsEvent(

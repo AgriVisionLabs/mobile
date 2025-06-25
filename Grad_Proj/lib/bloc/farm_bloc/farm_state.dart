@@ -21,16 +21,24 @@ class FarmsLoaded extends FarmState {
 }
 
 //معندوش ولا farm
-class FarmEmpty extends FarmState {
-  final List farmList;
-  FarmEmpty(this.farmList);
-}
+class FarmEmpty extends FarmState {}
 
 //farm ظهرت
-class FarmSuccess extends FarmState {}
+class FarmSuccess extends FarmState {
+  final FarmModel farm;
+  FarmSuccess({
+    required this.farm,
+  });
+}
 
 // دخلنا data و اتقبلت في basic info
-class FarmInfoSuccess extends FarmState {}
+class FarmInfoSuccess extends FarmState {
+  final FarmModel farm;
+  FarmInfoSuccess({
+    required this.farm,
+  });
+  
+}
 
 //حصل مشكلة و احنا بنعرض ال farms
 final class FarmFailure extends FarmState {
@@ -56,11 +64,9 @@ final class DeleteFarmFailure extends FarmState {
 
   DeleteFarmFailure({required this.errMessage, required this.errors});
 }
+
+
 class AddingMember extends FarmState {}
-
-class LoadingMember extends FarmState {}
-
-class DeletingMember extends FarmState {}
 
 final class AddingMemberFailure extends FarmState {
   final String errMessage;
@@ -69,6 +75,8 @@ final class AddingMemberFailure extends FarmState {
   AddingMemberFailure({required this.errMessage, required this.errors});
 }
 
+
+class DeletingMember extends FarmState {}
 final class DeletingMemberFailure extends FarmState {
   final String errMessage;
   final dynamic errors;
@@ -76,9 +84,27 @@ final class DeletingMemberFailure extends FarmState {
   DeletingMemberFailure({required this.errMessage, required this.errors});
 }
 
+
+class NoMember extends FarmState {}
+class LoadingMember extends FarmState {
+  final List<InvitationModel> invites;
+  LoadingMember({
+    required this.invites,
+  });
+}
 final class LoadingMemberFailure extends FarmState {
   final String errMessage;
   final dynamic errors;
 
   LoadingMemberFailure({required this.errMessage, required this.errors});
+}
+
+class FarmEditSuccess extends FarmState {}
+
+//حصل مشكلة و احنا بنعرض ال farms
+final class FarmEditFailure extends FarmState {
+  final String errMessage;
+  final dynamic errors;
+
+  FarmEditFailure({required this.errMessage, required this.errors});
 }
