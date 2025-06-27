@@ -44,7 +44,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     });
 
     // Start a timer that will enable the button after 10 minutes
-    _timer = Timer(const Duration(minutes: 10), () {
+    _timer = Timer(const Duration(minutes: 1), () {
       setState(() {
         _isButtonEnabled = true; // Enable the button after 10 minutes
       });

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
@@ -135,8 +137,8 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                                 ],
                               ),
                             ),
-                            Divider(
-                              color: const Color(0xff0D121C).withOpacity(0.25),
+                            const Divider(
+                              color: Color.fromARGB(63, 13, 18, 28),
                               thickness: 1,
                             ),
                             const SizedBox(height: 10),
@@ -161,6 +163,7 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                                             farmId: item.farmId,
                                             fieldId: item.fieldId,
                                           ));
+                                      print("==========Delted===========");
                                       context.read<FieldBloc>().add(
                                           OpenFarmIrrigationUnitsEvent(
                                               farmId: item.farmId));
@@ -181,6 +184,7 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                                               name: item.name,
                                               status: item.status == 2 ? 1 : 2,
                                               newFieldId: item.fieldId));
+                                      print("==========Edit==========");
                                       context.read<FieldBloc>().add(
                                           OpenFarmIrrigationUnitsEvent(
                                               farmId: item.farmId));

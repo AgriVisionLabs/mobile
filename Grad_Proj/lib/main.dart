@@ -19,6 +19,7 @@ import 'package:grd_proj/screens/login_screen.dart';
 import 'package:grd_proj/screens/more_screen.dart';
 import 'package:grd_proj/screens/new_farm.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
+import 'package:grd_proj/screens/sensor_view.dart';
 import 'package:grd_proj/screens/verification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
@@ -98,9 +99,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: 
+      SensorView()
       // SplashScreen()
-      LoginScreen()
-      // HomeScreen()
+      // LoginScreen()
+      // HomeScreen(initialIndex: 3,)
     );
   }
 }

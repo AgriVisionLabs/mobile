@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:grd_proj/core/api/api_consumer.dart';
 import 'package:grd_proj/core/api/end_points.dart';
 import 'package:grd_proj/core/errors/exception.dart';
 import 'package:grd_proj/models/automation_rule_model.dart';
+import 'package:grd_proj/models/task_model.dart';
 
 part 'control_event.dart';
 part 'control_state.dart';
@@ -21,6 +23,14 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
   TextEditingController startTime = TextEditingController();
   TextEditingController endTime = TextEditingController();
   TextEditingController activeDays = TextEditingController();
+  GlobalKey<FormState> taskFormKey = GlobalKey();
+  TextEditingController assignedToId = TextEditingController();
+  TextEditingController title = TextEditingController();
+  TextEditingController description = TextEditingController();
+  TextEditingController dueDate = TextEditingController();
+  TextEditingController itemPriority = TextEditingController();
+  TextEditingController category = TextEditingController();
+
   ControlBloc(this.api) : super(ControlInitial()) {
     on<AddAutomationRulesEvent>((event, emit) async {
       // bloc takes stream of event and give stream of states
@@ -30,16 +40,22 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
             data: {
               ApiKey.name: ruleName.text,
               ApiKey.type: int.parse(type.text),
-              ApiKey.minThresholdValue: int.tryParse(type.text) ==1 ? null : minThresholdValue.text,
-              ApiKey.maxThresholdValue: int.tryParse(type.text) ==1 ? null : maxThresholdValue.text,
-              ApiKey.targetSensorType: int.tryParse(type.text) ==1 ? null : int.tryParse(targetSensorType.text),
-              ApiKey.startTime: int.tryParse(type.text) ==0 ? null :startTime.text,
-              ApiKey.endTime: int.tryParse(type.text) ==0 ? null :endTime.text,
-              ApiKey.activeDays: int.tryParse(type.text) ==0 ? null :activeDays.text,
+              ApiKey.minThresholdValue:
+                  int.tryParse(type.text) == 1 ? null : minThresholdValue.text,
+              ApiKey.maxThresholdValue:
+                  int.tryParse(type.text) == 1 ? null : maxThresholdValue.text,
+              ApiKey.targetSensorType: int.tryParse(type.text) == 1
+                  ? null
+                  : int.tryParse(targetSensorType.text),
+              ApiKey.startTime:
+                  int.tryParse(type.text) == 0 ? null : startTime.text,
+              ApiKey.endTime:
+                  int.tryParse(type.text) == 0 ? null : endTime.text,
+              ApiKey.activeDays:
+                  int.tryParse(type.text) == 0 ? null : activeDays.text,
             });
         final rules = AutomationRuleModel.fromJson(response);
 
-        print(response);
         emit(AddAutomationRulesSuccess(rules: rules));
       } on ServerException catch (e) {
         emit(AddAutomationRulesFailure(
@@ -51,7 +67,6 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
       try {
         final response = await api.get(
             "${EndPoints.automationRules}/${event.farmId}/AutomationRules");
-        print(response);
         if (response is List && response.isNotEmpty) {
           final rules = response
               .map<AutomationRuleModel>(
@@ -73,7 +88,6 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
       try {
         final response = await api.get(
             "${EndPoints.automationRules}/${event.farmId}/fields/${event.fieldId}/AutomationRules/${event.ruleId}");
-        print(response);
         if (response is List && response.isNotEmpty) {
           final rules = response
               .map<AutomationRuleModel>(
@@ -93,7 +107,6 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
 
     on<AutomationRulesEditEvent>((event, emit) async {
       try {
-        // ignore: unused_local_variable
         final response = await api.put(
             "${EndPoints.automationRules}/${event.farmId}/fields/${event.fieldId}/AutomationRules/${event.ruleId}",
             data: {
@@ -104,12 +117,12 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
               ApiKey.name: event.name,
               ApiKey.isEnabled: event.isEnabled,
               ApiKey.type: event.type,
-              ApiKey.maxThresholdValue: event.type==1? null: event.min,
-              ApiKey.minThresholdValue: event.type==1? null: event.max,
-              ApiKey.targetSensorType: event.type==1? null: event.target,
-              ApiKey.maxThresholdValue: event.type==0? null: event.start,
-              ApiKey.maxThresholdValue: event.type==0? null: event.end,
-              ApiKey.maxThresholdValue: event.type==0? null: event.days,
+              ApiKey.maxThresholdValue: event.type == 1 ? null : event.min,
+              ApiKey.minThresholdValue: event.type == 1 ? null : event.max,
+              ApiKey.targetSensorType: event.type == 1 ? null : event.target,
+              ApiKey.maxThresholdValue: event.type == 0 ? null : event.start,
+              ApiKey.maxThresholdValue: event.type == 0 ? null : event.end,
+              ApiKey.maxThresholdValue: event.type == 0 ? null : event.days,
             });
       } on ServerException catch (e) {
         emit(AutomationRulesEditFailure(
@@ -121,11 +134,97 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
       try {
         final response = await api.delete(
             '${EndPoints.automationRules}/${event.farmId}/fields/${event.fieldId}/AutomationRules/${event.ruleId}');
-        print(response);
+
       } on ServerException catch (e) {
         emit(DeleteAutomationRulesFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });
+
+    on<AddTaskEvent>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response = await api.post(
+            "${EndPoints.task}/${event.farmId}/fields/${event.fieldId}/Tasks",
+            data: {
+              ApiKey.assignedToId:
+                  assignedToId.text.isEmpty ? null : assignedToId.text,
+              ApiKey.title: title.text,
+              ApiKey.description:
+                  description.text.isEmpty ? null : description.text,
+              ApiKey.dueDate:
+                  dueDate.text.isEmpty ? null : dueDate.text.toString(),
+              ApiKey.targetSensorType: targetSensorType.text.isEmpty
+                  ? null
+                  : int.tryParse(targetSensorType.text),
+              ApiKey.itemPriority: int.parse(itemPriority.text),
+              ApiKey.category: int.parse(category.text),
+            });
+        final task = TaskModel.fromJson(response);
+
+        emit(AddTaskSuccess(task: task));
+      } on ServerException catch (e) {
+        emit(AddTaskFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    
+
+    on<OpenFarmTasksEvent>((event, emit) async {
+      try {
+        final response = await api
+            .get("${EndPoints.task}/${event.farmId}/Tasks");
+        if (response is List && response.isNotEmpty) {
+          final tasks = response
+              .map<TaskModel>((json) => TaskModel.fromJson(json))
+              .toList();
+          emit(ViewTasksSuccess(
+            tasks: tasks,
+          ));
+        } else {
+          emit(TasksEmpty());
+        }
+      } on ServerException catch (e) {
+        emit(ViewTasksFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<OpenTaskEvent>((event, emit) async {
+      try {
+        final response = await api
+            .get("${EndPoints.task}/${event.farmId}/Tasks/${event.taskId}");
+        final task = TaskModel.fromJson(response);
+        emit(ViewTaskSuccess(task: task));
+      } on ServerException catch (e) {
+        emit(ViewTaskFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<DeteteTaskEvent>((event, emit) async {
+      try {
+        final response = await api
+            .delete("${EndPoints.task}/${event.farmId}/Tasks/${event.taskId}");
+        emit(DeleteTaskSuccess());
+      } on ServerException catch (e) {
+        emit(DeleteTaskFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<CompleteTaskEvent>((event, emit) async {
+      try {
+        final response = await api
+            .post("${EndPoints.task}/${event.farmId}/Tasks/${event.taskId}/complete");
+        emit(DeleteTaskSuccess());
+      } on ServerException catch (e) {
+        emit(DeleteTaskFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+
   }
 }

@@ -75,4 +75,48 @@ class DeleteAutomationRulesEvent extends ControlEvent {
   
 }
 
+class AddTaskEvent extends ControlEvent {
+  final String farmId;
+  final String fieldId;
+  AddTaskEvent({
+    required this.farmId,
+    required this.fieldId,
+  });
+  
+}
+
+class OpenFarmTasksEvent extends ControlEvent {
+  final String farmId;
+  OpenFarmTasksEvent({
+    required this.farmId,
+  });
+}
+
+class OpenTaskEvent extends ControlEvent {
+  final String farmId;
+  final String taskId;
+  OpenTaskEvent({
+    required this.farmId,
+    required this.taskId,
+  });
+}
+
+class DeteteTaskEvent extends ControlEvent {
+  final String farmId;
+  final String taskId;
+  DeteteTaskEvent({
+    required this.farmId,
+    required this.taskId,
+  });
+}
+
+class CompleteTaskEvent extends ControlEvent {
+  final String farmId;
+  final String taskId;
+  CompleteTaskEvent({
+    required this.farmId,
+    required this.taskId,
+  });
+}
+
 

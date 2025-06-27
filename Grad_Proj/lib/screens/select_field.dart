@@ -41,7 +41,7 @@ class _SelectFieldState extends State<SelectField> {
           });
         } else if (state is FieldLoaded) {
           fields = state.fields;
-        } else if (state is FieldFailure) {
+        } else if (state is FieldLoadingFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(

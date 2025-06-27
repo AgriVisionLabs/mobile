@@ -59,7 +59,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         }
         print(response);
       } on ServerException catch (e) {
-        emit(FieldFailure(
+        emit(FieldLoadingFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });
@@ -100,11 +100,8 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       try {
         final response = await api.get(
             "${EndPoints.farmControl}/${event.farmId}/Fields/${event.fieldId}");
-        print(response);
-        CacheHelper.saveData(key: 'fieldname', value: response['name']);
-        CacheHelper.saveData(key: 'area', value: response['area']);
-        CacheHelper.saveData(key: 'crop', value: response['crop']);
-        emit(FieldSuccess());
+        fieldmodel = FieldModel.fromJson(response);
+        emit(FieldSuccess(field: fieldmodel!));
       } on ServerException catch (e) {
         emit(FieldFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -181,6 +178,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
               ApiKey.status: event.status,
               ApiKey.newFieldId: event.newFieldId,
             });
+        emit(IrrigationUnitEditSuccess());
       } on ServerException catch (e) {
         emit(IrrigationUnitEditFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));

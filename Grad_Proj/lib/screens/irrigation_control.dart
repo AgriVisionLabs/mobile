@@ -23,8 +23,6 @@ class IrrigationConrtol extends StatefulWidget {
 class _IrrigationConrtolState extends State<IrrigationConrtol> {
   String? selectedFarmId;
   String? selectedFarmName;
-  bool active = true;
-  bool isSwitched = false;
   List<FarmModel>? farms;
 
   @override

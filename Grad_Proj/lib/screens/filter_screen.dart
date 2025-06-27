@@ -28,7 +28,7 @@ class _FilterScreenState extends State<FilterScreen> {
     context.read<FieldBloc>().add(OpenFieldEvent(farmId: widget.farmId));
     return BlocBuilder<FieldBloc, FieldState>(
       builder: (context, state) {
-        if (state is FieldFailure) {
+        if (state is FieldLoadingFailure) {
           return Align(
               alignment: Alignment.topCenter,
               child: Container(

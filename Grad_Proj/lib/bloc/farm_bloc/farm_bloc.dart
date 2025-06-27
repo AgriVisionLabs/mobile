@@ -158,6 +158,7 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
 
     on<EditFarmEvent>((event, emit) async {
       try {
+        // ignore: unused_local_variable
         final response =
             await api.put("${EndPoints.farmControl}/${event.farmId}", data: {
           ApiKey.name: event.farmName,

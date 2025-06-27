@@ -4,7 +4,7 @@ class FieldModel {
   final int area;
   final bool isActive;
   final String farmId;
-  final int crop;
+  final int? crop;
 
   FieldModel({
     required this.id,
@@ -12,7 +12,7 @@ class FieldModel {
     required this.area,
     required this.isActive,
     required this.farmId,
-    required this.crop,
+    this.crop,
   });
 
   // Factory to create object from JSON

@@ -46,6 +46,7 @@ class _RigesterState extends State<Rigester> {
         passwordController.clear();
       } else if (state is SignUpFailure) {
         if (state.errMessage == 'Conflict') {
+          response = null;
           description = state.errors[0]['description'];
         } else {
           response = UnAuthorizeModel.fromJson(state.errors);
@@ -58,8 +59,8 @@ class _RigesterState extends State<Rigester> {
             ),
           );
         });
-        context.read<UserCubit>().signUpFormKey.currentState!.validate();
       }
+      context.read<UserCubit>().signUpFormKey.currentState!.validate();
     }, builder: (context, state) {
       return Scaffold(
         body: SingleChildScrollView(

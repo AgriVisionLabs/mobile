@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/screens/irrigation.dart';
 import 'package:grd_proj/screens/select_field.dart';
@@ -6,7 +8,7 @@ import '../Components/color.dart';
 
 class AddIrrigationUnit extends StatefulWidget {
   final String farmId;
-  const AddIrrigationUnit({super.key , required this.farmId});
+  const AddIrrigationUnit({super.key, required this.farmId});
 
   @override
   State<AddIrrigationUnit> createState() => _AddIrrigationUnitState();
@@ -14,7 +16,7 @@ class AddIrrigationUnit extends StatefulWidget {
 
 class _AddIrrigationUnitState extends State<AddIrrigationUnit> {
   String? selectedValue;
-  
+
   int currentIndex = 0;
   List field = [];
   void _onInputChanged(int index) {
@@ -53,15 +55,18 @@ class _AddIrrigationUnitState extends State<AddIrrigationUnit> {
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                       SelectField(farmId: widget.farmId , onInputChanged: _onInputChanged,
+                      SelectField(
+                          farmId: widget.farmId,
+                          onInputChanged: _onInputChanged,
                           currentIndex: currentIndex)
                     else if (currentIndex == 1)
                       Irrigation(
-                         fieldId: CacheHelper.getData(key: 'fieldId'),
-                          farmId: widget.farmId,
-                          onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex,
-                          form: false,),
+                        fieldId: CacheHelper.getData(key: 'fieldId'),
+                        farmId: widget.farmId,
+                        onInputChanged: _onInputChanged,
+                        currentIndex: currentIndex,
+                        form: false,
+                      ),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -113,6 +118,9 @@ class _AddIrrigationUnitState extends State<AddIrrigationUnit> {
                 const Spacer(),
                 IconButton(
                   onPressed: () {
+                    context.read<FieldBloc>().add(OpenFarmIrrigationUnitsEvent(
+                          farmId: widget.farmId,
+                        ));
                     Navigator.pop(context);
                   },
                   icon: const Icon(Icons.close_rounded,
@@ -179,7 +187,8 @@ class _AddIrrigationUnitState extends State<AddIrrigationUnit> {
                     ],
                   ),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 25, left: 10, right: 10),
+                    margin:
+                        const EdgeInsets.only(bottom: 25, left: 10, right: 10),
                     width: 100,
                     height: 1,
                     color: const Color(0xFF333333),
@@ -188,6 +197,4 @@ class _AddIrrigationUnitState extends State<AddIrrigationUnit> {
               );
             }));
   }
-
- 
 }

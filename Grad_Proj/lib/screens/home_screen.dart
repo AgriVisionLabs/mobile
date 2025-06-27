@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/user_cubit.dart';
 import 'package:grd_proj/bloc/user_state.dart';
 import 'package:grd_proj/screens/Login_Screen.dart';
+import 'package:grd_proj/screens/disease_detection.dart';
 import 'package:grd_proj/screens/fields_screen.dart';
 import 'package:grd_proj/screens/irrigation_control.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
@@ -61,7 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
     const MoreScreen(),
     const FieldsScreen(),
     const IrrigationConrtol(),
-    const SensorAndDevices()
+    const SensorAndDevices(),
+    const DiseaseDetection()
   ];
 
   void _onItemTapped(int index) {

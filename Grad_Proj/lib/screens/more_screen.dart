@@ -75,7 +75,10 @@ Widget build(BuildContext context) {
           ),
         SizedBox(width:32),
         GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context,
+              MaterialPageRoute(builder: (context) => HomeScreen(initialIndex: 8,)));
+            },
             child : Container(
               width: 180,
               height: 125,

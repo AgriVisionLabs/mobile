@@ -15,6 +15,7 @@ class EndPoints {
   static const String irrigation = '/farms';
   static const String sensor = '/farms';
   static const String automationRules = '/farms';
+  static const String task = '/farms';
   static const String FarmRoles = '/FarmRoles';
 }
 
@@ -60,4 +61,10 @@ class ApiKey{
   static String automationRuleId = 'automationRuleId';
   static String requesterId = 'requesterId';
   static String isEnabled = 'isEnabled';
+  static String assignedToId = 'assignedToId';
+  static String title = 'title';
+  static String description = 'description';
+  static String dueDate = 'dueDate';
+  static String itemPriority = 'itemPriority';
+  static String category = 'category';
 }

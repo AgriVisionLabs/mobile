@@ -23,8 +23,20 @@ class FieldEmpty extends FieldState {
   
 }
 
+final class FieldLoadingFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+  
+  FieldLoadingFailure({required this.errMessage,required this.errors});
+}
+
 //fields ظهرت
-class FieldSuccess extends FieldState{}
+class FieldSuccess extends FieldState {
+  final FieldModel field;
+  FieldSuccess({
+    required this.field,
+  });
+}
 
 // دخلنا data و اتقبلت في basic info
 class FieldInfoSuccess extends FieldState {}

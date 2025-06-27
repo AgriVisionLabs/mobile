@@ -34,7 +34,7 @@ class _IrrigationState extends State<Irrigation> {
   bool addOne = true;
   int index = 0;
   String description = '';
-  List<IrrigationDevice>? devices;
+  IrrigationDevice? devices;
   void _onInputChanged(String serialNumScaned) {
     setState(() {
       print(
@@ -83,13 +83,15 @@ class _IrrigationState extends State<Irrigation> {
               .addIrrigationUnitFormKey
               .currentState!
               .validate();
+          context.read<FieldBloc>().add(OpenFarmIrrigationUnitsEvent(
+                farmId: widget.farmId,
+              ));
+              context.read<FieldBloc>().irrigationSerialNum.clear();
+              context.read<FieldBloc>().irrigationUnitName.clear();
           if (widget.form == false) {
             index = widget.currentIndex;
             index++;
             widget.onInputChanged(index);
-            context.read<FieldBloc>().add(OpenFarmIrrigationUnitsEvent(
-                  farmId: widget.farmId,
-                ));
             Navigator.pop(context);
           } else {
             addOne = !addOne;
