@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/sensor_model.dart';
 import 'package:grd_proj/screens/sensor_edit.dart';
@@ -35,6 +37,7 @@ class SensorView extends StatelessWidget {
               const Spacer(),
               IconButton(
                 onPressed: () {
+                  context.read<FieldBloc>().add(OpenFarmSensorUnitsEvent(farmId: sensor.farmId));
                   Navigator.pop(context);
                 },
                 icon: const Icon(Icons.close_rounded,

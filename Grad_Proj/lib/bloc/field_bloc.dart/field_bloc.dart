@@ -240,10 +240,10 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       }
     });
 
-    on<OpenFieldIrrigationUnitsEvent>((event, emit) async {
+    on<OpenFieldSensorUnitsEvent>((event, emit) async {
       try {
         final response = await api.get(
-            "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits");
+            "${EndPoints.sensor}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}");
         print(response);
         final sensorUnit = SensorDevice.fromJson(response);
           emit(ViewFieldSensorUnitSuccess(

@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/field_model.dart';
-import 'package:grd_proj/models/irrigation_model.dart';
-import 'package:intl/intl.dart';
+import 'package:grd_proj/models/sensor_model.dart';
 
 class SensorEdit extends StatefulWidget {
   final String farm;
@@ -21,7 +20,7 @@ class _SensorEditState extends State<SensorEdit> {
   Map status = {'Active': 0, 'Inactive': 1, 'Mantenance': 2};
   int? selectedtype;
   String? selectedFieldId;
-  IrrigationDevice? device;
+  SensorDevice? device;
   List<FieldModel>? fields;
 
   @override
@@ -46,7 +45,7 @@ class _SensorEditState extends State<SensorEdit> {
               ),
             );
           });
-        } else if (state is ViewFieldIrrigationUnitSuccess) {
+        } else if (state is ViewFieldSensorUnitSuccess) {
           device = state.device;
           context.read<FieldBloc>().sensorUnitName.text = device!.name;
           selectedtype = device!.status;
@@ -178,7 +177,7 @@ class _SensorEditState extends State<SensorEdit> {
                               const SizedBox(
                                 height: 16,
                               ),
-                              const Text('Irrigation Unit Details',
+                              const Text('Sensor Details',
                                   style: TextStyle(
                                     fontFamily: 'Manrope',
                                     color: Color(0xFF616161),
@@ -229,12 +228,13 @@ class _SensorEditState extends State<SensorEdit> {
                                     GestureDetector(
                                       onTap: () {
                                         context.read<FieldBloc>().add(
-                                            IrrigationUnitsEditEvent(
+                                            SensorUnitEditEvent(
+                                               sensorId: device!.id,
                                                 farmId: device!.farmId,
                                                 fieldId: device!.fieldId,
                                                 name: context
                                                     .read<FieldBloc>()
-                                                    .irrigationUnitName
+                                                    .sensorUnitName
                                                     .text,
                                                 newFieldId: selectedFieldId!,
                                                 status: selectedtype!));
@@ -339,7 +339,7 @@ class _SensorEditState extends State<SensorEdit> {
                                         fontWeight: FontWeight.w600),
                                   ),
                                   Text(
-                                    "Sprinkle",
+                                    "combined sensor",
                                     style: TextStyle(
                                         color: borderColor,
                                         fontSize: 18,
@@ -648,10 +648,7 @@ class _SensorEditState extends State<SensorEdit> {
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      device!.lastMaintenance == null
-                                          ? "Not Exist"
-                                          : DateFormat('MMM dd, yyyy')
-                                              .format(device!.lastMaintenance!),
+                                      device!.lastMaintenance?? "Not Exist",
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 18,
@@ -684,10 +681,7 @@ class _SensorEditState extends State<SensorEdit> {
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      device!.nextMaintenance == null
-                                          ? "Not Exist"
-                                          : DateFormat('MMM dd, yyyy')
-                                              .format(device!.nextMaintenance!),
+                                      device!.nextMaintenance ?? "Not Exist",
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 18,
@@ -789,56 +783,133 @@ class _SensorEditState extends State<SensorEdit> {
                                 thickness: 1,
                               ),
                               const SizedBox(
-                                height: 10,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    "Last Operation",
-                                    style: TextStyle(
-                                        color: Color(0xFF616161),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 20),
-                                    width: 380,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(63, 159, 159, 159),
-                                      borderRadius: BorderRadius.circular(15),
+              height: 10,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "Last Reading",
+                  style: TextStyle(
+                      color: Color(0xFF616161),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 9, vertical: 10),
+                    width: 400,
+                    height: 160,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(63, 159, 159, 159),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                              width: 120,
+                              height: 104,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/water-outline.png',
+                                      height: 24,
+                                      width: 24,
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                    "Zone 3 active for 20 minutes",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text(
-                                    "Last Updated: ${DateFormat('MMM dd, yyyy')
-                                              .format(device!.lastUpdated) } at ${DateFormat('HH :MM')
-                                              .format(device!.lastUpdated)}",
-                                    style: const TextStyle(
-                                        color: Color(0xFF616161),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                      ]
+                                    const SizedBox(height: 5),
+                                    Text(
+                                        "${device!.moisture!.toStringAsFixed(2)}%",
+                                        style: const TextStyle(
+                                          color: Color(0xFF000000),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "manrope",
+                                        )),
+                                    const SizedBox(
+                                      height: 5,
                                     ),
-                                  )
-                                ],
-                              ),
+                                    const Text("Moisture",
+                                        style: TextStyle(
+                                          color: Color(0xFF757575),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "manrope",
+                                        )),
+                                  ])),
+                          Container(
+                              width: 120,
+                              height: 104,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/temp2.png',
+                                      // height: 24,
+                                      // width: 24,
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                        "${device!.temperature!.toStringAsFixed(2)}°C",
+                                        style: const TextStyle(
+                                          color: Color(0xFF000000),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "manrope",
+                                        )),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    const Text("Temp",
+                                        style: TextStyle(
+                                          color: Color(0xFF757575),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "manrope",
+                                        )),
+                                  ])),
+                          Container(
+                              width: 120,
+                              height: 104,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/Hum.png',
+                                      // height: 24,
+                                      // width: 24,
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                        "${device!.humidity!.toStringAsFixed(2)}°C",
+                                        style: const TextStyle(
+                                          color: Color(0xFF000000),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "manrope",
+                                        )),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    const Text("Humidity",
+                                        style: TextStyle(
+                                          color: Color(0xFF757575),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "manrope",
+                                        )),
+                                  ]))
+                        ]))])
                             ]),
                       ),
                     ),
