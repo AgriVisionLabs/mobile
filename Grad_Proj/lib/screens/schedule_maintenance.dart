@@ -15,27 +15,27 @@ class _ScheduleMaintenanceState extends State<ScheduleMaintenance> {
     return Scaffold(
       body: SafeArea(
           child: Container(
-        margin: EdgeInsets.all(24),
+        margin: const EdgeInsets.all(24),
         child: SingleChildScrollView(
             child: Column(
           children: [
             //Schedule Maintenance for Sensor Unit A1
-            Text("Schedule Maintenance For Sensor Unit A1",
-                style: const TextStyle(
+            const Text("Schedule Maintenance For Sensor Unit A1",
+                style: TextStyle(
                   color: Colors.black,
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
                   fontFamily: "manrope",
                 )),
-            SizedBox(height: 10),
-            Text("Schedule upcoming maintenance for this device.",
-                style: const TextStyle(
+            const SizedBox(height: 10),
+            const Text("Schedule upcoming maintenance for this device.",
+                style: TextStyle(
                   color: grayColor,
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                   fontFamily: "manrope",
                 )),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               GestureDetector(
                 onTap: () {},
@@ -75,7 +75,7 @@ class _ScheduleMaintenanceState extends State<ScheduleMaintenance> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
@@ -117,7 +117,7 @@ class _ScheduleMaintenanceState extends State<ScheduleMaintenance> {
                 ),
               ),
             ]),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
           ],
         )),
       )),

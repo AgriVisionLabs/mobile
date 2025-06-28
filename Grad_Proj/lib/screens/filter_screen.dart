@@ -399,12 +399,6 @@ class _FilterScreenState extends State<FilterScreen> {
                                             selectedFieldId ?? "",
                                             selectedstatus ?? "",
                                             selectedtype ?? "");
-
-                                        context
-                                            .read<FieldBloc>()
-                                            .add(OpenFarmIrrigationUnitsEvent(
-                                              farmId: widget.farmId,
-                                            ));
                                         Navigator.pop(context);
                                       }
                                     },

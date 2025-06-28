@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/bloc/control_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/screens/rules.dart';
 import 'package:grd_proj/screens/select_field.dart';
@@ -112,6 +114,9 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                 const Spacer(),
                 IconButton(
                   onPressed: () {
+                    context.read<ControlBloc>().add(OpenFarmAutomationRulesEvent(
+                          farmId: widget.farmId,
+                        ));
                     Navigator.pop(context);
                   },
                   icon: const Icon(Icons.close_rounded,

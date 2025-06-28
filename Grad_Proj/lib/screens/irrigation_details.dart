@@ -16,6 +16,7 @@ class IrrigationDetails extends StatefulWidget {
 }
 
 class _IrrigationDetailsState extends State<IrrigationDetails> {
+  @override
   void initState() {
     context
         .read<FieldBloc>()

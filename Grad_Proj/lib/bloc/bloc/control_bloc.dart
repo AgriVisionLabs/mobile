@@ -52,10 +52,17 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
               ApiKey.endTime:
                   int.tryParse(type.text) == 0 ? null : endTime.text,
               ApiKey.activeDays:
-                  int.tryParse(type.text) == 0 ? null : activeDays.text,
+                  int.tryParse(type.text) == 0 ? null : int.tryParse(activeDays.text),
             });
         final rules = AutomationRuleModel.fromJson(response);
-
+        ruleName.clear();
+        type.clear();
+        minThresholdValue.clear();
+        maxThresholdValue.clear();
+        targetSensorType.clear();
+        startTime.clear();
+        endTime.clear();
+        activeDays.clear();
         emit(AddAutomationRulesSuccess(rules: rules));
       } on ServerException catch (e) {
         emit(AddAutomationRulesFailure(
@@ -117,12 +124,12 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
               ApiKey.name: event.name,
               ApiKey.isEnabled: event.isEnabled,
               ApiKey.type: event.type,
-              ApiKey.maxThresholdValue: event.type == 1 ? null : event.min,
-              ApiKey.minThresholdValue: event.type == 1 ? null : event.max,
-              ApiKey.targetSensorType: event.type == 1 ? null : event.target,
-              ApiKey.maxThresholdValue: event.type == 0 ? null : event.start,
-              ApiKey.maxThresholdValue: event.type == 0 ? null : event.end,
-              ApiKey.maxThresholdValue: event.type == 0 ? null : event.days,
+              ApiKey.maxThresholdValue: event.type == 0 ? null : event.min,
+              ApiKey.minThresholdValue: event.type == 0 ? null : event.max,
+              ApiKey.targetSensorType: event.type == 0 ? null : event.target,
+              ApiKey.maxThresholdValue: event.type == 1 ? null : event.start,
+              ApiKey.maxThresholdValue: event.type == 1 ? null : event.end,
+              ApiKey.maxThresholdValue: event.type == 1 ? null : event.days,
             });
       } on ServerException catch (e) {
         emit(AutomationRulesEditFailure(

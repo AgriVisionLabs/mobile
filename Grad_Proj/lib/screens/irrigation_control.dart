@@ -2,9 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grd_proj/bloc/bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
-import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/screens/add_auomation_rules.dart';
 import 'package:grd_proj/screens/add_irrigation_unit.dart';
@@ -94,6 +92,7 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                         GestureDetector(
                           onTap: () {
                             if (selectedFarmId == null ) {
+                              // ignore: avoid_print
                               print("===================Forbidden=======================");
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 WidgetsBinding.instance
@@ -108,7 +107,7 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                               showDialog(
                                   context: context,
                                   barrierDismissible: true,
-                                  barrierColor: Colors.black.withOpacity(0.2),
+                                  barrierColor: const Color.fromARGB(5, 0, 0, 0),
                                   builder: (BuildContext context) {
                                     return FilterScreen(
                                       onInputChanged: _onInputChanged,
@@ -186,12 +185,6 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                         selectedFarmId = newValue;
                                         selectedFarmName =
                                             selectedFarm.first.name;
-                                        context.read<FieldBloc>().add(
-                                            OpenFarmIrrigationUnitsEvent(
-                                                farmId: selectedFarmId!));
-                                        context.read<ControlBloc>().add(
-                                            OpenFarmAutomationRulesEvent(
-                                                farmId: selectedFarmId!));
                                       });
                                     }
                                   },
@@ -241,6 +234,7 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                           farmId: selectedFarmId!)),
                                 );
                               } else {
+                                // ignore: avoid_print
                                 print(
                                     "===================Forbidden=======================");
                                 ScaffoldMessenger.of(context).clearSnackBars();
@@ -305,6 +299,7 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                             onPressed: () {
                               // Add your onPressed code here!
                               if (selectedFarmId == null) {
+                                // ignore: avoid_print
                                 print(
                                     "===================Forbidden=======================");
                                 ScaffoldMessenger.of(context).clearSnackBars();

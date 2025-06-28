@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/components/date_input_formatter.dart';
+import 'package:grd_proj/components/time_input_format.dart';
 
 class Rules extends StatefulWidget {
   final Function(int) onInputChanged;
@@ -23,14 +26,14 @@ class Rules extends StatefulWidget {
 }
 
 class _RulesState extends State<Rules> {
-  String? selectedtype;
+  int? selectedtype;
   int? type;
   String? description;
   int index = 0;
-  List<String> rules_types = [
-    "Threshold",
-    "Schedualed",
-  ];
+  Map rules_types = {
+    "Threshold": 0,
+    "Schedualed": 1,
+  };
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ControlBloc, ControlState>(
@@ -116,6 +119,8 @@ class _RulesState extends State<Rules> {
                           return "Please Enter Irrigation Unit Name";
                         } else if (value.length < 3 || value.length > 100) {
                           return "must be between 30 and 100 characters. You entered 2 characters.";
+                        }else if (description != null){
+                          return description;
                         }
                         return null;
                       },
@@ -138,7 +143,7 @@ class _RulesState extends State<Rules> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(25),
                           border: Border.all(color: borderColor, width: 2.5)),
-                      child: DropdownButton<String>(
+                      child: DropdownButtonFormField<int>(
                         hint: const Text("All Types",
                             style: TextStyle(
                               fontSize: 20,
@@ -160,190 +165,370 @@ class _RulesState extends State<Rules> {
                         onChanged: (newValue) {
                           setState(() {
                             selectedtype = newValue;
-                            type = newValue == "Threshold" ? 0 : 1;
                             context.read<ControlBloc>().type.text =
-                                type.toString();
+                                selectedtype!.toString();
                           });
                         },
-                        items: rules_types.map((type) {
-                          return DropdownMenuItem<String>(
-                            value: type,
-                            child: Text(type),
+                        items: rules_types.entries.map((type) {
+                          return DropdownMenuItem<int>(
+                            value: type.value,
+                            child: Text(type.key),
                           );
                         }).toList(),
                       ),
                     ),
-                    type == null
+                    selectedtype == null
                         ? const SizedBox(
                             height: 0,
                           )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 16),
-                              Text(
-                                  type == 1
-                                      ? "Start irrigationt time"
-                                      : 'Start irrigation threshold',
-                                  style: const TextStyle(
-                                    fontFamily: 'Manrope',
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: context
-                                    .read<ControlBloc>()
-                                    .minThresholdValue,
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 30, vertical: 17),
-                                  hintText: type == 1
-                                      ? "HH:MM:SS"
-                                      : "Enter Max Threshold Limit",
-                                  hintStyle:
-                                      const TextStyle(color: borderColor),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: borderColor, width: 3.0),
+                        : selectedtype == 0
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 16),
+                                  const Text('Start irrigation threshold',
+                                      style: TextStyle(
+                                        fontFamily: 'Manrope',
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                  const SizedBox(height: 10),
+                                  TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    controller: context
+                                        .read<ControlBloc>()
+                                        .minThresholdValue,
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 30, vertical: 17),
+                                      hintText: "Enter Min Threshold Limit",
+                                      hintStyle:
+                                          const TextStyle(color: borderColor),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: borderColor, width: 3.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: primaryColor, width: 3.0),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                    ),
+                                    autocorrect: false,
+                                    textCapitalization: TextCapitalization.none,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Please Enter Min Value";
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: primaryColor, width: 3.0),
+                                  const SizedBox(height: 16),
+                                  const Text('Stop irrigation threshold',
+                                      style: TextStyle(
+                                        fontFamily: 'Manrope',
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                  const SizedBox(height: 10),
+                                  TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    controller: context
+                                        .read<ControlBloc>()
+                                        .maxThresholdValue,
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 30, vertical: 17),
+                                      hintText: "Enter Max Threshold Limit",
+                                      hintStyle:
+                                          const TextStyle(color: borderColor),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: borderColor, width: 3.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: primaryColor, width: 3.0),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                    ),
+                                    autocorrect: false,
+                                    textCapitalization: TextCapitalization.none,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Please Enter Max Value";
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: errorColor, width: 3.0),
+                                  const SizedBox(height: 16),
+                                  const Text('Unit',
+                                      style: TextStyle(
+                                        fontFamily: 'Manrope',
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                  const SizedBox(height: 10),
+                                  TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    controller: context
+                                        .read<ControlBloc>()
+                                        .targetSensorType,
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 30, vertical: 17),
+                                      hintText: "Enter Unit",
+                                      hintStyle:
+                                          const TextStyle(color: borderColor),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: borderColor, width: 3.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: primaryColor, width: 3.0),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                    ),
+                                    autocorrect: false,
+                                    textCapitalization: TextCapitalization.none,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Please Enter Unit";
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: errorColor, width: 3.0),
+                                ],
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 16),
+                                  const Text("Start irrigationt time",
+                                      style: TextStyle(
+                                        fontFamily: 'Manrope',
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                  const SizedBox(height: 10),
+                                  TextFormField(
+                                    keyboardType: TextInputType.datetime,
+                                    controller:
+                                        context.read<ControlBloc>().startTime,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(8),
+                                      TimeInputFormatter()
+                                    ],
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 30, vertical: 17),
+                                      hintText: "HH:MM:SS",
+                                      hintStyle:
+                                          const TextStyle(color: borderColor),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: borderColor, width: 3.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: primaryColor, width: 3.0),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                    ),
+                                    autocorrect: false,
+                                    textCapitalization: TextCapitalization.none,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Please Enter Start Time";
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                ),
-                                autocorrect: false,
-                                textCapitalization: TextCapitalization.none,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Please Enter Irrigation Unit Name";
-                                  }
-                                  return null;
-                                },
+                                  const SizedBox(height: 16),
+                                  const Text("End irrigationt time",
+                                      style: TextStyle(
+                                        fontFamily: 'Manrope',
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                  const SizedBox(height: 10),
+                                  TextFormField(
+                                    keyboardType: TextInputType.datetime,
+                                    controller:
+                                        context.read<ControlBloc>().endTime,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(8),
+                                      TimeInputFormatter()
+                                    ],
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 30, vertical: 17),
+                                      hintText: "HH:MM:SS",
+                                      hintStyle:
+                                          const TextStyle(color: borderColor),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: borderColor, width: 3.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: primaryColor, width: 3.0),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                    ),
+                                    autocorrect: false,
+                                    textCapitalization: TextCapitalization.none,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Please Enter End Time";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(" Activation Days ",
+                                      style: TextStyle(
+                                        fontFamily: 'Manrope',
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                  const SizedBox(height: 10),
+                                  TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    controller:
+                                        context.read<ControlBloc>().activeDays,
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 30, vertical: 17),
+                                      hintText: "Number of Activate Days",
+                                      hintStyle:
+                                          const TextStyle(color: borderColor),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: borderColor, width: 3.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: primaryColor, width: 3.0),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                            color: errorColor, width: 3.0),
+                                      ),
+                                    ),
+                                    autocorrect: false,
+                                    textCapitalization: TextCapitalization.none,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Please Enter Number of Days";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 16),
-                              Text(
-                                  type == 1
-                                      ? "End irrigationt time"
-                                      : 'Stop irrigation threshold',
-                                  style: const TextStyle(
-                                    fontFamily: 'Manrope',
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: context
-                                    .read<ControlBloc>()
-                                    .maxThresholdValue,
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 30, vertical: 17),
-                                  hintText: type == 1
-                                      ? "HH:MM:SS"
-                                      : "Enter Min Threshold Limit",
-                                  hintStyle:
-                                      const TextStyle(color: borderColor),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: borderColor, width: 3.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: primaryColor, width: 3.0),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: errorColor, width: 3.0),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: errorColor, width: 3.0),
-                                  ),
-                                ),
-                                autocorrect: false,
-                                textCapitalization: TextCapitalization.none,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Please Enter Irrigation Unit Name";
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 16),
-                              Text(type == 1 ? " Activation Days " : 'Unit',
-                                  style: const TextStyle(
-                                    fontFamily: 'Manrope',
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: context
-                                    .read<ControlBloc>()
-                                    .targetSensorType,
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 30, vertical: 17),
-                                  hintText: type == 1
-                                      ? "Number of Activate Days"
-                                      : "Enter Unit",
-                                  hintStyle:
-                                      const TextStyle(color: borderColor),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: borderColor, width: 3.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: primaryColor, width: 3.0),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: errorColor, width: 3.0),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: errorColor, width: 3.0),
-                                  ),
-                                ),
-                                autocorrect: false,
-                                textCapitalization: TextCapitalization.none,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Please Enter Unit";
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ],
-                          ),
                     const Spacer(),
                     Align(
                       alignment: Alignment.bottomRight,

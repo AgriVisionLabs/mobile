@@ -24,7 +24,15 @@ class IrrigationDevices extends StatefulWidget {
 class _IrrigationDevicesState extends State<IrrigationDevices> {
   List<IrrigationDevice>? myDevices;
   int? tell;
-  String ? description;
+  String? description;
+  @override
+  void initState() {
+    context
+        .read<FieldBloc>()
+        .add(OpenFarmIrrigationUnitsEvent(farmId: widget.farmId));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FieldBloc, FieldState>(
@@ -34,17 +42,17 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content:  Text("Irrigation unit switched on"),
+                content: Text("Irrigation unit switched on"),
               ),
             );
           });
-        }else if (state is IrrigationUnitToggleFailure) {
+        } else if (state is IrrigationUnitToggleFailure) {
           description = state.errors[0]['description'];
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
-               SnackBar(
-                content:  Text(description!),
+              SnackBar(
+                content: Text(description!),
               ),
             );
           });

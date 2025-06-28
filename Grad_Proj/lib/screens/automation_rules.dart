@@ -25,33 +25,38 @@ class AutomationRules extends StatefulWidget {
 class _AutomationRulesState extends State<AutomationRules> {
   String description = '';
   @override
+  void initState() {
+    context
+        .read<ControlBloc>()
+        .add(OpenFarmAutomationRulesEvent(farmId: widget.farmId));
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ControlBloc, ControlState>(
       builder: (context, state) {
         if (state is ViewAutomationRulesFailure) {
-          if (state.errMessage == "Not Found") {
+          if (state.errMessage == "Not Found" ) {
             description = state.errors[0]['description'];
             ScaffoldMessenger.of(context).clearSnackBars();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(description),
-              ),
-            );
-          });
-          }else{
-
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(description),
+                ),
+              );
+            });
+          } else {
             ScaffoldMessenger.of(context).clearSnackBars();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errMessage),
-              ),
-            );
-          });
-
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errMessage),
+                ),
+              );
+            });
           }
-          
         } else if (state is ViewAutomationRulesSuccess) {
           return SizedBox(
             height: state.rules.length == 1 ? 250 : 520,
@@ -135,42 +140,38 @@ class _AutomationRulesState extends State<AutomationRules> {
                                       ],
                                     ),
                                     const SizedBox(height: 10),
-                                    item.type == 1
-                                        ? const SizedBox(
-                                            height: 0,
-                                          )
-                                        : Row(
-                                            children: [
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    'assets/images/Performance_indicators.png',
-                                                    width: 20,
-                                                    height: 20,
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Text(
-                                                      "Threshold : ${item.minThresholdValue} - ${item.maxThresholdValue}",
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xff0D121C),
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily: "manrope",
-                                                      )),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                    Row(
+                                      children: [
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/Performance_indicators.png',
+                                              width: 20,
+                                              height: 20,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                                item.type == 0
+                                                    ? "Threshold : ${item.minThresholdValue} - ${item.maxThresholdValue} ":
+                                                    "Schedualed : ${item.startTime} - ${item.endTime}",
+                                                style: const TextStyle(
+                                                  color: Color(0xff0D121C),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "manrope",
+                                                )),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                     const SizedBox(height: 24),
                                   ],
                                 )),
-                            Divider(
-                              color: const Color(0xff0D121C).withOpacity(0.25),
+                            const Divider(
+                              color: Color.fromARGB(6, 13, 18, 28),
                               thickness: 1,
                             ),
                             const SizedBox(height: 10),
