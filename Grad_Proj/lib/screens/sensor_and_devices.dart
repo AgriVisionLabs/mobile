@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
-import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/farm_model.dart';
+import 'package:grd_proj/screens/add_irrigation_unit.dart';
 import 'package:grd_proj/screens/add_sensor.dart';
 import 'package:grd_proj/screens/irrigation_details.dart';
 import 'package:grd_proj/screens/sensor_devices.dart';
@@ -191,9 +191,8 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                 Row(
                   children: [
                     const SizedBox(width: 10),
-                    const Text(
-                      'ٍSensor',
-                      style: TextStyle(
+                     Text( isSensorSelected ? 'Sensor' : "Irrgation Unit",
+                      style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w600,
                         fontFamily: "manrope",
@@ -216,12 +215,18 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                         ),
                         onPressed: () {
                           if (selectedFarmId != null) {
+                            isSensorSelected ?
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
                                       AddSensor(farmId: selectedFarmId!)),
-                            );
+                            ):Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AddIrrigationUnit(
+                                          farmId: selectedFarmId!)),
+                                );
                           } else {
                             print(
                                 "===================Forbidden=======================");

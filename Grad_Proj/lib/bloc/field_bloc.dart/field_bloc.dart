@@ -240,23 +240,17 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       }
     });
 
-    on<OpenFieldSensorUnitsEvent>((event, emit) async {
+    on<OpenFieldIrrigationUnitsEvent>((event, emit) async {
       try {
         final response = await api.get(
-            "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}");
+            "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits");
         print(response);
-        if (response is List && response.isNotEmpty) {
-          final sensirUnits = response
-              .map<SensorDevice>((json) => SensorDevice.fromJson(json))
-              .toList();
-          emit(ViewSensorUnitsSuccess(
-            devices: sensirUnits,
+        final sensorUnit = SensorDevice.fromJson(response);
+          emit(ViewFieldSensorUnitSuccess(
+            device: sensorUnit,
           ));
-        } else {
-          emit(SensorUnitsEmpty());
-        }
       } on ServerException catch (e) {
-        emit(ViewSensorUnitsFailure(
+        emit(ViewFieldSensorUnitFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });
@@ -271,6 +265,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
               ApiKey.status: event.status,
               ApiKey.newFieldId: event.newFieldId,
             });
+        emit(SensorUnitEditSuccess());
       } on ServerException catch (e) {
         emit(SensorUnitEditFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));

@@ -18,6 +18,7 @@ import 'package:grd_proj/screens/irrigation_control.dart';
 import 'package:grd_proj/screens/login_screen.dart';
 import 'package:grd_proj/screens/more_screen.dart';
 import 'package:grd_proj/screens/new_farm.dart';
+import 'package:grd_proj/screens/schedule_maintenance.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
 import 'package:grd_proj/screens/sensor_view.dart';
 import 'package:grd_proj/screens/verification.dart';
@@ -99,6 +100,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: 
+      // ScheduleMaintenance()
       // SensorView()
       // SplashScreen()
       LoginScreen()

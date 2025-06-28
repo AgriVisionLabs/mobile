@@ -99,7 +99,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                 color: borderColor, width: 1)),
                                         child: Center(
                                           child: Text(
-                                            item.status == 2
+                                            item.status == 0
                                                 ? "Active"
                                                 : "Inactive",
                                             style: const TextStyle(
@@ -339,7 +339,16 @@ class _SensorDevicesState extends State<SensorDevices> {
                                   ),
                                   const SizedBox(width: 20),
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SensorView(
+                                                  sensor: item,
+                                                )),
+                                      );
+                                    },
                                     child: Image.asset(
                                         'assets/images/shape.png',
                                         width: 30,
@@ -348,11 +357,18 @@ class _SensorDevicesState extends State<SensorDevices> {
                                   const Spacer(),
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SensorView()),
-                                      );
+                                      context
+                                          .read<FieldBloc>()
+                                          .add(DeleteSensorUnitEvent(
+                                            farmId: item.farmId,
+                                            fieldId: item.fieldId,
+                                            sensorId: item.id
+                                          ));
+                                      // ignore: avoid_print
+                                      print("==========Delted===========");
+                                      context.read<FieldBloc>().add(
+                                          OpenFarmSensorUnitsEvent(
+                                              farmId: item.farmId));
                                     },
                                     child: Image.asset(
                                         'assets/images/delete.png',

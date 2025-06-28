@@ -277,10 +277,10 @@ class _IrrigationDetailsState extends State<IrrigationDetails> {
               ],
             ),
           );
-        } else if (state is SensorUnitsEmpty) {
+        } else if (state is IrrigationUnitEmpty) {
           return const SizedBox(
               child: Center(
-                  child: Text('No Sensor units found',
+                  child: Text('No Irrigation units found',
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w600,

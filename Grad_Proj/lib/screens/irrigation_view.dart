@@ -30,7 +30,7 @@ class IrrigationView extends StatelessWidget {
                 width: 20,
               ),
               Text(irrigationDevice.name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Manrope',
                     color: primaryColor,
                     fontSize: 26,
@@ -178,7 +178,7 @@ class IrrigationView extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     irrigationDevice.fieldName,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.w500),
@@ -211,7 +211,7 @@ class IrrigationView extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     irrigationDevice.serialNumber,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.w500),
@@ -244,7 +244,7 @@ class IrrigationView extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     irrigationDevice.firmWareVersion,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.w500),
@@ -280,7 +280,7 @@ class IrrigationView extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           irrigationDevice.ipAddress ?? "Not Exist",
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.black,
                               fontSize: 18,
                               fontWeight: FontWeight.w500),
@@ -314,7 +314,7 @@ class IrrigationView extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     irrigationDevice.macAddress,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.w500),
@@ -420,7 +420,7 @@ class IrrigationView extends StatelessWidget {
                         ? "Not Exist"
                         : DateFormat('MMM dd, yyyy')
                             .format(irrigationDevice.lastMaintenance!),
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.w500),
@@ -456,7 +456,7 @@ class IrrigationView extends StatelessWidget {
                         ? "Not Exist"
                         : DateFormat('MMM dd, yyyy')
                             .format(irrigationDevice.nextMaintenance!),
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.w500),

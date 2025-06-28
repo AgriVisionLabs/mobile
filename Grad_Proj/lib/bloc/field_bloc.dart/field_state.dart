@@ -188,7 +188,22 @@ class ViewSensorUnitsFailure extends FieldState {
 }
 class SensorUnitsEmpty extends FieldState{}
 
-class ISensorUnitEditSuccess extends FieldState{}
+class ViewFieldSensorUnitSuccess extends FieldState{
+  final SensorDevice device;
+  ViewFieldSensorUnitSuccess({
+    required this.device});
+}
+class ViewFieldSensorUnitFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+  ViewFieldSensorUnitFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
+
+class SensorUnitEditSuccess extends FieldState{}
 
 class SensorUnitEditFailure extends FieldState {
   final String errMessage;
