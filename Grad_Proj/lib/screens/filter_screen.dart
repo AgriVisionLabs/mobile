@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
-import 'package:grd_proj/screens/fields_screen.dart';
 
 class FilterScreen extends StatefulWidget {
+  final Function(String, String, String) onInputChanged;
   final String farmId;
-  const FilterScreen({super.key, required this.farmId});
+  const FilterScreen({
+    super.key,
+    required this.farmId,
+    required this.onInputChanged,
+  });
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();
@@ -179,13 +183,11 @@ class _FilterScreenState extends State<FilterScreen> {
                             'assets/images/arrow.png',
                             color: borderColor,
                           ),
-                          onChanged: (fields == null || fields!.isEmpty)
-                              ? null
-                              : (newValue) {
-                                  setState(() {
-                                    selectedFieldId = newValue;
-                                  });
-                                },
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedFieldId = newValue;
+                            });
+                          },
                           items: state.fields
                               .map<DropdownMenuItem<String>>((field) {
                             return DropdownMenuItem<String>(
@@ -232,13 +234,11 @@ class _FilterScreenState extends State<FilterScreen> {
                             'assets/images/arrow.png',
                             color: borderColor,
                           ),
-                          onChanged: (fields == null || fields!.isEmpty)
-                              ? null
-                              : (newValue) {
-                                  setState(() {
-                                    selectedtype = newValue;
-                                  });
-                                },
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedtype = newValue;
+                            });
+                          },
                           items: rules_types.map((type) {
                             return DropdownMenuItem<String>(
                               value: type,
@@ -284,13 +284,11 @@ class _FilterScreenState extends State<FilterScreen> {
                             'assets/images/arrow.png',
                             color: borderColor,
                           ),
-                          onChanged: (fields == null || fields!.isEmpty)
-                              ? null
-                              : (newValue) {
-                                  setState(() {
-                                    selectedstatus = newValue;
-                                  });
-                                },
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedstatus = newValue;
+                            });
+                          },
                           items: rules_status.map((status) {
                             return DropdownMenuItem<String>(
                               value: status,
@@ -396,19 +394,17 @@ class _FilterScreenState extends State<FilterScreen> {
                                             ],
                                           ),
                                         );
-                                      } else if (selectedFieldId == null ||
-                                          selectedFieldId!.isEmpty) {
-                                        context.read<FieldBloc>().add(
-                                            OpenFarmIrrigationUnitsEvent(
-                                                farmId: widget.farmId));
-                                        if(selectedstatus == null || selectedstatus!.isEmpty) {
-                                          Navigator.pop(context);
-                                        }
                                       } else {
-                                        context.read<FieldBloc>().add(
-                                            OpenFieldIrrigationUnitsEvent(
-                                                farmId: widget.farmId,
-                                                fieldId: selectedFieldId!));
+                                        widget.onInputChanged(
+                                            selectedFieldId ?? "",
+                                            selectedstatus ?? "",
+                                            selectedtype ?? "");
+
+                                        context
+                                            .read<FieldBloc>()
+                                            .add(OpenFarmIrrigationUnitsEvent(
+                                              farmId: widget.farmId,
+                                            ));
                                         Navigator.pop(context);
                                       }
                                     },

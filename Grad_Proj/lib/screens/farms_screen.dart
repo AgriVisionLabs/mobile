@@ -19,10 +19,13 @@ class FarmsScreen extends StatefulWidget {
 
 class _FarmsScreen extends State<FarmsScreen> {
   String? soil;
-
+  @override
+  void initState() {
+    context.read<FarmBloc>().add(OpenFarmEvent());
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    context.read<FarmBloc>().add(OpenFarmEvent());
     List<FarmModel>? farms;
     return BlocBuilder<FarmBloc, FarmState>(
       builder: (context, state) {

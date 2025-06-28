@@ -103,6 +103,16 @@ class DeleteIrrigationUnitEvent extends FieldEvent {
   
 }
 
+class IrrigationUnitToggleEvent extends FieldEvent {
+  final String farmId;
+  final String fieldId;
+  IrrigationUnitToggleEvent({
+    required this.farmId,
+    required this.fieldId,
+  });
+  
+}
+
 
 class AddSensorUnitEvent extends FieldEvent {
   final String fieldId;

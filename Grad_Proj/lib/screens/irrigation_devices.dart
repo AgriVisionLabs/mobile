@@ -1,25 +1,55 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/models/irrigation_model.dart';
+import 'package:grd_proj/screens/irrigation_edit.dart';
 
 class IrrigationDevices extends StatefulWidget {
   final String farmName;
   final String farmId;
-
+  final String? fieldId;
+  final String? statue;
   const IrrigationDevices(
-      {super.key, required this.farmName, required this.farmId});
+      {super.key,
+      required this.farmName,
+      required this.farmId,
+      this.fieldId,
+      this.statue});
 
   @override
   State<IrrigationDevices> createState() => _IrrigationDevicesState();
 }
 
 class _IrrigationDevicesState extends State<IrrigationDevices> {
+  List<IrrigationDevice>? myDevices;
+  int? tell;
+  String ? description;
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FieldBloc, FieldState>(
+    return BlocConsumer<FieldBloc, FieldState>(
+      listener: (context, state) {
+        if (state is IrrigationUnitToggleSuccess) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content:  Text("Irrigation unit switched on"),
+              ),
+            );
+          });
+        }else if (state is IrrigationUnitToggleFailure) {
+          description = state.errors[0]['description'];
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+               SnackBar(
+                content:  Text(description!),
+              ),
+            );
+          });
+        }
+      },
       builder: (context, state) {
         if (state is ViewIrrigationUnitFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -31,16 +61,36 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
             );
           });
         } else if (state is ViewIrrigationUnitSuccess) {
+          if (widget.fieldId != null && widget.statue != null) {
+            if (widget.fieldId!.isNotEmpty && widget.statue!.isNotEmpty) {
+              tell = widget.statue == "Active" ? 1 : 2;
+              myDevices = state.devices
+                  .where((device) =>
+                      device.fieldId == widget.fieldId && device.status == tell)
+                  .toList();
+            } else if (widget.fieldId!.isNotEmpty && widget.statue!.isEmpty) {
+              myDevices = state.devices
+                  .where((device) => device.fieldId == widget.fieldId)
+                  .toList();
+            } else if (widget.statue!.isEmpty) {
+              tell = widget.statue == "Active" ? 1 : 2;
+              myDevices = state.devices
+                  .where((device) => device.status == tell)
+                  .toList();
+            }
+          } else {
+            myDevices = state.devices;
+          }
           return SizedBox(
-            height: state.devices.length == 1 ? 250 : 520,
+            height: myDevices!.length == 1 ? 250 : 520,
             child: CustomScrollView(
               shrinkWrap: true,
               slivers: [
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
-                    childCount: state.devices.length,
+                    childCount: myDevices!.length,
                     (context, index) {
-                      final item = state.devices[index];
+                      final item = myDevices![index];
                       return Container(
                         margin: const EdgeInsets.only(bottom: 20),
                         padding: const EdgeInsets.only(top: 24),
@@ -87,7 +137,7 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                                                 color: borderColor, width: 1)),
                                         child: Center(
                                           child: Text(
-                                            item.status == 2
+                                            item.status == 0
                                                 ? "Active"
                                                 : "Inactive",
                                             style: const TextStyle(
@@ -149,7 +199,15 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      print("edit it");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                IrrigationEdit(
+                                                  farm: item.farmId,
+                                                  field: item.fieldId,
+                                                )),
+                                      );
                                     },
                                     child: Image.asset('assets/images/edit.png',
                                         width: 30, height: 30),
@@ -163,6 +221,7 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                                             farmId: item.farmId,
                                             fieldId: item.fieldId,
                                           ));
+                                      // ignore: avoid_print
                                       print("==========Delted===========");
                                       context.read<FieldBloc>().add(
                                           OpenFarmIrrigationUnitsEvent(
@@ -175,16 +234,14 @@ class _IrrigationDevicesState extends State<IrrigationDevices> {
                                   ),
                                   const Spacer(),
                                   Switch(
-                                    value: item.status == 2,
+                                    value: item.isOn,
                                     onChanged: (value) {
-                                      context.read<FieldBloc>().add(
-                                          IrrigationUnitsEditEvent(
-                                              fieldId: item.fieldId,
-                                              farmId: item.farmId,
-                                              name: item.name,
-                                              status: item.status == 2 ? 1 : 2,
-                                              newFieldId: item.fieldId));
-                                      print("==========Edit==========");
+                                      context
+                                          .read<FieldBloc>()
+                                          .add(IrrigationUnitToggleEvent(
+                                            fieldId: item.fieldId,
+                                            farmId: item.farmId,
+                                          ));
                                       context.read<FieldBloc>().add(
                                           OpenFarmIrrigationUnitsEvent(
                                               farmId: item.farmId));

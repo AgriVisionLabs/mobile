@@ -152,16 +152,10 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         final response = await api.get(
             "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits");
         print(response);
-        if (response is List && response.isNotEmpty) {
-          final irrigationUnits = response
-              .map<IrrigationDevice>((json) => IrrigationDevice.fromJson(json))
-              .toList();
-          emit(ViewIrrigationUnitSuccess(
-            devices: irrigationUnits,
+        final irrigationUnit = IrrigationDevice.fromJson(response);
+          emit(ViewFieldIrrigationUnitSuccess(
+            device: irrigationUnit,
           ));
-        } else {
-          emit(IrrigationUnitEmpty());
-        }
       } on ServerException catch (e) {
         emit(ViewIrrigationUnitFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -192,6 +186,17 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         emit(DeleteIrrigationUnitSuccess());
       } on ServerException catch (e) {
         emit(DeleteIrrigationUnitFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<IrrigationUnitToggleEvent>((event, emit) async {
+      try {
+        final response = await api.post('${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits/toggle');
+        print(response);
+        emit(IrrigationUnitToggleSuccess());
+      } on ServerException catch (e) {
+        emit(IrrigationUnitToggleFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });

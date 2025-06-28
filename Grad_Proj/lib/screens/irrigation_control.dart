@@ -22,12 +22,29 @@ class IrrigationConrtol extends StatefulWidget {
 
 class _IrrigationConrtolState extends State<IrrigationConrtol> {
   String? selectedFarmId;
+  String? selectedFieldId;
+  String? selectedstatus;
+  String? selectedtype;
   String? selectedFarmName;
   List<FarmModel>? farms;
 
+  void _onInputChanged(String selectedFieldId , String selectedstatus , String selectedtype) {
+    setState(() {
+      this.selectedFieldId = selectedFieldId;
+      this.selectedstatus = selectedstatus;
+      this.selectedtype = selectedtype;
+    });
+  }
+
+  @override
+  void initState() {
+    context.read<FarmBloc>().add(OpenFarmEvent());
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    context.read<FarmBloc>().add(OpenFarmEvent());
     return BlocConsumer<FarmBloc, FarmState>(
       listener: (context, state) {
         if (state is FarmEmpty) {
@@ -94,6 +111,7 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                   barrierColor: Colors.black.withOpacity(0.2),
                                   builder: (BuildContext context) {
                                     return FilterScreen(
+                                      onInputChanged: _onInputChanged,
                                       farmId: selectedFarmId!,
                                     );
                                   });
@@ -133,7 +151,6 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                         ),
                       ],
                     ),
-
                     SizedBox(height: 16),
                     Row(
                       children: [
@@ -188,7 +205,6 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                         ),
                       ],
                     ),
-
                     SizedBox(height: 30),
                     Row(
                       children: [
@@ -225,7 +241,8 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                           farmId: selectedFarmId!)),
                                 );
                               } else {
-                                print("===================Forbidden=======================");
+                                print(
+                                    "===================Forbidden=======================");
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 WidgetsBinding.instance
                                     .addPostFrameCallback((_) {
@@ -241,7 +258,6 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                         ),
                       ],
                     ),
-
                     SizedBox(height: 16),
                     Container(
                         child: selectedFarmId == null
@@ -256,8 +272,9 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                               )
                             : IrrigationDevices(
                                 farmName: selectedFarmName!,
-                                farmId: selectedFarmId!)),
-                    
+                                farmId: selectedFarmId!,
+                                fieldId: selectedFieldId,
+                                statue: selectedstatus,)),
                     SizedBox(height: 44),
                     Row(
                       children: [
@@ -287,8 +304,9 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                             ),
                             onPressed: () {
                               // Add your onPressed code here!
-                              if(selectedFarmId == null){
-                                print("===================Forbidden=======================");
+                              if (selectedFarmId == null) {
+                                print(
+                                    "===================Forbidden=======================");
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 WidgetsBinding.instance
                                     .addPostFrameCallback((_) {
@@ -298,7 +316,7 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                     ),
                                   );
                                 });
-                              }else{
+                              } else {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -312,7 +330,6 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                         SizedBox(width: 10),
                       ],
                     ),
-
                     SizedBox(height: 30),
                     Container(
                         child: selectedFarmId == null

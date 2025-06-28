@@ -52,15 +52,15 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                       SelectField(farmId: "ccf1416e-d0cf-4d07-9a91-856aa85e5bb6" , onInputChanged: _onInputChanged,
+                       SelectField(farmId: widget.farmId , onInputChanged: _onInputChanged,
                           currentIndex: currentIndex)
                     else if (currentIndex == 1)
                       Rules(
                          fieldId: CacheHelper.getData(key: 'fieldId'),
-                          farmId: "ccf1416e-d0cf-4d07-9a91-856aa85e5bb6",
+                          farmId: widget.farmId,
                           onInputChanged: _onInputChanged,
                           currentIndex: currentIndex,
-                          form: false,),
+                          form: false,),  
                     const SizedBox(height: 20),
                   ],
                 ),

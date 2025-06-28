@@ -99,10 +99,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: 
-      SensorView()
+      // SensorView()
       // SplashScreen()
-      // LoginScreen()
-      // HomeScreen(initialIndex: 3,)
+      LoginScreen()
+      // HomeScreen(initialIndex: 6,)
     );
   }
 }

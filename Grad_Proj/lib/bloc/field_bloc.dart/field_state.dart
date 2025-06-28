@@ -106,6 +106,21 @@ class ViewIrrigationUnitFailure extends FieldState {
 }
 class IrrigationUnitEmpty extends FieldState{}
 
+class ViewFieldIrrigationUnitSuccess extends FieldState{
+  final IrrigationDevice device;
+  ViewFieldIrrigationUnitSuccess({
+    required this.device});
+}
+class ViewFieldIrrigationUnitFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+  ViewFieldIrrigationUnitFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
+
 class IrrigationUnitEditSuccess extends FieldState{}
 
 class IrrigationUnitEditFailure extends FieldState {
@@ -126,6 +141,15 @@ final class DeleteIrrigationUnitFailure extends FieldState {
   final dynamic errors;
 
   DeleteIrrigationUnitFailure({required this.errMessage, required this.errors});
+}
+
+class IrrigationUnitToggleSuccess extends FieldState {}
+
+final class IrrigationUnitToggleFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+
+  IrrigationUnitToggleFailure({required this.errMessage, required this.errors});
 }
 
 //=====================================================================

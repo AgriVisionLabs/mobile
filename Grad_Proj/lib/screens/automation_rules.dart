@@ -7,20 +7,41 @@ import 'package:grd_proj/components/color.dart';
 class AutomationRules extends StatefulWidget {
   final String farmName;
   final String farmId;
+  final String? fieldId;
+  final String? statue;
+  final String? type;
   const AutomationRules(
-      {super.key, required this.farmName, required this.farmId});
+      {super.key,
+      required this.farmName,
+      required this.farmId,
+      this.fieldId,
+      this.statue,
+      this.type});
 
   @override
   State<AutomationRules> createState() => _AutomationRulesState();
 }
 
 class _AutomationRulesState extends State<AutomationRules> {
+  String description = '';
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ControlBloc, ControlState>(
       builder: (context, state) {
         if (state is ViewAutomationRulesFailure) {
-          ScaffoldMessenger.of(context).clearSnackBars();
+          if (state.errMessage == "Not Found") {
+            description = state.errors[0]['description'];
+            ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(description),
+              ),
+            );
+          });
+          }else{
+
+            ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -28,6 +49,9 @@ class _AutomationRulesState extends State<AutomationRules> {
               ),
             );
           });
+
+          }
+          
         } else if (state is ViewAutomationRulesSuccess) {
           return SizedBox(
             height: state.rules.length == 1 ? 250 : 520,

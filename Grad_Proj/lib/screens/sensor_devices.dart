@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/screens/sensor_view.dart';
 
 class SensorDevices extends StatefulWidget {
   final String farmName;
@@ -15,6 +16,15 @@ class SensorDevices extends StatefulWidget {
 }
 
 class _SensorDevicesState extends State<SensorDevices> {
+  @override
+  void initState() {
+    context
+        .read<FieldBloc>()
+        .add(OpenFarmSensorUnitsEvent(farmId: widget.farmId));
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FieldBloc, FieldState>(
@@ -156,8 +166,8 @@ class _SensorDevicesState extends State<SensorDevices> {
                                         height: 10,
                                         child: LinearProgressIndicator(
                                           value: item.batteryLevel! / 100,
-                                          backgroundColor:
-                                              const Color.fromARGB(63, 97, 97, 97),
+                                          backgroundColor: const Color.fromARGB(
+                                              63, 97, 97, 97),
                                           color: primaryColor,
                                           borderRadius:
                                               BorderRadius.circular(25),
@@ -338,7 +348,11 @@ class _SensorDevicesState extends State<SensorDevices> {
                                   const Spacer(),
                                   GestureDetector(
                                     onTap: () {
-                                      print("maintaince");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SensorView()),
+                                      );
                                     },
                                     child: Image.asset(
                                         'assets/images/delete.png',

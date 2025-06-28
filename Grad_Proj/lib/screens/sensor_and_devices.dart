@@ -7,6 +7,7 @@ import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/screens/add_sensor.dart';
+import 'package:grd_proj/screens/irrigation_details.dart';
 import 'package:grd_proj/screens/sensor_devices.dart';
 
 class SensorAndDevices extends StatefulWidget {
@@ -101,14 +102,7 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                                 selectedFarmName = selectedFarm.first.name;
                               });
                             }
-                            isSensorSelected
-                                ? context.read<FieldBloc>().add(
-                                    OpenFarmSensorUnitsEvent(
-                                        farmId: selectedFarmId!))
-                                : context.read<FieldBloc>().add(
-                                    OpenFarmIrrigationUnitsEvent(
-                                        farmId: selectedFarmId!));
-                          },
+                        },
                     items: farms?.map<DropdownMenuItem<String>>((farm) {
                       return DropdownMenuItem<String>(
                         value: farm.farmId,
@@ -247,6 +241,7 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                   ],
                 ),
                 const SizedBox(height: 16),
+                isSensorSelected?
                 Container(
                     child: selectedFarmId == null
                         ? const Center(
@@ -260,7 +255,20 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                           )
                         : SensorDevices(
                             farmName: selectedFarmName!,
-                            farmId: selectedFarmId!)),
+                            farmId: selectedFarmId!)):Container(
+                    child: selectedFarmId == null
+                        ? const Center(
+                            child: Text('Please Choose Farm',
+                                style: TextStyle(
+                                  color: Color(0xff1E6930),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "manrope",
+                                )),
+                          )
+                        : IrrigationDetails(
+                            farmName: selectedFarmName!,
+                            farmId: selectedFarmId!))
               ],
             ),
           ),
