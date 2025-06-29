@@ -9,11 +9,13 @@ class SelectField extends StatefulWidget {
   final String farmId;
   final Function(int) onInputChanged;
   final int currentIndex;
+  final String? fieldId;
   const SelectField({
     super.key,
     required this.farmId,
     required this.onInputChanged,
     required this.currentIndex,
+    this.fieldId
   });
 
   @override
@@ -25,9 +27,14 @@ class _SelectFieldState extends State<SelectField> {
   String? selectedFieldName;
   List<FieldModel>? fields;
   @override
+  void initState() {
+    context.read<FieldBloc>().add(OpenFieldEvent(farmId: widget.farmId));
+    widget.fieldId == null ?selectedValue = null:selectedValue = widget.fieldId ;
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     int index = 0;
-    context.read<FieldBloc>().add(OpenFieldEvent(farmId: widget.farmId));
     return BlocConsumer<FieldBloc, FieldState>(
       listener: (context, state) {
         if (state is FieldEmpty) {

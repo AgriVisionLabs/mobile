@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 
@@ -28,8 +29,14 @@ class _FilterScreenState extends State<FilterScreen> {
   // ignore: non_constant_identifier_names
   List<String> rules_status = ["inactive", "active"];
   @override
-  Widget build(BuildContext context) {
+  @override
+  void initState() {
     context.read<FieldBloc>().add(OpenFieldEvent(farmId: widget.farmId));
+
+    super.initState();
+  }
+
+  Widget build(BuildContext context) {
     return BlocBuilder<FieldBloc, FieldState>(
       builder: (context, state) {
         if (state is FieldLoadingFailure) {
@@ -62,6 +69,12 @@ class _FilterScreenState extends State<FilterScreen> {
                               icon:
                                   const Icon(Icons.close, color: Colors.black),
                               onPressed: () {
+                                context.read<FieldBloc>().add(
+                                    OpenFarmIrrigationUnitsEvent(
+                                        farmId: widget.farmId));
+                                context.read<ControlBloc>().add(
+                                    OpenFarmAutomationRulesEvent(
+                                        farmId: widget.farmId));
                                 Navigator.of(context).pop();
                               },
                             ),
@@ -127,6 +140,12 @@ class _FilterScreenState extends State<FilterScreen> {
                           IconButton(
                             icon: const Icon(Icons.close, color: Colors.black),
                             onPressed: () {
+                              context.read<FieldBloc>().add(
+                                  OpenFarmIrrigationUnitsEvent(
+                                      farmId: widget.farmId));
+                              context.read<ControlBloc>().add(
+                                  OpenFarmAutomationRulesEvent(
+                                      farmId: widget.farmId));
                               Navigator.of(context).pop();
                             },
                           ),
@@ -321,6 +340,9 @@ class _FilterScreenState extends State<FilterScreen> {
                                       context.read<FieldBloc>().add(
                                           OpenFarmIrrigationUnitsEvent(
                                               farmId: widget.farmId));
+                                      context.read<ControlBloc>().add(
+                                          OpenFarmAutomationRulesEvent(
+                                              farmId: widget.farmId));
                                       Navigator.pop(context);
                                     },
                                     child: const Text("Cancle",
@@ -399,6 +421,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                             selectedFieldId ?? "",
                                             selectedstatus ?? "",
                                             selectedtype ?? "");
+
                                         Navigator.pop(context);
                                       }
                                     },
@@ -414,55 +437,6 @@ class _FilterScreenState extends State<FilterScreen> {
                   ),
                 ),
               ));
-        } else if (state is FieldEmpty) {
-          return Material(
-              type: MaterialType.transparency,
-              child: Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                      margin: const EdgeInsets.all(31),
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      padding: const EdgeInsets.all(20),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 15,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.close,
-                                      color: Colors.black),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            ),
-                            const Center(
-                              child:
-                                  Text("Sorry This Farm Has No Entered Fields",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: "manrope",
-                                        color: Colors.black,
-                                      )),
-                            ),
-                          ]))));
         } else {
           return Material(
             type: MaterialType.transparency,

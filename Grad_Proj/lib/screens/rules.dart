@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
-import 'package:grd_proj/components/date_input_formatter.dart';
 import 'package:grd_proj/components/time_input_format.dart';
 
 class Rules extends StatefulWidget {
@@ -12,14 +11,17 @@ class Rules extends StatefulWidget {
   final int currentIndex;
   final String fieldId;
   final String farmId;
+  final String? ruleId;
   final bool form;
-  const Rules(
-      {super.key,
-      required this.onInputChanged,
-      required this.currentIndex,
-      required this.farmId,
-      required this.fieldId,
-      required this.form});
+  const Rules({
+    super.key,
+    required this.onInputChanged,
+    required this.currentIndex,
+    required this.farmId,
+    required this.fieldId,
+    required this.form,
+    this.ruleId,
+  });
 
   @override
   State<Rules> createState() => _RulesState();
@@ -29,11 +31,22 @@ class _RulesState extends State<Rules> {
   int? selectedtype;
   int? type;
   String? description;
+  bool? isEnabled;
   int index = 0;
-  Map rules_types = {
+  Map rulesTypes = {
     "Threshold": 0,
     "Schedualed": 1,
   };
+
+  @override
+  void initState() {
+    if(widget.form){
+      context.read<ControlBloc>().add(OpenFieldAutomationRulesEvent(
+        fieldId: widget.fieldId, farmId: widget.farmId, ruleId: widget.ruleId!));
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ControlBloc, ControlState>(
@@ -54,6 +67,61 @@ class _RulesState extends State<Rules> {
           });
         }
         if (state is AddAutomationRulesSuccess) {
+          index = widget.currentIndex;
+          index++;
+          widget.onInputChanged(index);
+          context.read<ControlBloc>().add(OpenFarmAutomationRulesEvent(
+                farmId: widget.farmId,
+              ));
+          context.read<FieldBloc>().add(OpenFarmIrrigationUnitsEvent(
+                farmId: widget.farmId,
+              ));
+          Navigator.pop(context);
+        } else if (state is ViewAutomationRuleSuccess) {
+          print(
+              "============================================================================================================");
+          context.read<ControlBloc>().ruleName.text = state.rule.name;
+          context.read<ControlBloc>().type.text = state.rule.type.toString();
+          context.read<ControlBloc>().minThresholdValue.text =
+              state.rule.minThresholdValue == null
+                  ? ''
+                  : state.rule.minThresholdValue.toString();
+          context.read<ControlBloc>().maxThresholdValue.text =
+              state.rule.maxThresholdValue == null
+                  ? ''
+                  : state.rule.maxThresholdValue.toString();
+          context.read<ControlBloc>().activeDays.text =
+              state.rule.targetSensorType == null
+                  ? ''
+                  : state.rule.targetSensorType.toString();
+          context.read<ControlBloc>().startTime.text =
+              state.rule.startTime == null
+                  ? ''
+                  : state.rule.startTime.toString();
+          context.read<ControlBloc>().endTime.text = state.rule.endTime == null
+              ? ''
+              : state.rule.endTime.toString();
+          context.read<ControlBloc>().activeDays.text =
+              state.rule.activeDays == null
+                  ? ''
+                  : state.rule.activeDays.toString();
+          selectedtype = state.rule.type;
+          isEnabled = state.rule.isEnabled;
+        }else if(state is AutomationRulesEditFailure){
+          context.read<ControlBloc>().ruleFormKey.currentState!.validate();
+          if (state.errMessage == 'Conflict' ||
+              state.errMessage == 'Not Found') {
+            description = state.errors[0]['description'];
+          }
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
+        }else if(state is AutomationRulesEditSuccess){
           index = widget.currentIndex;
           index++;
           widget.onInputChanged(index);
@@ -89,8 +157,13 @@ class _RulesState extends State<Rules> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
-                        hintText: "Enter Rule Name",
-                        hintStyle: const TextStyle(color: borderColor),
+                        hintText: widget.form
+                            ? context.read<ControlBloc>().ruleName.text
+                            : "Enter Rule Name",
+                        hintStyle: widget.form
+                            ? TextStyle(
+                                color: const Color.fromARGB(255, 0, 0, 0))
+                            : TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
                           borderSide:
@@ -119,7 +192,7 @@ class _RulesState extends State<Rules> {
                           return "Please Enter Irrigation Unit Name";
                         } else if (value.length < 3 || value.length > 100) {
                           return "must be between 30 and 100 characters. You entered 2 characters.";
-                        }else if (description != null){
+                        } else if (description != null) {
                           return description;
                         }
                         return null;
@@ -169,7 +242,7 @@ class _RulesState extends State<Rules> {
                                 selectedtype!.toString();
                           });
                         },
-                        items: rules_types.entries.map((type) {
+                        items: rulesTypes.entries.map((type) {
                           return DropdownMenuItem<int>(
                             value: type.value,
                             child: Text(type.key),
@@ -203,7 +276,12 @@ class _RulesState extends State<Rules> {
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               horizontal: 30, vertical: 17),
-                                      hintText: "Enter Min Threshold Limit",
+                                      hintText: widget.form
+                                          ? context
+                                              .read<ControlBloc>()
+                                              .minThresholdValue
+                                              .text
+                                          : "Enter Min Threshold Limit",
                                       hintStyle:
                                           const TextStyle(color: borderColor),
                                       enabledBorder: OutlineInputBorder(
@@ -258,7 +336,12 @@ class _RulesState extends State<Rules> {
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               horizontal: 30, vertical: 17),
-                                      hintText: "Enter Max Threshold Limit",
+                                      hintText: widget.form
+                                          ? context
+                                              .read<ControlBloc>()
+                                              .maxThresholdValue
+                                              .text
+                                          : "Enter Max Threshold Limit",
                                       hintStyle:
                                           const TextStyle(color: borderColor),
                                       enabledBorder: OutlineInputBorder(
@@ -313,7 +396,12 @@ class _RulesState extends State<Rules> {
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               horizontal: 30, vertical: 17),
-                                      hintText: "Enter Unit",
+                                      hintText: widget.form
+                                          ? context
+                                              .read<ControlBloc>()
+                                              .targetSensorType
+                                              .text
+                                          : "Enter Unit",
                                       hintStyle:
                                           const TextStyle(color: borderColor),
                                       enabledBorder: OutlineInputBorder(
@@ -377,7 +465,12 @@ class _RulesState extends State<Rules> {
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               horizontal: 30, vertical: 17),
-                                      hintText: "HH:MM:SS",
+                                      hintText: widget.form
+                                          ? context
+                                              .read<ControlBloc>()
+                                              .startTime
+                                              .text
+                                          : "HH:MM:SS",
                                       hintStyle:
                                           const TextStyle(color: borderColor),
                                       enabledBorder: OutlineInputBorder(
@@ -436,7 +529,12 @@ class _RulesState extends State<Rules> {
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               horizontal: 30, vertical: 17),
-                                      hintText: "HH:MM:SS",
+                                      hintText: widget.form
+                                          ? context
+                                              .read<ControlBloc>()
+                                              .endTime
+                                              .text
+                                          : "HH:MM:SS",
                                       hintStyle:
                                           const TextStyle(color: borderColor),
                                       enabledBorder: OutlineInputBorder(
@@ -490,7 +588,12 @@ class _RulesState extends State<Rules> {
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               horizontal: 30, vertical: 17),
-                                      hintText: "Number of Activate Days",
+                                      hintText: widget.form
+                                          ? context
+                                              .read<ControlBloc>()
+                                              .activeDays
+                                              .text
+                                          : "Number of Activate Days",
                                       hintStyle:
                                           const TextStyle(color: borderColor),
                                       enabledBorder: OutlineInputBorder(
@@ -558,6 +661,22 @@ class _RulesState extends State<Rules> {
                                     );
                                   });
                                 } else {
+                                  widget.form?context
+                                                .read<ControlBloc>()
+                                                .add(AutomationRulesEditEvent(
+                                                  fieldId: widget.fieldId,
+                                                  farmId: widget.farmId,
+                                                  ruleId: widget.ruleId!,
+                                                  name: context.read<ControlBloc>().ruleName.text,
+                                                  isEnabled: isEnabled!,
+                                                  type: selectedtype!,
+                                                  min: double.tryParse(context.read<ControlBloc>().minThresholdValue.text),
+                                                  max: double.tryParse(context.read<ControlBloc>().maxThresholdValue.text),
+                                                  target: int.tryParse(context.read<ControlBloc>().targetSensorType.text),
+                                                  start: context.read<ControlBloc>().startTime.text,
+                                                  end: context.read<ControlBloc>().endTime.text,
+                                                  days: int.tryParse(context.read<ControlBloc>().activeDays.text),
+                                                )):
                                   context.read<ControlBloc>().add(
                                       AddAutomationRulesEvent(
                                           farmId: widget.farmId,

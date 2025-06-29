@@ -95,19 +95,10 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
       try {
         final response = await api.get(
             "${EndPoints.automationRules}/${event.farmId}/fields/${event.fieldId}/AutomationRules/${event.ruleId}");
-        if (response is List && response.isNotEmpty) {
-          final rules = response
-              .map<AutomationRuleModel>(
-                  (json) => AutomationRuleModel.fromJson(json))
-              .toList();
-          emit(ViewAutomationRulesSuccess(
-            rules: rules,
-          ));
-        } else {
-          emit(AutomationRulesEmpty());
-        }
+        final rule =  AutomationRuleModel.fromJson(response);
+        emit(ViewAutomationRuleSuccess(rule: rule));
       } on ServerException catch (e) {
-        emit(ViewAutomationRulesFailure(
+        emit(ViewAutomationRuleFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });
@@ -131,6 +122,7 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
               ApiKey.maxThresholdValue: event.type == 1 ? null : event.end,
               ApiKey.maxThresholdValue: event.type == 1 ? null : event.days,
             });
+        emit(AutomationRulesEditSuccess());
       } on ServerException catch (e) {
         emit(AutomationRulesEditFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));

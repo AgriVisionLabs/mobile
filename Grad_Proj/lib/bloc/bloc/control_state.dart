@@ -44,6 +44,21 @@ class ViewAutomationRulesFailure extends ControlState {
 }
 class AutomationRulesEmpty extends ControlState{}
 
+class ViewAutomationRuleSuccess extends ControlState {
+  final AutomationRuleModel rule;
+  ViewAutomationRuleSuccess({
+    required this.rule,
+  });
+}
+class ViewAutomationRuleFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+  ViewAutomationRuleFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
 class AutomationRulesEditSuccess extends ControlState{}
 
 class AutomationRulesEditFailure extends ControlState {

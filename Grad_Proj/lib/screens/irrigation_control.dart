@@ -24,13 +24,18 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
   String? selectedstatus;
   String? selectedtype;
   String? selectedFarmName;
+  int? selectedFarmFieldNo;
   List<FarmModel>? farms;
 
-  void _onInputChanged(String selectedFieldId , String selectedstatus , String selectedtype) {
+  void _onInputChanged(
+      String selectedFieldId, String selectedstatus, String selectedtype) {
     setState(() {
       this.selectedFieldId = selectedFieldId;
       this.selectedstatus = selectedstatus;
       this.selectedtype = selectedtype;
+
+      irrigationKey.currentState?.reloadData();
+      automatedKey.currentState?.reloadData();
     });
   }
 
@@ -40,6 +45,8 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
     super.initState();
   }
 
+  final GlobalKey<IrrigationDevicesState> irrigationKey = GlobalKey();
+  final GlobalKey<IrrigationDevicesState> automatedKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -91,23 +98,33 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                         Spacer(),
                         GestureDetector(
                           onTap: () {
-                            if (selectedFarmId == null ) {
+                            if (selectedFarmId == null) {
                               // ignore: avoid_print
-                              print("===================Forbidden=======================");
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("Please choose farm first"),
-                                    ),
-                                  );
-                                });
+                              print(
+                                  "===================Forbidden=======================");
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Please choose farm first"),
+                                  ),
+                                );
+                              });
+                            } else if (selectedFarmFieldNo == 0) {
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Please create fields first"),
+                                  ),
+                                );
+                              });
                             } else {
                               showDialog(
                                   context: context,
                                   barrierDismissible: true,
-                                  barrierColor: const Color.fromARGB(5, 0, 0, 0),
+                                  barrierColor:
+                                      const Color.fromARGB(5, 0, 0, 0),
                                   builder: (BuildContext context) {
                                     return FilterScreen(
                                       onInputChanged: _onInputChanged,
@@ -265,10 +282,12 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                     )),
                               )
                             : IrrigationDevices(
+                                key: irrigationKey,
                                 farmName: selectedFarmName!,
                                 farmId: selectedFarmId!,
                                 fieldId: selectedFieldId,
-                                statue: selectedstatus,)),
+                                statue: selectedstatus,
+                              )),
                     SizedBox(height: 44),
                     Row(
                       children: [
@@ -338,9 +357,13 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                     )),
                               )
                             : AutomationRules(
+                                key: automatedKey,
                                 farmName: selectedFarmName!,
-                                farmId: selectedFarmId!)),
-                    SizedBox(height: 21),
+                                farmId: selectedFarmId!,
+                                fieldId: selectedFieldId,
+                                type: selectedtype,
+                                statue: selectedstatus,)),
+                    SizedBox(height: 50),
                   ],
                 ),
               ],

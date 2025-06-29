@@ -7,17 +7,23 @@ import 'package:grd_proj/screens/rules.dart';
 import 'package:grd_proj/screens/select_field.dart';
 import '../Components/color.dart';
 
-class AddAuomationRules extends StatefulWidget {
+class AutomationRuleEdit extends StatefulWidget {
   final String farmId;
-  const AddAuomationRules({super.key , required this.farmId});
+  final String fieldId;
+  final String ruleId;
+  const AutomationRuleEdit(
+      {super.key,
+      required this.farmId,
+      required this.fieldId,
+      required this.ruleId});
 
   @override
-  State<AddAuomationRules> createState() => _AddAuomationRulesState();
+  State<AutomationRuleEdit> createState() => _AutomationRuleEditState();
 }
 
-class _AddAuomationRulesState extends State<AddAuomationRules> {
+class _AutomationRuleEditState extends State<AutomationRuleEdit> {
   String? selectedValue;
-  
+
   int currentIndex = 0;
   List field = [];
   void _onInputChanged(int index) {
@@ -51,19 +57,26 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
               child: SingleChildScrollView(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                       SelectField(farmId: widget.farmId , onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex)
+                      SelectField(
+                        farmId: widget.farmId,
+                        onInputChanged: _onInputChanged,
+                        currentIndex: currentIndex,
+                        fieldId: widget.fieldId,
+                      )
                     else if (currentIndex == 1)
                       Rules(
-                         fieldId: CacheHelper.getData(key: 'fieldId'),
-                          farmId: widget.farmId,
-                          onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex,
-                          form: false,),  
+                        fieldId: CacheHelper.getData(key: 'fieldId'),
+                        farmId: widget.farmId,
+                        ruleId: widget.ruleId,
+                        onInputChanged: _onInputChanged,
+                        currentIndex: currentIndex,
+                        form: true,
+                      ),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -115,6 +128,7 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                 const Spacer(),
                 IconButton(
                   onPressed: () {
+                    
                     context
                         .read<ControlBloc>()
                         .add(OpenFarmAutomationRulesEvent(
@@ -130,7 +144,6 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                 ),
               ],
             ),
-            
           ],
         ),
       ),
@@ -180,7 +193,8 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                     ],
                   ),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 25, left: 10, right: 10),
+                    margin:
+                        const EdgeInsets.only(bottom: 25, left: 10, right: 10),
                     width: 100,
                     height: 1,
                     color: const Color(0xFF333333),
@@ -189,6 +203,4 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
               );
             }));
   }
-
- 
 }

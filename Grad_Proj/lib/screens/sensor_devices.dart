@@ -236,11 +236,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                         height: 108,
                                         padding: const EdgeInsets.all(15),
                                         decoration: BoxDecoration(
-                                          color: const Color.from(
-                                              alpha: 0.098,
-                                              red: 0.82,
-                                              green: 0.165,
-                                              blue: 0),
+                                          color: const Color(0x18D12A00),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
