@@ -130,7 +130,7 @@ class _ReviewState extends State<Review> {
         Align(
           alignment: Alignment.bottomRight,
           child: Container(
-              width: 200,
+              width: 160,
               height: 55,
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
               decoration: BoxDecoration(

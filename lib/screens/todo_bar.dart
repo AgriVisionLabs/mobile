@@ -108,7 +108,7 @@ class _TodoBarState extends State<TodoBar> {
                                   children: [
                                     //Task Descrption
                                     SizedBox(
-                                      width: 185,
+                                      width: 157,
                                       child: Text(
                                         tasks[index].description,
                                         style: const TextStyle(

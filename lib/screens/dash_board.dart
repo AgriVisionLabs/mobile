@@ -24,15 +24,16 @@ class _DashBoardState extends State<DashBoard> {
     return Scaffold(
         backgroundColor: Colors.white,
         body: Container(
+          padding: const EdgeInsets.all(16),
           margin: const EdgeInsets.only(top: 16),
           height: MediaQuery.sizeOf(context).height,
           child: ListView(scrollDirection: Axis.vertical, children: [
             Row(
               children: [
-                SizedBox(width: 35),
+                SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.fromLTRB(17, 0, 17, 0),
-                  width: 289,
+                  width: 250,
                   height: 53,
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -48,6 +49,8 @@ class _DashBoardState extends State<DashBoard> {
                     isExpanded: true,
                     icon: Image.asset(
                       'assets/images/arrow.png',
+                      width: 20,
+                      height: 20,
                     ),
                     onChanged: (String? value) {
                       setState(() {
@@ -99,7 +102,7 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
-                        width: 380,
+                        width: 350,
                         height: 161,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +177,7 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
-                        width: 380,
+                        width: 350,
                         height: 161,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,7 +252,7 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
-                        width: 380,
+                        width: 350,
                         height: 161,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,7 +328,7 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
-                        width: 380,
+                        width: 350,
                         height: 324,
                         child: WeatherBar(
                             screenWidth: screenWidth,
@@ -346,7 +349,7 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
-                        width: 380,
+                        width: 350,
                         height: 266,
                         child: const AlertsBar())),
                 SizedBox(height: 50),
@@ -372,7 +375,7 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
-                        width: 380,
+                        width: 350,
                         height: 150,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,7 +389,8 @@ class _DashBoardState extends State<DashBoard> {
                                     fontFamily: 'manrope',
                                   )),
                               Spacer(),
-                              Image.asset('assets/images/temp.png')
+                              Image.asset('assets/images/temp.png',
+                                width: 24, height: 24)
                             ]),
                             SizedBox(height: 30),
                             Text('Good',
@@ -421,7 +425,7 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
-                        width: 380,
+                        width: 350,
                         height: 150,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -435,7 +439,8 @@ class _DashBoardState extends State<DashBoard> {
                                     fontFamily: 'manrope',
                                   )),
                               Spacer(),
-                              Image.asset('assets/images/water.png')
+                              Image.asset('assets/images/water.png',
+                              width: 24, height: 24)
                             ]),
                             SizedBox(height: 30),
                             Text('Optimal',
@@ -470,7 +475,7 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
-                        width: 380,
+                        width: 350,
                         height: 150,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,7 +489,8 @@ class _DashBoardState extends State<DashBoard> {
                                     fontFamily: 'manrope',
                                   )),
                               Spacer(),
-                              Image.asset('assets/images/growth.png')
+                              Image.asset('assets/images/growth.png',
+                              width: 24, height: 24)
                             ]),
                             SizedBox(height: 30),
                             Text('On Track',
@@ -519,7 +525,7 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                     child: Container(
                         padding: const EdgeInsets.all(24),
-                        width: 380,
+                        width: 350,
                         height: 150,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -533,7 +539,8 @@ class _DashBoardState extends State<DashBoard> {
                                     fontFamily: 'manrope',
                                   )),
                               Spacer(),
-                              Image.asset('assets/images/forcast.png')
+                              Image.asset('assets/images/forcast.png',
+                              width: 24, height: 24)
                             ]),
                             SizedBox(height: 30),
                             Text('4.2 tons/acre',
@@ -570,7 +577,7 @@ class _DashBoardState extends State<DashBoard> {
                     child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 22),
-                        width: 380,
+                        width: 350,
                         height: 396,
                         child: const Activitybar())),
                 const SizedBox(height: 50),
@@ -589,7 +596,7 @@ class _DashBoardState extends State<DashBoard> {
                     child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 22),
-                        width: 380,
+                        width: 350,
                         height: 396,
                         child: const TodoBar())),
                 const SizedBox(height: 20),

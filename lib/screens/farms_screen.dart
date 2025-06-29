@@ -96,7 +96,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                   ),
                   child: Container(
                       padding: const EdgeInsets.all(24),
-                      width: 380,
+                      width: 345,
                       height: 425,
                       child: Column(
                         children: [
@@ -115,6 +115,8 @@ class _FarmsScreen extends State<FarmsScreen> {
                                 children: [
                                   Image.asset(
                                     'assets/images/location.png',
+                                    width: 24,
+                                    height: 24,
                                   ),
                                   SizedBox(width: 8),
                                   Text("SpringField, IL",
@@ -272,7 +274,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                    ),
                 child: Container(
                     padding: const EdgeInsets.all(24),
-                    width: 380,
+                    width: 345,
                     height: 255,
                     child: Column(
                       children: [
@@ -291,6 +293,8 @@ class _FarmsScreen extends State<FarmsScreen> {
                               children: [
                                 Image.asset(
                                   'assets/images/location.png',
+                                  width: 24,
+                                  height: 24,
                                 ),
                                 SizedBox(width: 8),
                                 Text("SpringField, IL",
@@ -396,7 +400,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                    ),
                 child: Container(
                     padding: const EdgeInsets.all(24),
-                    width: 380,
+                    width: 345,
                     height: 425,
                     child: Column(
                       children: [
@@ -415,6 +419,8 @@ class _FarmsScreen extends State<FarmsScreen> {
                               children: [
                                 Image.asset(
                                   'assets/images/location.png',
+                                  width: 24,
+                                  height: 24,
                                 ),
                                 SizedBox(width: 8),
                                 Text("SpringField, IL",
@@ -612,8 +618,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                    ),
                 child: Container(
                     padding: const EdgeInsets.all(24),
-                    width: 380,
-                    height: 615,
+                    width: 345,
                     child: Column(
                       children: [
                         Column(
@@ -631,6 +636,8 @@ class _FarmsScreen extends State<FarmsScreen> {
                               children: [
                                 Image.asset(
                                   'assets/images/location.png',
+                                  width: 24,
+                                  height: 24,
                                 ),
                                 SizedBox(width: 8),
                                 Text("SpringField, IL",

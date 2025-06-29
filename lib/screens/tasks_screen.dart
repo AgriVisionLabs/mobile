@@ -90,6 +90,8 @@ class _TaskScreen extends State<TaskScreen> {
                           isExpanded: true,
                           icon: Image.asset(
                             'assets/images/arrow.png',
+                            width: 24,
+                            height: 24,
                           ),
                           onChanged: (String? value) {
                             setState(() {
@@ -110,12 +112,14 @@ class _TaskScreen extends State<TaskScreen> {
                       SizedBox(height: 30),
                       Container(
                         height: 62,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                        width: 370,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          color: const Color(0x4dD9D9D9),
+                        color: const Color(0x4dD9D9D9),
                           borderRadius: BorderRadius.circular(10),
                         ),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
                         child: Row(
                           children: List.generate(3, (index) {
                             final List<String> tabs = [
@@ -124,7 +128,8 @@ class _TaskScreen extends State<TaskScreen> {
                               "Completed Tasks"
                             ];
                             final isSelected = selectedTab == index;
-                            return Expanded(
+                            return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal:5),
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -133,6 +138,7 @@ class _TaskScreen extends State<TaskScreen> {
                                 },
                                 child: Container(
                                   height: 46,
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
                                   decoration: BoxDecoration(
                                     color: isSelected
                                         ? Colors.white
@@ -155,15 +161,14 @@ class _TaskScreen extends State<TaskScreen> {
                             );
                           }),
                         ),
-                      ),
+                      )
+                    ),
                       SizedBox(height: 20),
                       if (selectedTab == 0)...[               
                       Column(
                         children: [
                           SizedBox(height: 16),
                           Container(
-                              height: 380,
-                              // height: 380,
                               width: double.infinity,
                               padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                               margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -183,12 +188,15 @@ class _TaskScreen extends State<TaskScreen> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text(
-                                        'Inspect Corn Growth',
-                                        style: TextStyle(
-                                          fontSize: 25,
-                                          fontFamily: 'manrope-semi-bold',
-                                          color: Colors.black,
+                                      SizedBox(
+                                        width: 240,
+                                        child: Text(
+                                          'Inspect Corn Growth',
+                                          style: TextStyle(
+                                            fontSize: 25,
+                                            fontFamily: 'manrope-semi-bold',
+                                            color: Colors.black,
+                                          ),
                                         ),
                                       ),
                                       Spacer(),
@@ -268,21 +276,6 @@ class _TaskScreen extends State<TaskScreen> {
                                   Row(
                                     children: [
                                       Image.asset(
-                                        'assets/images/calender.png',
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        'Jun 15, 2025',
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          color: Colors.black,
-                                          fontFamily: 'manrope-bold',
-                                        ),
-                                      ),
-                                      SizedBox(width: 83),
-                                      Image.asset(
                                         'assets/images/person_icon.png',
                                         width: 20,
                                         height: 20,
@@ -298,6 +291,26 @@ class _TaskScreen extends State<TaskScreen> {
                                       ),
                                     ],
                                   ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/calender.png',
+                                        width: 20,
+                                        height: 20,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        'Jun 15, 2025',
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                          fontFamily: 'manrope-bold',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  
                                 SizedBox(height: 24),
                                 Divider(
                                   color: Colors.grey,
@@ -306,29 +319,38 @@ class _TaskScreen extends State<TaskScreen> {
                                 SizedBox(height: 20),
                                 Row(
                                   children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) => ViewTask()));
-                                      },
-                                      icon: Image.asset(
-                                        'assets/images/eye.png',
-                                        width: 24,
-                                        height: 24,
-                                      ),
-                                    ),
+                                    GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ViewTask()),
+                                    );
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/eye.png',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ),
                                     Spacer(),
-                                    Image.asset(
-                                      'assets/images/circle_check.png',
-                                      width: 34,
-                                      height: 34,)
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          print('completed');
+                                        });
+                                      },
+                                      child: Image.asset(
+                                        'assets/images/circle_check.png',
+                                        width: 34,
+                                        height: 34,
+                                      ),
+                                    )
                                   ],
                                 ),
                                 ],
                               )),
                           SizedBox(height: 24),
                           Container(
-                            height: 380,
                             width: double.infinity,
                             padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                             margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -348,12 +370,15 @@ class _TaskScreen extends State<TaskScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    'Apply Fertilizer',
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                      fontFamily: 'manrope-semi-bold',
-                                      color: Colors.black,
+                                  SizedBox(
+                                    width: 222,
+                                    child: Text(
+                                      'Apply Fertilizer',
+                                      style: TextStyle(
+                                        fontSize: 25,
+                                        fontFamily: 'manrope-semi-bold',
+                                        color: Colors.black,
+                                      ),
                                     ),
                                   ),
                                   Spacer(),
@@ -433,21 +458,6 @@ class _TaskScreen extends State<TaskScreen> {
                               Row(
                                 children: [
                                   Image.asset(
-                                    'assets/images/calender.png',
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    'Jun 15, 2025',
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      color: Colors.black,
-                                      fontFamily: 'manrope-bold',
-                                    ),
-                                  ),
-                                  SizedBox(width: 63),
-                                  Image.asset(
                                     'assets/images/person_icon.png',
                                     width: 20,
                                     height: 20,
@@ -455,6 +465,25 @@ class _TaskScreen extends State<TaskScreen> {
                                   SizedBox(width: 5),
                                   Text(
                                     'Yousef Mahmoud',
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.black,
+                                      fontFamily: 'manrope-bold',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/calender.png',
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    'Jun 15, 2025',
                                     style: TextStyle(
                                       fontSize: 17,
                                       color: Colors.black,
@@ -471,23 +500,38 @@ class _TaskScreen extends State<TaskScreen> {
                             SizedBox(height: 24),
                             Row(
                               children: [
-                                Image.asset(
-                                  'assets/images/eye.png',
-                                  width: 24,
-                                  height: 24,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ViewTask()),
+                                    );
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/eye.png',
+                                    width: 24,
+                                    height: 24,
+                                  ),
                                 ),
                                 Spacer(),
-                                Image.asset(
-                                  'assets/images/circle_check.png',
-                                  width: 34,
-                                  height: 34,)
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      print('completed');
+                                    });
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/circle_check.png',
+                                    width: 34,
+                                    height: 34,
+                                  ),
+                                )
                               ],
                             ),
                             ],
                           )),
                           SizedBox(height: 24),
                           Container(
-                              height: 380,
                               width: double.infinity,
                               padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                               margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -507,12 +551,15 @@ class _TaskScreen extends State<TaskScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    Text(
-                                      'Repair Irrigation System',
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                        fontFamily: 'manrope-semi-bold',
-                                        color: Colors.black,
+                                    SizedBox(
+                                      width: 240,
+                                      child: Text(
+                                        'Repair Irrigation System',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontFamily: 'manrope-semi-bold',
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
                                     Spacer(),
@@ -588,7 +635,26 @@ class _TaskScreen extends State<TaskScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 8),
+                                SizedBox(height: 24),
+                                Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/person_icon.png',
+                                          width: 20,
+                                          height: 20,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          'Hussein Mohamed',
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.black,
+                                            fontFamily: 'manrope-bold',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10),
                                 Row(
                                   children: [
                                     Image.asset(
@@ -604,24 +670,7 @@ class _TaskScreen extends State<TaskScreen> {
                                         color: Colors.black,
                                         fontFamily: 'manrope-bold',
                                       ),
-                                    ),
-                                    SizedBox(width: 55),
-                                    Image.asset(
-                                      'assets/images/person_icon.png',
-                                      width: 20,
-                                      height: 20,
-                                    ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      'Hussein Mohamed',
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        color: Colors.black,
-                                        fontFamily: 'manrope-bold',
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                    ),]),
                               SizedBox(height: 24),
                               Divider(
                                 color: Colors.grey,
@@ -630,16 +679,32 @@ class _TaskScreen extends State<TaskScreen> {
                               SizedBox(height: 24),
                               Row(
                                 children: [
-                                  Image.asset(
-                                    'assets/images/eye.png',
-                                    width: 24,
-                                    height: 24,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => ViewTask()),
+                                      );
+                                    },
+                                    child: Image.asset(
+                                      'assets/images/eye.png',
+                                      width: 24,
+                                      height: 24,
+                                    ),
                                   ),
                                   Spacer(),
-                                  Image.asset(
-                                    'assets/images/circle_check.png',
-                                    width: 34,
-                                    height: 34,)
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        print('completed');
+                                      });
+                                    },
+                                    child: Image.asset(
+                                      'assets/images/circle_check.png',
+                                      width: 34,
+                                      height: 34,
+                                    ),
+                                  )
                                 ],
                               ),
                               ],
@@ -653,7 +718,6 @@ class _TaskScreen extends State<TaskScreen> {
                         children: [
                           SizedBox(height: 16),
                           Container(
-                              height: 380,
                               width: double.infinity,
                               padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                               margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -673,12 +737,15 @@ class _TaskScreen extends State<TaskScreen> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text(
-                                        'Inspect Corn Growth',
-                                        style: TextStyle(
-                                          fontSize: 25,
-                                          fontFamily: 'manrope-semi-bold',
-                                          color: Colors.black,
+                                      SizedBox(
+                                        width: 240,
+                                        child: Text(
+                                          'Inspect Corn Growth',
+                                          style: TextStyle(
+                                            fontSize: 25,
+                                            fontFamily: 'manrope-semi-bold',
+                                            color: Colors.black,
+                                          ),
                                         ),
                                       ),
                                       Spacer(),
@@ -758,21 +825,6 @@ class _TaskScreen extends State<TaskScreen> {
                                   Row(
                                     children: [
                                       Image.asset(
-                                        'assets/images/calender.png',
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        'Jun 15, 2025',
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          color: Colors.black,
-                                          fontFamily: 'manrope-bold',
-                                        ),
-                                      ),
-                                      SizedBox(width: 83),
-                                      Image.asset(
                                         'assets/images/person_icon.png',
                                         width: 20,
                                         height: 20,
@@ -788,31 +840,66 @@ class _TaskScreen extends State<TaskScreen> {
                                       ),
                                     ],
                                   ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/calender.png',
+                                        width: 20,
+                                        height: 20,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        'Jun 15, 2025',
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                          fontFamily: 'manrope-bold',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  
                                 SizedBox(height: 24),
                                 Divider(
                                   color: Colors.grey,
                                   thickness: 1,
                                 ),
-                                SizedBox(height: 24),
+                                SizedBox(height: 20),
                                 Row(
                                   children: [
-                                    Image.asset(
-                                      'assets/images/eye.png',
-                                      width: 24,
-                                      height: 24,
-                                    ),
+                                    GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ViewTask()),
+                                    );
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/eye.png',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ),
                                     Spacer(),
-                                    Image.asset(
-                                      'assets/images/circle_check.png',
-                                      width: 34,
-                                      height: 34,)
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          print('completed');
+                                        });
+                                      },
+                                      child: Image.asset(
+                                        'assets/images/circle_check.png',
+                                        width: 34,
+                                        height: 34,
+                                      ),
+                                    )
                                   ],
                                 ),
                                 ],
                               )),
                           SizedBox(height: 24),
                           Container(
-                            height: 380,
                             width: double.infinity,
                             padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                             margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -832,12 +919,15 @@ class _TaskScreen extends State<TaskScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    'Apply Fertilizer',
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                      fontFamily: 'manrope-semi-bold',
-                                      color: Colors.black,
+                                  SizedBox(
+                                    width: 222,
+                                    child: Text(
+                                      'Apply Fertilizer',
+                                      style: TextStyle(
+                                        fontSize: 25,
+                                        fontFamily: 'manrope-semi-bold',
+                                        color: Colors.black,
+                                      ),
                                     ),
                                   ),
                                   Spacer(),
@@ -917,21 +1007,6 @@ class _TaskScreen extends State<TaskScreen> {
                               Row(
                                 children: [
                                   Image.asset(
-                                    'assets/images/calender.png',
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    'Jun 15, 2025',
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      color: Colors.black,
-                                      fontFamily: 'manrope-bold',
-                                    ),
-                                  ),
-                                  SizedBox(width: 63),
-                                  Image.asset(
                                     'assets/images/person_icon.png',
                                     width: 20,
                                     height: 20,
@@ -939,6 +1014,25 @@ class _TaskScreen extends State<TaskScreen> {
                                   SizedBox(width: 5),
                                   Text(
                                     'Yousef Mahmoud',
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.black,
+                                      fontFamily: 'manrope-bold',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/calender.png',
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    'Jun 15, 2025',
                                     style: TextStyle(
                                       fontSize: 17,
                                       color: Colors.black,
@@ -955,23 +1049,38 @@ class _TaskScreen extends State<TaskScreen> {
                             SizedBox(height: 24),
                             Row(
                               children: [
-                                Image.asset(
-                                  'assets/images/eye.png',
-                                  width: 24,
-                                  height: 24,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ViewTask()),
+                                    );
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/eye.png',
+                                    width: 24,
+                                    height: 24,
+                                  ),
                                 ),
                                 Spacer(),
-                                Image.asset(
-                                  'assets/images/circle_check.png',
-                                  width: 34,
-                                  height: 34,)
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      print('completed');
+                                    });
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/circle_check.png',
+                                    width: 34,
+                                    height: 34,
+                                  ),
+                                )
                               ],
                             ),
                             ],
                           )),
                           SizedBox(height: 24),
                           Container(
-                              height: 380,
                               width: double.infinity,
                               padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                               margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -991,12 +1100,15 @@ class _TaskScreen extends State<TaskScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    Text(
-                                      'Repair Irrigation System',
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                        fontFamily: 'manrope-semi-bold',
-                                        color: Colors.black,
+                                    SizedBox(
+                                      width: 240,
+                                      child: Text(
+                                        'Repair Irrigation System',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontFamily: 'manrope-semi-bold',
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
                                     Spacer(),
@@ -1072,7 +1184,26 @@ class _TaskScreen extends State<TaskScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 8),
+                                SizedBox(height: 24),
+                                Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/person_icon.png',
+                                          width: 20,
+                                          height: 20,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          'Hussein Mohamed',
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.black,
+                                            fontFamily: 'manrope-bold',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10),
                                 Row(
                                   children: [
                                     Image.asset(
@@ -1088,24 +1219,7 @@ class _TaskScreen extends State<TaskScreen> {
                                         color: Colors.black,
                                         fontFamily: 'manrope-bold',
                                       ),
-                                    ),
-                                    SizedBox(width: 55),
-                                    Image.asset(
-                                      'assets/images/person_icon.png',
-                                      width: 20,
-                                      height: 20,
-                                    ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      'Hussein Mohamed',
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        color: Colors.black,
-                                        fontFamily: 'manrope-bold',
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                    ),]),
                               SizedBox(height: 24),
                               Divider(
                                 color: Colors.grey,
@@ -1114,30 +1228,45 @@ class _TaskScreen extends State<TaskScreen> {
                               SizedBox(height: 24),
                               Row(
                                 children: [
-                                  Image.asset(
-                                    'assets/images/eye.png',
-                                    width: 24,
-                                    height: 24,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => ViewTask()),
+                                      );
+                                    },
+                                    child: Image.asset(
+                                      'assets/images/eye.png',
+                                      width: 24,
+                                      height: 24,
+                                    ),
                                   ),
                                   Spacer(),
-                                  Image.asset(
-                                    'assets/images/circle_check.png',
-                                    width: 34,
-                                    height: 34,)
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        print('completed');
+                                      });
+                                    },
+                                    child: Image.asset(
+                                      'assets/images/circle_check.png',
+                                      width: 34,
+                                      height: 34,
+                                    ),
+                                  )
                                 ],
                               ),
                               ],
                             )),
                           SizedBox(height: 24),
                         ],
-                      ),                    
+                      ),
                       ],
                       if (selectedTab == 2)...[
                       Column(
                         children: [
                           SizedBox(height: 16),
                           Container(
-                              height: 280,
                               width: double.infinity,
                               padding: const EdgeInsets.all(24),
                               margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -1229,21 +1358,6 @@ class _TaskScreen extends State<TaskScreen> {
                                   Row(
                                     children: [
                                       Image.asset(
-                                        'assets/images/calender.png',
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        'Jun 15, 2025',
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          color: Colors.black,
-                                          fontFamily: 'manrope-bold',
-                                        ),
-                                      ),
-                                      SizedBox(width: 83),
-                                      Image.asset(
                                         'assets/images/person_icon.png',
                                         width: 20,
                                         height: 20,
@@ -1259,12 +1373,30 @@ class _TaskScreen extends State<TaskScreen> {
                                       ),
                                     ],
                                   ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/calender.png',
+                                        width: 20,
+                                        height: 20,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        'Jun 15, 2025',
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                          fontFamily: 'manrope-bold',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 
                                 ],
                               )),
                           SizedBox(height: 24),
                           Container(
-                            height: 280,
                             width: double.infinity,
                             padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                             margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -1354,44 +1486,45 @@ class _TaskScreen extends State<TaskScreen> {
                               ),
                               SizedBox(height: 8),
                               Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/images/calender.png',
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    'Jun 15, 2025',
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      color: Colors.black,
-                                      fontFamily: 'manrope-bold',
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/person_icon.png',
+                                          width: 20,
+                                          height: 20,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          'Hussein Mohamed',
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.black,
+                                            fontFamily: 'manrope-bold',
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  SizedBox(width: 63),
-                                  Image.asset(
-                                    'assets/images/person_icon.png',
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    'Yousef Mahmoud',
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      color: Colors.black,
-                                      fontFamily: 'manrope-bold',
+                                    SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/calender.png',
+                                      width: 20,
+                                      height: 20,
                                     ),
-                                  ),
-                                ],
-                              ),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      'Jun 15, 2025',
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        color: Colors.black,
+                                        fontFamily: 'manrope-bold',
+                                      ),
+                                    ),]),
                             
                             ],
                           )),
                           SizedBox(height: 24),
                           Container(
-                              height: 280,
                               width: double.infinity,
                               padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                               margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -1411,12 +1544,15 @@ class _TaskScreen extends State<TaskScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    Text(
-                                      'Repair Irrigation System',
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                        fontFamily: 'manrope-semi-bold',
-                                        color: Colors.black,
+                                    SizedBox(
+                                      width: 240,
+                                      child: Text(
+                                        'Repair Irrigation System',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontFamily: 'manrope-semi-bold',
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
                                     Spacer(),
@@ -1481,38 +1617,42 @@ class _TaskScreen extends State<TaskScreen> {
                                 ),
                                 SizedBox(height: 8),
                                 Row(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/calender.png',
-                                      width: 20,
-                                      height: 20,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/person_icon.png',
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    'Yousef Mahmoud',
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.black,
+                                      fontFamily: 'manrope-bold',
                                     ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      'Jun 15, 2025',
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        color: Colors.black,
-                                        fontFamily: 'manrope-bold',
-                                      ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/calender.png',
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    'Jun 15, 2025',
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.black,
+                                      fontFamily: 'manrope-bold',
                                     ),
-                                    SizedBox(width: 55),
-                                    Image.asset(
-                                      'assets/images/person_icon.png',
-                                      width: 20,
-                                      height: 20,
-                                    ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      'Hussein Mohamed',
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        color: Colors.black,
-                                        fontFamily: 'manrope-bold',
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
+                              ),
                               
                               ],
                             )),
