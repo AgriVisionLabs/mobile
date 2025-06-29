@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grd_proj/components/color.dart';
 
-class PersonalSetting extends StatefulWidget {
-  const PersonalSetting({super.key});
+class PersonalSettings extends StatefulWidget {
+  const PersonalSettings({super.key});
 
   @override
-  State<PersonalSetting> createState() => _PersonalSettingState();
+  State<PersonalSettings> createState() => _PersonalSettingsState();
 }
 
-class _PersonalSettingState extends State<PersonalSetting> {
+class _PersonalSettingsState extends State<PersonalSettings> {
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
   bool isEditingUsername = false;

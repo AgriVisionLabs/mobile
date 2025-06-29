@@ -1,15 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:grd_proj/components/Personal_settingS.dart';
 import 'package:grd_proj/components/color.dart';
-=======
-import 'package:grd_proj/components/Personal_setting.dart';
 import 'package:grd_proj/components/color.dart';
-import 'package:flutter/services.dart';
->>>>>>> 4478f5257086268166f8313285bc7f2fd1019bb0
 import 'package:grd_proj/components/notfication_settings.dart';
+import 'package:grd_proj/components/personal_settings.dart';
 import 'package:grd_proj/components/security_settings.dart';
 import 'package:grd_proj/components/subcreption_settings.dart';
 
@@ -60,11 +55,7 @@ class _SettingsState extends State<Settings> {
                       Navigator.pop(context);
                     },
                     icon: const Icon(
-<<<<<<< HEAD
                       Icons.close_rounded,
-=======
-                      Icons.arrow_back_rounded,
->>>>>>> 4478f5257086268166f8313285bc7f2fd1019bb0
                       color: Colors.black,
                       size: 24,
                     ),
@@ -85,11 +76,7 @@ class _SettingsState extends State<Settings> {
                     children: List.generate(tabs.length, (index) {
                       final isSelected = selectedTab == index;
                       return Padding(
-<<<<<<< HEAD
                         padding: const EdgeInsets.symmetric(horizontal:5), // مسافة بين التابات
-=======
-                        padding: const EdgeInsets.only(right: 8.0), // مسافة بين التابات
->>>>>>> 4478f5257086268166f8313285bc7f2fd1019bb0
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
@@ -120,7 +107,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               SizedBox(height: 20),
-              if (selectedTab == 0) PersonalSetting(),
+              if (selectedTab == 0) PersonalSettings(),
               if (selectedTab == 1) SecuritySettings(),
               if (selectedTab == 2) SubcreptionSetting(),
               if (selectedTab == 3) NotificationSettings(),
