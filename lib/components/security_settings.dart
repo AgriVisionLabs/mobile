@@ -85,7 +85,11 @@ void initState() {
                           )
                         ]),
                     ),
+<<<<<<< HEAD
                       SizedBox(width: 35),
+=======
+                      SizedBox(width: 50),
+>>>>>>> 4478f5257086268166f8313285bc7f2fd1019bb0
                       Switch(
                         value: isSwitched,
                         onChanged: (value) {

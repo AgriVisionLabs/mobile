@@ -41,7 +41,11 @@ Widget build(BuildContext context) {
               MaterialPageRoute(builder: (context) => HomeScreen(initialIndex: 6,)));
             },
             child : Container(
+<<<<<<< HEAD
               width: 172,
+=======
+              width: 180,
+>>>>>>> 4478f5257086268166f8313285bc7f2fd1019bb0
               height: 125,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -78,7 +82,11 @@ Widget build(BuildContext context) {
         GestureDetector(
             onTap: () {},
             child : Container(
+<<<<<<< HEAD
               width: 172,
+=======
+              width: 180,
+>>>>>>> 4478f5257086268166f8313285bc7f2fd1019bb0
               height: 125,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -122,7 +130,11 @@ Widget build(BuildContext context) {
               MaterialPageRoute(builder: (context) => HomeScreen(initialIndex: 7,)));
           },
           child : Container(
+<<<<<<< HEAD
             width: 172,
+=======
+            width: 180,
+>>>>>>> 4478f5257086268166f8313285bc7f2fd1019bb0
             height: 125,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -163,7 +175,11 @@ Widget build(BuildContext context) {
               MaterialPageRoute(builder: (context) => Settings()));
           },
           child : Container(
+<<<<<<< HEAD
             width: 172,
+=======
+            width: 180,
+>>>>>>> 4478f5257086268166f8313285bc7f2fd1019bb0
             height: 125,
             decoration: BoxDecoration(
               color: Colors.white,
