@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grd_proj/bloc/bloc/control_bloc.dart';
+import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/screens/rules.dart';

@@ -1,7 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grd_proj/bloc/bloc/control_bloc.dart';
+import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/automation_rule_model.dart';
 import 'package:grd_proj/screens/automation_rule_edit.dart';
