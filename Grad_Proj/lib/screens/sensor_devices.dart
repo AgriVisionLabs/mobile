@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/models/sensor_model.dart';
 import 'package:grd_proj/screens/sensor_view.dart';
 
 class SensorDevices extends StatefulWidget {
   final String farmName;
   final String farmId;
-
+  final SensorDevice? updatedDevice;
   const SensorDevices(
-      {super.key, required this.farmName, required this.farmId});
+      {super.key, required this.farmName, required this.farmId , this.updatedDevice});
 
   @override
   State<SensorDevices> createState() => _SensorDevicesState();
@@ -76,6 +77,8 @@ class _SensorDevicesState extends State<SensorDevices> {
                                     children: [
                                       Image.asset(
                                         'assets/images/Group.png',
+                                        width: 30,
+                                        height: 30,
                                       ),
                                       const SizedBox(
                                         width: 5,
@@ -191,7 +194,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                   Row(children: [
                                     Container(
                                         width: 100,
-                                        height: 108,
+                                        height: 110,
                                         padding: const EdgeInsets.all(15),
                                         decoration: BoxDecoration(
                                           color: const Color.fromARGB(
@@ -205,8 +208,8 @@ class _SensorDevicesState extends State<SensorDevices> {
                                             children: [
                                               Image.asset(
                                                 'assets/images/water-outline.png',
-                                                // height: 24,
-                                                // width: 24,
+                                                height: 24,
+                                                width: 24,
                                               ),
                                               const SizedBox(height: 5),
                                               Text(
@@ -233,7 +236,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                     ),
                                     Container(
                                         width: 100,
-                                        height: 108,
+                                        height: 110,
                                         padding: const EdgeInsets.all(15),
                                         decoration: BoxDecoration(
                                           color: const Color(0x18D12A00),
@@ -246,8 +249,8 @@ class _SensorDevicesState extends State<SensorDevices> {
                                             children: [
                                               Image.asset(
                                                 'assets/images/temp2.png',
-                                                // height: 24,
-                                                // width: 24,
+                                                height: 24,
+                                                width: 24,
                                               ),
                                               const SizedBox(height: 5),
                                               Text(
@@ -274,7 +277,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                     ),
                                     Container(
                                         width: 100,
-                                        height: 108,
+                                        height: 110,
                                         padding: const EdgeInsets.all(15),
                                         decoration: BoxDecoration(
                                           color: const Color(0x1825C462),
@@ -287,8 +290,8 @@ class _SensorDevicesState extends State<SensorDevices> {
                                             children: [
                                               Image.asset(
                                                 'assets/images/Hum.png',
-                                                // height: 24,
-                                                // width: 24,
+                                                height: 24,
+                                                width: 24,
                                               ),
                                               const SizedBox(height: 5),
                                               Text(
@@ -339,8 +342,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                SensorView(
+                                            builder: (context) => SensorView(
                                                   sensor: item,
                                                 )),
                                       );
@@ -353,13 +355,11 @@ class _SensorDevicesState extends State<SensorDevices> {
                                   const Spacer(),
                                   GestureDetector(
                                     onTap: () {
-                                      context
-                                          .read<FieldBloc>()
-                                          .add(DeleteSensorUnitEvent(
-                                            farmId: item.farmId,
-                                            fieldId: item.fieldId,
-                                            sensorId: item.id
-                                          ));
+                                      context.read<FieldBloc>().add(
+                                          DeleteSensorUnitEvent(
+                                              farmId: item.farmId,
+                                              fieldId: item.fieldId,
+                                              sensorId: item.id));
                                       // ignore: avoid_print
                                       print("==========Delted===========");
                                       context.read<FieldBloc>().add(

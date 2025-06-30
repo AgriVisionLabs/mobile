@@ -484,7 +484,9 @@ class _DashBoardState extends State<DashBoard> {
                                     fontFamily: 'manrope',
                                   )),
                               Spacer(),
-                              Image.asset('assets/images/growth.png')
+                              Image.asset('assets/images/growth.png',
+                              height: 24,
+                              width: 24,)
                             ]),
                             SizedBox(height: 30),
                             Text('On Track',
@@ -533,7 +535,9 @@ class _DashBoardState extends State<DashBoard> {
                                     fontFamily: 'manrope',
                                   )),
                               Spacer(),
-                              Image.asset('assets/images/forcast.png')
+                              Image.asset('assets/images/forcast.png',
+                              height: 24,
+                              width: 24,)
                             ]),
                             SizedBox(height: 30),
                             Text('4.2 tons/acre',

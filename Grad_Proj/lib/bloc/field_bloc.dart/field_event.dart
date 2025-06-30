@@ -80,15 +80,9 @@ class OpenFieldIrrigationUnitsEvent extends FieldEvent {
 class IrrigationUnitsEditEvent extends FieldEvent {
   final String fieldId;
   final String farmId;
-  final String name;
-  final String newFieldId;
-  final int status;
   IrrigationUnitsEditEvent({
     required this.fieldId,
     required this.farmId,
-    required this.name,
-    required this.newFieldId,
-    required this.status,
   });
   
 }
@@ -145,16 +139,10 @@ class OpenFieldSensorUnitsEvent extends FieldEvent {
 class SensorUnitEditEvent extends FieldEvent {
   final String fieldId;
   final String farmId;
-  final String name;
-  final String newFieldId;
-  final int status;
   final String sensorId;
   SensorUnitEditEvent({
     required this.fieldId,
     required this.farmId,
-    required this.name,
-    required this.newFieldId,
-    required this.status,
     required this.sensorId,
   });
   

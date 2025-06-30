@@ -34,6 +34,16 @@ class _NewFarmState extends State<NewFarm> {
   }
   bool edit = false;
   FarmModel ? farm;
+
+  void didChangeDependencies() {
+    context.read<FarmBloc>().name.clear();
+    context.read<FarmBloc>().area.clear();
+    context.read<FarmBloc>().location.clear();
+    context.read<FarmBloc>().soilType.clear();
+    context.read<FarmBloc>().recipient.clear();
+    context.read<FarmBloc>().roleName.clear();
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FarmBloc, FarmState>(

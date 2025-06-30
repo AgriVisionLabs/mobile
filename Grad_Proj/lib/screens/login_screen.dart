@@ -206,8 +206,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       });
                                     },
                                     child: Image.asset(obscureText
-                                        ? 'assets/images/visiability on.png'
-                                        : 'assets/images/visiability off.png')),
+                                        ? 'assets/images/visiability on.png' 
+                                        : 'assets/images/visiability off.png' ,
+                                        )),
                               ),
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,

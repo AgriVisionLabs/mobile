@@ -38,12 +38,6 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
     on<OpenFarmEvent>((event, emit) async {
       try {
         final response = await api.get(EndPoints.allFarms);
-        soilType.clear();
-        name.clear();
-        location.clear();
-        area.clear();
-        recipient.clear();
-        roleName.clear();
         if (response is List && response.isNotEmpty) {
           final farms = response
               .map<FarmModel>((json) => FarmModel.fromJson(json))

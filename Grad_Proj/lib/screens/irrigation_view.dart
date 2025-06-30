@@ -25,6 +25,8 @@ class IrrigationView extends StatelessWidget {
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               Image.asset(
                 'assets/images/Group.png',
+                height: 30,
+                width: 30,
               ),
               const SizedBox(
                 width: 20,

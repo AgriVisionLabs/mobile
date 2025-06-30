@@ -9,7 +9,7 @@ import '../Components/color.dart';
 
 class AddAuomationRules extends StatefulWidget {
   final String farmId;
-  const AddAuomationRules({super.key , required this.farmId});
+  const AddAuomationRules({super.key, required this.farmId});
 
   @override
   State<AddAuomationRules> createState() => _AddAuomationRulesState();
@@ -17,7 +17,7 @@ class AddAuomationRules extends StatefulWidget {
 
 class _AddAuomationRulesState extends State<AddAuomationRules> {
   String? selectedValue;
-  
+
   int currentIndex = 0;
   List field = [];
   void _onInputChanged(int index) {
@@ -26,6 +26,19 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
       // ignore: avoid_print
       print(field);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    context.read<ControlBloc>().ruleName.clear();
+    context.read<ControlBloc>().type.clear();
+    context.read<ControlBloc>().minThresholdValue.clear();
+    context.read<ControlBloc>().maxThresholdValue.clear();
+    context.read<ControlBloc>().targetSensorType.clear();
+    context.read<ControlBloc>().startTime.clear();
+    context.read<ControlBloc>().endTime.clear();
+    context.read<ControlBloc>().activeDays.clear();
+    super.didChangeDependencies();
   }
 
   @override
@@ -51,19 +64,23 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
               child: SingleChildScrollView(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                       SelectField(farmId: widget.farmId , onInputChanged: _onInputChanged,
+                      SelectField(
+                          farmId: widget.farmId,
+                          onInputChanged: _onInputChanged,
                           currentIndex: currentIndex)
                     else if (currentIndex == 1)
                       Rules(
-                         fieldId: CacheHelper.getData(key: 'fieldId'),
-                          farmId: widget.farmId,
-                          onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex,
-                          form: false,),  
+                        fieldId: CacheHelper.getData(key: 'fieldId'),
+                        farmId: widget.farmId,
+                        onInputChanged: _onInputChanged,
+                        currentIndex: currentIndex,
+                        form: false,
+                      ),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -130,7 +147,6 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                 ),
               ],
             ),
-            
           ],
         ),
       ),
@@ -180,7 +196,8 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
                     ],
                   ),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 25, left: 10, right: 10),
+                    margin:
+                        const EdgeInsets.only(bottom: 25, left: 10, right: 10),
                     width: 100,
                     height: 1,
                     color: const Color(0xFF333333),
@@ -189,6 +206,4 @@ class _AddAuomationRulesState extends State<AddAuomationRules> {
               );
             }));
   }
-
- 
 }

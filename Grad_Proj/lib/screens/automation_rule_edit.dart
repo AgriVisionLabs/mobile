@@ -35,6 +35,19 @@ class _AutomationRuleEditState extends State<AutomationRuleEdit> {
   }
 
   @override
+  void didChangeDependencies() {
+    context.read<ControlBloc>().ruleName.clear();
+    context.read<ControlBloc>().type.clear();
+    context.read<ControlBloc>().minThresholdValue.clear();
+    context.read<ControlBloc>().maxThresholdValue.clear();
+    context.read<ControlBloc>().targetSensorType.clear();
+    context.read<ControlBloc>().startTime.clear();
+    context.read<ControlBloc>().endTime.clear();
+    context.read<ControlBloc>().activeDays.clear();
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -128,7 +141,6 @@ class _AutomationRuleEditState extends State<AutomationRuleEdit> {
                 const Spacer(),
                 IconButton(
                   onPressed: () {
-                    
                     context
                         .read<ControlBloc>()
                         .add(OpenFarmAutomationRulesEvent(

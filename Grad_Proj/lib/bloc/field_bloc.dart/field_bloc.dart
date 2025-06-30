@@ -24,9 +24,13 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
   GlobalKey<FormState> addIrrigationUnitFormKey = GlobalKey();
   TextEditingController irrigationUnitName = TextEditingController();
   TextEditingController irrigationSerialNum = TextEditingController();
+  TextEditingController irrigationStatus = TextEditingController();
+  TextEditingController irrigationNewFieldId = TextEditingController();
   GlobalKey<FormState> addSensorUnitFormKey = GlobalKey();
   TextEditingController sensorUnitName = TextEditingController();
   TextEditingController sensorSerialNum = TextEditingController();
+  TextEditingController sensorStatus = TextEditingController();
+  TextEditingController sensorNewFieldId = TextEditingController();
   TextEditingController nextStep1 = TextEditingController();
   TextEditingController nextStep2 = TextEditingController();
   
@@ -168,9 +172,9 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         final response = await api.put(
             "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits",
             data: {
-              ApiKey.name: event.name,
-              ApiKey.status: event.status,
-              ApiKey.newFieldId: event.newFieldId,
+              ApiKey.name: irrigationUnitName.text,
+              ApiKey.status: int.tryParse(irrigationStatus.text),
+              ApiKey.newFieldId: irrigationNewFieldId.text,
             });
         emit(IrrigationUnitEditSuccess());
       } on ServerException catch (e) {
@@ -261,9 +265,9 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         final response = await api.put(
             "${EndPoints.sensor}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}",
             data: {
-              ApiKey.name: event.name,
-              ApiKey.status: event.status,
-              ApiKey.newFieldId: event.newFieldId,
+              ApiKey.name: sensorUnitName.text,
+              ApiKey.status: int.tryParse(sensorStatus.text),
+              ApiKey.newFieldId: sensorNewFieldId.text,
             });
         emit(SensorUnitEditSuccess());
       } on ServerException catch (e) {

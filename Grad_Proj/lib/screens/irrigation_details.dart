@@ -76,6 +76,8 @@ class _IrrigationDetailsState extends State<IrrigationDetails> {
                                     children: [
                                       Image.asset(
                                         'assets/images/Group.png',
+                                        width: 30,
+                                        height: 30,
                                       ),
                                       const SizedBox(
                                         width: 5,

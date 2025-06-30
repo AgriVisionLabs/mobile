@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/screens/select_field.dart';
 import 'package:grd_proj/screens/sensor.dart';
@@ -6,7 +8,7 @@ import '../Components/color.dart';
 
 class AddSensor extends StatefulWidget {
   final String farmId;
-  const AddSensor({super.key , required this.farmId});
+  const AddSensor({super.key, required this.farmId});
 
   @override
   State<AddSensor> createState() => _AddSensorState();
@@ -14,7 +16,7 @@ class AddSensor extends StatefulWidget {
 
 class _AddSensorState extends State<AddSensor> {
   String? selectedValue;
-  
+
   int currentIndex = 0;
   List field = [];
   void _onInputChanged(int index) {
@@ -23,6 +25,13 @@ class _AddSensorState extends State<AddSensor> {
       // ignore: avoid_print
       print(field);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    context.read<FieldBloc>().sensorSerialNum.clear();
+    context.read<FieldBloc>().sensorUnitName.clear();
+    super.didChangeDependencies();
   }
 
   @override
@@ -53,15 +62,18 @@ class _AddSensorState extends State<AddSensor> {
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                       SelectField(farmId: widget.farmId ,  onInputChanged: _onInputChanged,
+                      SelectField(
+                          farmId: widget.farmId,
+                          onInputChanged: _onInputChanged,
                           currentIndex: currentIndex)
                     else if (currentIndex == 1)
                       Sensor(
-                         fieldId: CacheHelper.getData(key: 'fieldId'),
-                          farmId: widget.farmId,
-                          onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex,
-                          form: false,),
+                        fieldId: CacheHelper.getData(key: 'fieldId'),
+                        farmId: widget.farmId,
+                        onInputChanged: _onInputChanged,
+                        currentIndex: currentIndex,
+                        form: false,
+                      ),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -113,6 +125,9 @@ class _AddSensorState extends State<AddSensor> {
                 const Spacer(),
                 IconButton(
                   onPressed: () {
+                    context.read<FieldBloc>().add(OpenFarmSensorUnitsEvent(
+                          farmId: widget.farmId,
+                        ));
                     Navigator.pop(context);
                   },
                   icon: const Icon(Icons.close_rounded,
@@ -179,7 +194,8 @@ class _AddSensorState extends State<AddSensor> {
                     ],
                   ),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 25, left: 10, right: 10),
+                    margin:
+                        const EdgeInsets.only(bottom: 25, left: 10, right: 10),
                     width: 100,
                     height: 1,
                     color: const Color(0xFF333333),
@@ -188,6 +204,4 @@ class _AddSensorState extends State<AddSensor> {
               );
             }));
   }
-
- 
 }

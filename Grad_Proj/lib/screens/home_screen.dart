@@ -12,6 +12,7 @@ import 'package:grd_proj/screens/disease_detection.dart';
 import 'package:grd_proj/screens/fields_screen.dart';
 import 'package:grd_proj/screens/irrigation_control.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
+import 'package:grd_proj/screens/settings.dart';
 import '../Components/color.dart';
 import 'dash_board.dart';
 import 'farms_screen.dart';
@@ -63,7 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
     const FieldsScreen(),
     const IrrigationConrtol(),
     const SensorAndDevices(),
-    const DiseaseDetection()
+    const DiseaseDetection(),
+    const Settings()
   ];
 
   void _onItemTapped(int index) {
@@ -167,8 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
           items: [
             BottomNavigationBarItem(
               icon: Image.asset('assets/images/dashboard.png',
-                  height: 30,
-                  width: 30,
+                  height: 24,
+                  width: 24,
                   color: indexing == 0 ? Colors.green[900] : Colors.black),
               label: 'Dashboard',
             ),

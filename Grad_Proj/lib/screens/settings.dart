@@ -35,33 +35,18 @@ class _SettingsState extends State<Settings> {
       backgroundColor: Colors.white,
       body: 
       Padding(
-        padding: const EdgeInsets.fromLTRB(16,70,16,50),
+        padding: const EdgeInsets.fromLTRB(16,150,16,50),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text("Settings",
-                  style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "manrope",
-                  ),),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back_rounded,
-                      color: Colors.black,
-                      size: 24,
-                    ),
-                  ),
-                ],
-              ),
+              Text("Settings",
+              style: TextStyle(
+                fontSize: 25,
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontFamily: "manrope",
+              ),),
               SizedBox(height: 30),
               Container(
                 height: 62,
@@ -108,9 +93,9 @@ class _SettingsState extends State<Settings> {
               ),
               SizedBox(height: 20),
               if (selectedTab == 0) PersonalSetting(),
-              if (selectedTab == 1) SecuritySettings(),
-              if (selectedTab == 2) SubcreptionSetting(),
-              if (selectedTab == 3) NotificationSettings(),
+              // if (selectedTab == 1) SecuritySettings(),
+              // if (selectedTab == 2) SubcreptionSetting(),
+              // if (selectedTab == 3) NotificationSettings(),
           ]),
         )
       )

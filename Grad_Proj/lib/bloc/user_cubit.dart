@@ -92,12 +92,6 @@ class UserCubit extends Cubit<UserState> {
         ApiKey.lastName: signUpLastName.text,
       });
       emit(SignUpSuccess());
-      signUpName.clear();
-      signUpEmail.clear();
-      signInPassword.clear();
-      signUpPhoneNumber.clear();
-      signUpFirstName.clear();
-      signUpLastName.clear();
     } on ServerException catch (e) {
       emit(SignUpFailure(
           errMessage: e.errorModel.message, errors: e.errorModel.error));

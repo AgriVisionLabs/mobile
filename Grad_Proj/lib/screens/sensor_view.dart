@@ -9,7 +9,7 @@ import 'package:grd_proj/screens/sensor_edit.dart';
 class SensorView extends StatelessWidget {
   final SensorDevice sensor;
   SensorView({super.key, required this.sensor});
-  bool tell = true;
+  // bool tell = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,6 +23,8 @@ class SensorView extends StatelessWidget {
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               Image.asset(
                 'assets/images/Group.png',
+                width: 30,
+                height: 30,
               ),
               const SizedBox(
                 width: 20,
@@ -127,7 +129,7 @@ class SensorView extends StatelessWidget {
                     border: Border.all(color: borderColor, width: 1)),
                 child: Center(
                   child: Text(
-                    tell ? "Active" : "Inactive",
+                    sensor.status==0 ? "Active" : "Inactive",
                     style: const TextStyle(
                         color: Colors.black,
                         fontSize: 16,

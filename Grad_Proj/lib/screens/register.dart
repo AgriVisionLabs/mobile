@@ -28,6 +28,19 @@ class _RigesterState extends State<Rigester> {
   UnAuthorizeModel? response;
 
   @override
+  void dispose() {
+    context.read<UserCubit>().signUpFirstName.clear();
+    context.read<UserCubit>().signUpLastName.clear();
+    context.read<UserCubit>().signUpName.clear();
+    context.read<UserCubit>().signUpEmail.clear();
+    context.read<UserCubit>().signUpPassword.clear();
+    context.read<UserCubit>().signUpPhoneNumber.clear();
+    confirmPasswordController.clear();
+    passwordController.clear();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserCubit, UserState>(listener: (context, state) {
       if (state is SignUpSuccess) {
@@ -39,11 +52,10 @@ class _RigesterState extends State<Rigester> {
             ),
           );
         });
-        Navigator.pushReplacement(context, MaterialPageRoute(
-                                  builder: (context) =>
-                                      Verification()),);
-        confirmPasswordController.clear();
-        passwordController.clear();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Verification()),
+        );
       } else if (state is SignUpFailure) {
         if (state.errMessage == 'Conflict') {
           response = null;
@@ -134,15 +146,15 @@ class _RigesterState extends State<Rigester> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
-                                if(response != null){
+                                if (response != null) {
                                   if (response!.firstName != null) {
-                                  if (value!.isEmpty) {
-                                    return response!.firstName![0];
-                                  } else if (value.length < 3 ||
-                                      value.length > 32) {
-                                    return response!.firstName![0];
+                                    if (value!.isEmpty) {
+                                      return response!.firstName![0];
+                                    } else if (value.length < 3 ||
+                                        value.length > 32) {
+                                      return response!.firstName![0];
+                                    }
                                   }
-                                }
                                 }
                                 return null;
                               },
@@ -182,15 +194,15 @@ class _RigesterState extends State<Rigester> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
-                                if(response != null){
-                                if (response!.lasttName != null) {
-                                  if (value!.isEmpty) {
-                                    return response!.lasttName![0];
-                                  } else if (value.length < 3 ||
-                                      value.length > 32) {
-                                    return response!.lasttName![0];
+                                if (response != null) {
+                                  if (response!.lasttName != null) {
+                                    if (value!.isEmpty) {
+                                      return response!.lasttName![0];
+                                    } else if (value.length < 3 ||
+                                        value.length > 32) {
+                                      return response!.lasttName![0];
+                                    }
                                   }
-                                }
                                 }
                                 return null;
                               },
@@ -229,15 +241,16 @@ class _RigesterState extends State<Rigester> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
-                                if(response != null){
-                                if (response!.userName != null) {
-                                  if (value!.isEmpty) {
-                                    return response!.userName![0];
-                                  } else if (value.length < 3 ||
-                                      value.length > 32) {
-                                    return response!.userName![0];
+                                if (response != null) {
+                                  if (response!.userName != null) {
+                                    if (value!.isEmpty) {
+                                      return response!.userName![0];
+                                    } else if (value.length < 3 ||
+                                        value.length > 32) {
+                                      return response!.userName![0];
+                                    }
                                   }
-                                } }else if (description.isNotEmpty &&
+                                } else if (description.isNotEmpty &&
                                     description !=
                                         "A user with this email already exists.") {
                                   return description;
@@ -279,14 +292,15 @@ class _RigesterState extends State<Rigester> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
-                                if(response != null){
-                                if (response!.email != null) {
-                                  if (value!.isEmpty) {
-                                    return response!.email![0];
-                                  } else if (!value.contains("@")) {
-                                    return response!.email![0];
+                                if (response != null) {
+                                  if (response!.email != null) {
+                                    if (value!.isEmpty) {
+                                      return response!.email![0];
+                                    } else if (!value.contains("@")) {
+                                      return response!.email![0];
+                                    }
                                   }
-                                } }else if (description.isNotEmpty &&
+                                } else if (description.isNotEmpty &&
                                     description !=
                                         "A user with this username already exists.") {
                                   return description;
@@ -338,20 +352,22 @@ class _RigesterState extends State<Rigester> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
-                                if(response != null){
-                                if (response!.password != null) {
-                                  if (value!.isEmpty) {
-                                    return response!.password![0];
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content:
-                                            Text("${response!.password![0]}"),
-                                      ),
-                                    );
-                                    return response!.password![0];
+                                if (response != null) {
+                                  if (response!.password != null) {
+                                    if (value!.isEmpty) {
+                                      return response!.password![0];
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              Text("${response!.password![0]}"),
+                                        ),
+                                      );
+                                      return response!.password![0];
+                                    }
                                   }
-                                }}
+                                }
                                 return null;
                               },
                             ),
@@ -440,14 +456,15 @@ class _RigesterState extends State<Rigester> {
                               ),
                               autocorrect: false,
                               validator: (value) {
-                                if(response != null){
-                                if (response!.phoneNumber != null) {
-                                  if (value!.isEmpty) {
-                                    return response!.phoneNumber![0];
-                                  } else {
-                                    return response!.phoneNumber![0];
+                                if (response != null) {
+                                  if (response!.phoneNumber != null) {
+                                    if (value!.isEmpty) {
+                                      return response!.phoneNumber![0];
+                                    } else {
+                                      return response!.phoneNumber![0];
+                                    }
                                   }
-                                }}
+                                }
                                 return null;
                               },
                             ),

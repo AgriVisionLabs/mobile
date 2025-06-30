@@ -47,6 +47,8 @@ class _IrrigationEditState extends State<IrrigationEdit> {
         } else if (state is ViewFieldIrrigationUnitSuccess) {
           device = state.device;
           context.read<FieldBloc>().irrigationUnitName.text = device!.name;
+          context.read<FieldBloc>().irrigationStatus.text = device!.status.toString();
+          context.read<FieldBloc>().irrigationNewFieldId.text = device!.fieldId;
           selectedtype = device!.status;
           selectedFieldId = device!.fieldId;
         } else if (state is FieldLoaded) {
@@ -100,6 +102,8 @@ class _IrrigationEditState extends State<IrrigationEdit> {
                                   children: [
                                     Image.asset(
                                       'assets/images/Group.png',
+                                      width: 30,
+                                      height: 30,
                                     ),
                                     const SizedBox(
                                       width: 20,
@@ -230,12 +234,7 @@ class _IrrigationEditState extends State<IrrigationEdit> {
                                             IrrigationUnitsEditEvent(
                                                 farmId: device!.farmId,
                                                 fieldId: device!.fieldId,
-                                                name: context
-                                                    .read<FieldBloc>()
-                                                    .irrigationUnitName
-                                                    .text,
-                                                newFieldId: selectedFieldId!,
-                                                status: selectedtype!));
+                                             ));
                                       },
                                       child: Container(
                                         width: 150,
@@ -312,6 +311,7 @@ class _IrrigationEditState extends State<IrrigationEdit> {
                                         onChanged: (newValue) {
                                           setState(() {
                                             selectedtype = newValue;
+                                            context.read<FieldBloc>().irrigationStatus.text = selectedtype.toString();
                                           });
                                         },
                                         items: status.entries
@@ -399,6 +399,7 @@ class _IrrigationEditState extends State<IrrigationEdit> {
                                         onChanged: (newValue) {
                                           setState(() {
                                             selectedFieldId = newValue;
+                                            context.read<FieldBloc>().irrigationNewFieldId.text = selectedFieldId!;
                                           });
                                         },
                                         items: fields!

@@ -9,7 +9,11 @@ class SensorEdit extends StatefulWidget {
   final String farm;
   final String field;
   final String sensorId;
-  const SensorEdit({super.key, required this.farm, required this.field, required this.sensorId});
+  const SensorEdit(
+      {super.key,
+      required this.farm,
+      required this.field,
+      required this.sensorId});
 
   @override
   State<SensorEdit> createState() => _SensorEditState();
@@ -26,10 +30,17 @@ class _SensorEditState extends State<SensorEdit> {
   @override
   void initState() {
     context.read<FieldBloc>().add(OpenFieldSensorUnitsEvent(
-      sensorId: widget.sensorId,
-        farmId: widget.farm, fieldId: widget.field));
+        sensorId: widget.sensorId, farmId: widget.farm, fieldId: widget.field));
     context.read<FieldBloc>().add(OpenFieldEvent(farmId: widget.farm));
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    context.read<FieldBloc>().sensorUnitName.clear();
+    context.read<FieldBloc>().sensorStatus.clear();
+    context.read<FieldBloc>().sensorNewFieldId.clear();
+    super.didChangeDependencies();
   }
 
   @override
@@ -48,6 +59,9 @@ class _SensorEditState extends State<SensorEdit> {
         } else if (state is ViewFieldSensorUnitSuccess) {
           device = state.device;
           context.read<FieldBloc>().sensorUnitName.text = device!.name;
+          context.read<FieldBloc>().sensorStatus.text =
+              device!.status.toString();
+          context.read<FieldBloc>().sensorNewFieldId.text = device!.fieldId;
           selectedtype = device!.status;
           selectedFieldId = device!.fieldId;
         } else if (state is FieldLoaded) {
@@ -55,7 +69,7 @@ class _SensorEditState extends State<SensorEdit> {
         } else if (state is SensorUnitEditFailure) {
           context
               .read<FieldBloc>()
-              .addIrrigationUnitFormKey
+              .addSensorUnitFormKey
               .currentState!
               .validate();
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -101,6 +115,8 @@ class _SensorEditState extends State<SensorEdit> {
                                   children: [
                                     Image.asset(
                                       'assets/images/Group.png',
+                                      height: 30,
+                                      width: 30,
                                     ),
                                     const SizedBox(
                                       width: 20,
@@ -108,16 +124,22 @@ class _SensorEditState extends State<SensorEdit> {
                                     SizedBox(
                                       width: 200,
                                       child: TextFormField(
+                                        style: const TextStyle(
+                                           color: Colors.black,
+                                            fontFamily: "Manrope",
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500,
+                                        ),
                                         controller: context
                                             .read<FieldBloc>()
                                             .sensorUnitName,
                                         keyboardType: TextInputType.text,
                                         decoration: InputDecoration(
-                                          hintText: device!.name,
+                                          hintText: "Enter Sensor Name",
                                           hintStyle: const TextStyle(
                                             color: borderColor,
                                             fontFamily: "Manrope",
-                                            fontSize: 18,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.w400,
                                           ),
                                           contentPadding:
@@ -227,17 +249,13 @@ class _SensorEditState extends State<SensorEdit> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        context.read<FieldBloc>().add(
-                                            SensorUnitEditEvent(
-                                               sensorId: device!.id,
-                                                farmId: device!.farmId,
-                                                fieldId: device!.fieldId,
-                                                name: context
-                                                    .read<FieldBloc>()
-                                                    .sensorUnitName
-                                                    .text,
-                                                newFieldId: selectedFieldId!,
-                                                status: selectedtype!));
+                                        context
+                                            .read<FieldBloc>()
+                                            .add(SensorUnitEditEvent(
+                                              sensorId: device!.id,
+                                              farmId: device!.farmId,
+                                              fieldId: device!.fieldId,
+                                            ));
                                       },
                                       child: Container(
                                         width: 150,
@@ -314,6 +332,10 @@ class _SensorEditState extends State<SensorEdit> {
                                         onChanged: (newValue) {
                                           setState(() {
                                             selectedtype = newValue;
+                                            context
+                                                .read<FieldBloc>()
+                                                .sensorStatus
+                                                .text = selectedtype.toString();
                                           });
                                         },
                                         items: status.entries
@@ -401,6 +423,10 @@ class _SensorEditState extends State<SensorEdit> {
                                         onChanged: (newValue) {
                                           setState(() {
                                             selectedFieldId = newValue;
+                                            context
+                                                .read<FieldBloc>()
+                                                .sensorNewFieldId
+                                                .text = selectedFieldId!;
                                           });
                                         },
                                         items: fields!
@@ -648,7 +674,7 @@ class _SensorEditState extends State<SensorEdit> {
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      device!.lastMaintenance?? "Not Exist",
+                                      device!.lastMaintenance ?? "Not Exist",
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 18,
@@ -783,133 +809,179 @@ class _SensorEditState extends State<SensorEdit> {
                                 thickness: 1,
                               ),
                               const SizedBox(
-              height: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  "Last Reading",
-                  style: TextStyle(
-                      color: Color(0xFF616161),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 9, vertical: 10),
-                    width: 400,
-                    height: 160,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(63, 159, 159, 159),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                              width: 120,
-                              height: 104,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              child: Column(
+                                height: 10,
+                              ),
+                              Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Image.asset(
-                                      'assets/images/water-outline.png',
-                                      height: 24,
-                                      width: 24,
+                                    const Text(
+                                      "Last Reading",
+                                      style: TextStyle(
+                                          color: Color(0xFF616161),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500),
                                     ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                        "${device!.moisture!.toStringAsFixed(2)}%",
-                                        style: const TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: "manrope",
-                                        )),
                                     const SizedBox(
-                                      height: 5,
+                                      height: 10,
                                     ),
-                                    const Text("Moisture",
-                                        style: TextStyle(
-                                          color: Color(0xFF757575),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "manrope",
-                                        )),
-                                  ])),
-                          Container(
-                              width: 120,
-                              height: 104,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/temp2.png',
-                                      // height: 24,
-                                      // width: 24,
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                        "${device!.temperature!.toStringAsFixed(2)}°C",
-                                        style: const TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: "manrope",
-                                        )),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    const Text("Temp",
-                                        style: TextStyle(
-                                          color: Color(0xFF757575),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: "manrope",
-                                        )),
-                                  ])),
-                          Container(
-                              width: 120,
-                              height: 104,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/Hum.png',
-                                      // height: 24,
-                                      // width: 24,
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                        "${device!.humidity!.toStringAsFixed(2)}°C",
-                                        style: const TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: "manrope",
-                                        )),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    const Text("Humidity",
-                                        style: TextStyle(
-                                          color: Color(0xFF757575),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: "manrope",
-                                        )),
-                                  ]))
-                        ]))])
+                                    Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 9, vertical: 10),
+                                        width: 400,
+                                        height: 160,
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              63, 159, 159, 159),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                  width: 120,
+                                                  height: 104,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 10),
+                                                  child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Image.asset(
+                                                          'assets/images/water-outline.png',
+                                                          height: 24,
+                                                          width: 24,
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 5),
+                                                        Text(
+                                                            "${device!.moisture!.toStringAsFixed(2)}%",
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Color(
+                                                                  0xFF000000),
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontFamily:
+                                                                  "manrope",
+                                                            )),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        const Text("Moisture",
+                                                            style: TextStyle(
+                                                              color: Color(
+                                                                  0xFF757575),
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontFamily:
+                                                                  "manrope",
+                                                            )),
+                                                      ])),
+                                              Container(
+                                                  width: 120,
+                                                  height: 104,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 10),
+                                                  child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Image.asset(
+                                                          'assets/images/temp2.png',
+                                                          // height: 24,
+                                                          // width: 24,
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 5),
+                                                        Text(
+                                                            "${device!.temperature!.toStringAsFixed(2)}°C",
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Color(
+                                                                  0xFF000000),
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontFamily:
+                                                                  "manrope",
+                                                            )),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        const Text("Temp",
+                                                            style: TextStyle(
+                                                              color: Color(
+                                                                  0xFF757575),
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontFamily:
+                                                                  "manrope",
+                                                            )),
+                                                      ])),
+                                              Container(
+                                                  width: 120,
+                                                  height: 104,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 10),
+                                                  child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Image.asset(
+                                                          'assets/images/Hum.png',
+                                                          // height: 24,
+                                                          // width: 24,
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 5),
+                                                        Text(
+                                                            "${device!.humidity!.toStringAsFixed(2)}°C",
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Color(
+                                                                  0xFF000000),
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontFamily:
+                                                                  "manrope",
+                                                            )),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        const Text("Humidity",
+                                                            style: TextStyle(
+                                                              color: Color(
+                                                                  0xFF757575),
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontFamily:
+                                                                  "manrope",
+                                                            )),
+                                                      ]))
+                                            ]))
+                                  ])
                             ]),
                       ),
                     ),

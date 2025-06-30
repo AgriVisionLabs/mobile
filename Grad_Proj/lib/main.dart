@@ -3,6 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/account_bloc/bloc/account_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
@@ -66,6 +67,9 @@ void main() async{
       ),
       BlocProvider<ControlBloc>(
         create: (BuildContext context) => ControlBloc(DioConsumer(dio : Dio())),
+      ),
+      BlocProvider<AccountBloc>(
+        create: (BuildContext context) => AccountBloc(DioConsumer(dio : Dio())),
       )
 ],
       child: const MyApp(),
@@ -103,8 +107,8 @@ class _MyAppState extends State<MyApp> {
       // ScheduleMaintenance()
       // SensorView()
       // SplashScreen()
-      // LoginScreen()
-      HomeScreen(initialIndex: 6,)
+      LoginScreen()
+      // HomeScreen(initialIndex: 9,)
     );
   }
 }

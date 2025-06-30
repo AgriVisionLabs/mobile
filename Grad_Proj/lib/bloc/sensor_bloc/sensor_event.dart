@@ -30,3 +30,14 @@ class NewSensorDataReceived extends SensorEvent {
   @override
   List<Object> get props => [unitId, data];
 }
+
+
+class UpdateSensorFromSignalREvent extends SensorEvent {
+  final SensorDevice updatedDevice;
+
+  const UpdateSensorFromSignalREvent({required this.updatedDevice});
+
+  @override
+  List<Object> get props => [updatedDevice];
+}
+

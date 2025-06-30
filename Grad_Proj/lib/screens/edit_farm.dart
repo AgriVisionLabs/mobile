@@ -45,6 +45,17 @@ class _EditFarmState extends State<EditFarm> {
     context.read<FarmBloc>().add(ViewFarmDetails(farmId: widget.farmId));
   }
 
+    @override
+      void didChangeDependencies() {
+    context.read<FarmBloc>().name.clear();
+    context.read<FarmBloc>().area.clear();
+    context.read<FarmBloc>().location.clear();
+    context.read<FarmBloc>().soilType.clear();
+    context.read<FarmBloc>().recipient.clear();
+    context.read<FarmBloc>().roleName.clear();
+    super.didChangeDependencies();
+  }
+
   FarmModel? farm;
 
   @override

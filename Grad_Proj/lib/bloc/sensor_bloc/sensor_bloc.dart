@@ -1,6 +1,7 @@
 // sensor_bloc.dart
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
+import 'package:grd_proj/models/sensor_model.dart';
 import 'package:signalr_netcore/http_connection_options.dart';
 import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
@@ -14,6 +15,8 @@ class SensorBloc extends Bloc<SensorEvent, SensorState> {
   late final HubConnection _connection;
   SensorBloc() : super(SensorInitial()) {
     on<ConnectToHub>((event, emit) async {
+      if (_connection.state == HubConnectionState.Connected) return;
+
       emit(SensorConnecting());
 
       _connection = HubConnectionBuilder()
@@ -55,5 +58,10 @@ class SensorBloc extends Bloc<SensorEvent, SensorState> {
     on<NewSensorDataReceived>((event, emit) async {
       emit(SensorDataReceived(unitId: event.unitId, data: event.data));
     });
+  }
+  @override
+  Future<void> close() {
+    _connection.stop();
+    return super.close();
   }
 }

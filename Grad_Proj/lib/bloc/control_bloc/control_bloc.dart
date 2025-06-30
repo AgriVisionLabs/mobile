@@ -55,14 +55,6 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
                   int.tryParse(type.text) == 0 ? null : int.tryParse(activeDays.text),
             });
         final rules = AutomationRuleModel.fromJson(response);
-        ruleName.clear();
-        type.clear();
-        minThresholdValue.clear();
-        maxThresholdValue.clear();
-        targetSensorType.clear();
-        startTime.clear();
-        endTime.clear();
-        activeDays.clear();
         emit(AddAutomationRulesSuccess(rules: rules));
       } on ServerException catch (e) {
         emit(AddAutomationRulesFailure(

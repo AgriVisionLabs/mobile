@@ -16,7 +16,7 @@ class EndPoints {
   static const String sensor = '/farms';
   static const String automationRules = '/farms';
   static const String task = '/farms';
-  static const String FarmRoles = '/FarmRoles';
+  static const String account = 'Accounts';
 }
 
 class ApiKey{
@@ -28,7 +28,7 @@ class ApiKey{
   static String confirmPassword = 'confirmPassword';
   static String firstName = 'firstName';
   static String lastName = 'lastName';
-  static String phoneNumber = 'PhoneNumber';
+  static String phoneNumber = 'phoneNumber';
   static String token = 'token';
   static String expiresIn = 'expiresIn';
   static String refreshToken = 'refreshToken';

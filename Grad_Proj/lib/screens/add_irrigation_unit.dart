@@ -28,6 +28,13 @@ class _AddIrrigationUnitState extends State<AddIrrigationUnit> {
   }
 
   @override
+  void didChangeDependencies() {
+    context.read<FieldBloc>().irrigationSerialNum.clear();
+    context.read<FieldBloc>().irrigationUnitName.clear();
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
