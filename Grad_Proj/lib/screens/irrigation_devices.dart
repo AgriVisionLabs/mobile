@@ -272,6 +272,8 @@ class IrrigationDevicesState extends State<IrrigationDevices> {
                                                   fieldId: item.fieldId,
                                                   farmId: item.farmId,
                                                 ));
+                                            // ignore: avoid_print
+                                            print("Turn On unit");
                                             context.read<FieldBloc>().add(
                                                 OpenFarmIrrigationUnitsEvent(
                                                     farmId: item.farmId));

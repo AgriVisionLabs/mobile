@@ -107,12 +107,12 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
               ApiKey.name: event.name,
               ApiKey.isEnabled: event.isEnabled,
               ApiKey.type: event.type,
-              ApiKey.maxThresholdValue: event.type == 0 ? null : event.min,
-              ApiKey.minThresholdValue: event.type == 0 ? null : event.max,
-              ApiKey.targetSensorType: event.type == 0 ? null : event.target,
-              ApiKey.maxThresholdValue: event.type == 1 ? null : event.start,
-              ApiKey.maxThresholdValue: event.type == 1 ? null : event.end,
-              ApiKey.maxThresholdValue: event.type == 1 ? null : event.days,
+              ApiKey.maxThresholdValue: event.type == 1 ? null : event.min,
+              ApiKey.minThresholdValue: event.type == 1 ? null : event.max,
+              ApiKey.targetSensorType: event.type == 1 ? null : event.target,
+              ApiKey.startTime: event.type == 0 ? null : event.start,
+              ApiKey.endTime: event.type == 0 ? null : event.end,
+              ApiKey.activeDays: event.type == 0 ? null : event.days,
             });
         emit(AutomationRulesEditSuccess());
       } on ServerException catch (e) {
