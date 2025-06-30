@@ -6,19 +6,16 @@ import 'package:signalr_netcore/http_connection_options.dart';
 import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
 
-import 'package:equatable/equatable.dart';
-
 part 'sensor_event.dart';
 part 'sensor_state.dart';
 
 class SensorBloc extends Bloc<SensorEvent, SensorState> {
-  late final HubConnection _connection;
+  HubConnection? _connection;
   SensorBloc() : super(SensorInitial()) {
     on<ConnectToHub>((event, emit) async {
-      if (_connection.state == HubConnectionState.Connected) return;
-
       emit(SensorConnecting());
 
+      //build connection
       _connection = HubConnectionBuilder()
           .withUrl('https://agrivision.tryasp.net/hubs/sensors',
               options: HttpConnectionOptions(
@@ -27,24 +24,41 @@ class SensorBloc extends Bloc<SensorEvent, SensorState> {
           .withAutomaticReconnect()
           .build();
 
-      _connection.onclose(({Exception? error}) {
+      //close connection
+      _connection!.onclose(({Exception? error}) {
         add(DisconnectFromHub(error: error?.toString() ?? 'Connection closed'));
       });
 
-      _connection.on('ReceiveReading', (args) {
+      //receive data
+      _connection!.on('ReceiveReading', (args) {
         if (args!.length >= 2) {
           final unitId = args[0].toString();
           final data = args[1];
           final prettyData = const JsonEncoder.withIndent('  ').convert(data);
           add(NewSensorDataReceived(
               unitId: unitId.toString(), data: prettyData));
+          print("ReceiveReading fired: ${args.toString()}");
+          print("===== Received Data: $prettyData =====");
         }
       });
 
+      _connection!.on('message', (args) {
+        print("📨 Generic message received: ${args?.toString()}");
+      });
+
+      //start connection
       try {
-        await _connection.start();
-        await _connection
-            .invoke("SubscribeToFarm", args: [event.farmId.toString()]);
+        if (_connection != null) {
+          await _connection!.start();
+          print("Connected");
+        }
+        
+        if (_connection != null) {
+          await _connection!
+              .invoke("SubscribeToFarm", args: [event.farmId.toString()]);
+          print("Subscribed to farm: ${event.farmId}");
+        }
+
         emit(SensorConnected(farmId: event.farmId.toString()));
       } catch (e) {
         emit(SensorConnectionError(error: e.toString()));
@@ -60,8 +74,8 @@ class SensorBloc extends Bloc<SensorEvent, SensorState> {
     });
   }
   @override
-  Future<void> close() {
-    _connection.stop();
+  Future<void> close() async {
+    await _connection?.stop();
     return super.close();
   }
 }

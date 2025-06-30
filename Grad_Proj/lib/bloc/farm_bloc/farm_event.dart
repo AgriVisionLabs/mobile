@@ -17,16 +17,8 @@ class DeleteFarmEvent extends FarmEvent {
 
 class EditFarmEvent extends FarmEvent {
   final String farmId;
-  final String farmName;
-  final int area;
-  final String location;
-  final int soilType;
   EditFarmEvent({
     required this.farmId,
-    required this.farmName,
-    required this.area,
-    required this.location,
-    required this.soilType,
   });
 }
 

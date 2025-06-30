@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unused_local_variable
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +61,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         } else {
           emit(FieldEmpty());
         }
-        print(response);
       } on ServerException catch (e) {
         emit(FieldLoadingFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -79,7 +78,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         });
         fieldmodel = FieldModel.fromJson(response);
         CacheHelper.saveData(key: 'fieldId', value: fieldmodel!.id);
-        print(response);
         emit(FieldInfoSuccess());
       } on ServerException catch (e) {
         emit(FieldInfoFailure(
@@ -91,7 +89,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       try {
         final response = await api.delete(
             '${EndPoints.farmControl}/${event.farmId}/Fields/${event.fieldId}}');
-        print(response);
         emit(DeleteFieldSuccess());
       } on ServerException catch (e) {
         emit(DeleteFieldFailure(
@@ -121,7 +118,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
               ApiKey.serialNumber: irrigationSerialNum.text,
               ApiKey.name: irrigationUnitName.text,
             });
-        print(response);
         emit(AddIrrigationUnitSuccess());
       } on ServerException catch (e) {
         emit(AddIrrigationUnitFailure(
@@ -134,7 +130,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       try {
         final response = await api
             .get("${EndPoints.irrigation}/${event.farmId}/IrrigationUnits");
-        print(response);
         if (response is List && response.isNotEmpty) {
           final irrigationUnits = response
               .map<IrrigationDevice>((json) => IrrigationDevice.fromJson(json))
@@ -155,7 +150,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       try {
         final response = await api.get(
             "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits");
-        print(response);
         final irrigationUnit = IrrigationDevice.fromJson(response);
           emit(ViewFieldIrrigationUnitSuccess(
             device: irrigationUnit,
@@ -168,7 +162,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
 
     on<IrrigationUnitsEditEvent>((event, emit) async {
       try {
-        // ignore: unused_local_variable
         final response = await api.put(
             "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits",
             data: {
@@ -186,7 +179,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
     on<DeleteIrrigationUnitEvent>((event, emit) async {
       try {
         final response = await api.delete('${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits');
-        print(response);
         emit(DeleteIrrigationUnitSuccess());
       } on ServerException catch (e) {
         emit(DeleteIrrigationUnitFailure(
@@ -197,7 +189,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
     on<IrrigationUnitToggleEvent>((event, emit) async {
       try {
         final response = await api.post('${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits/toggle');
-        print(response);
         emit(IrrigationUnitToggleSuccess());
       } on ServerException catch (e) {
         emit(IrrigationUnitToggleFailure(
@@ -215,7 +206,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
               ApiKey.name: sensorUnitName.text,
             });
             final sensorUnits = SensorDevice.fromJson(response);
-        print(response);
         emit(AddSensorUnitSuccess(device: sensorUnits));
       } on ServerException catch (e) {
         emit(AddSensorUnitFailure(
@@ -227,7 +217,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       try {
         final response = await api
             .get("${EndPoints.sensor}/${event.farmId}/SensorUnits");
-        print(response);
         if (response is List && response.isNotEmpty) {
           final sensorUnits = response
               .map<SensorDevice>((json) => SensorDevice.fromJson(json))
@@ -248,7 +237,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       try {
         final response = await api.get(
             "${EndPoints.sensor}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}");
-        print(response);
         final sensorUnit = SensorDevice.fromJson(response);
           emit(ViewFieldSensorUnitSuccess(
             device: sensorUnit,
@@ -261,7 +249,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
 
     on<SensorUnitEditEvent>((event, emit) async {
       try {
-        // ignore: unused_local_variable
         final response = await api.put(
             "${EndPoints.sensor}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}",
             data: {
@@ -279,7 +266,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
     on<DeleteSensorUnitEvent>((event, emit) async {
       try {
         final response = await api.delete('${EndPoints.sensor}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}');
-        print(response);
         emit(DeleteSensorUnitSuccess());
       } on ServerException catch (e) {
         emit(DeleteSensorUnitFailure(

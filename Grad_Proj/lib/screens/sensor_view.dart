@@ -8,7 +8,7 @@ import 'package:grd_proj/screens/sensor_edit.dart';
 // ignore: must_be_immutable
 class SensorView extends StatelessWidget {
   final SensorDevice sensor;
-  SensorView({super.key, required this.sensor});
+ const SensorView({super.key, required this.sensor});
   // bool tell = true;
   @override
   Widget build(BuildContext context) {

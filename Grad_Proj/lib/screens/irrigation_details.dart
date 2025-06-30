@@ -16,14 +16,6 @@ class IrrigationDetails extends StatefulWidget {
 }
 
 class _IrrigationDetailsState extends State<IrrigationDetails> {
-  @override
-  void initState() {
-    context
-        .read<FieldBloc>()
-        .add(OpenFarmIrrigationUnitsEvent(farmId: widget.farmId));
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

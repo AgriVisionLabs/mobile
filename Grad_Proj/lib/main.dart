@@ -7,6 +7,7 @@ import 'package:grd_proj/bloc/account_bloc/bloc/account_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
+import 'package:grd_proj/bloc/sensor_bloc/sensor_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/core/api/dio_consumer.dart';
 import 'package:grd_proj/core/api/end_points.dart';
@@ -20,6 +21,7 @@ import 'package:grd_proj/screens/login_screen.dart';
 import 'package:grd_proj/screens/more_screen.dart';
 import 'package:grd_proj/screens/new_farm.dart';
 import 'package:grd_proj/screens/schedule_maintenance.dart';
+import 'package:grd_proj/screens/sensor.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
 import 'package:grd_proj/screens/sensor_view.dart';
 import 'package:grd_proj/screens/verification.dart';
@@ -70,6 +72,9 @@ void main() async{
       ),
       BlocProvider<AccountBloc>(
         create: (BuildContext context) => AccountBloc(DioConsumer(dio : Dio())),
+      ),
+      BlocProvider<SensorBloc>(
+        create: (BuildContext context) => SensorBloc(),
       )
 ],
       child: const MyApp(),
@@ -107,8 +112,8 @@ class _MyAppState extends State<MyApp> {
       // ScheduleMaintenance()
       // SensorView()
       // SplashScreen()
-      LoginScreen()
-      // HomeScreen(initialIndex: 9,)
+      // LoginScreen()
+      HomeScreen(initialIndex: 7,)
     );
   }
 }

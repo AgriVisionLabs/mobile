@@ -312,6 +312,7 @@ class _BasicInfoState extends State<BasicInfo> {
                         onChanged: (value) {
                           setState(() {
                             selectedValue = value;
+                            context.read<FarmBloc>().soilType.text = selectedValue.toString();
                           });
                         },
                         items: soil.entries.map<DropdownMenuItem<int>>((entry) {
@@ -340,18 +341,6 @@ class _BasicInfoState extends State<BasicInfo> {
                                   context.read<FarmBloc>().add(
                                         EditFarmEvent(
                                           farmId: widget.farm!.farmId!,
-                                          farmName: context
-                                              .read<FarmBloc>()
-                                              .name
-                                              .text,
-                                          area: int.tryParse(
-                                            context.read<FarmBloc>().area.text,
-                                          )!,
-                                          location: context
-                                              .read<FarmBloc>()
-                                              .location
-                                              .text,
-                                          soilType: selectedValue!,
                                         ),
                                       );
                                 } else {

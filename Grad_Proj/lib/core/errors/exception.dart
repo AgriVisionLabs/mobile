@@ -31,7 +31,7 @@ void handelDioException(DioException e) {
           ///empty email or password
           throw ServerException(
               errorModel: ErrorModel.fromJson(e.response!.data));
-      
+
         case 401:
 
           ///unauthorized
@@ -48,7 +48,7 @@ void handelDioException(DioException e) {
           ///not found
           throw ServerException(
               errorModel: ErrorModel.fromJson(e.response!.data));
-          // print(e.response!.data);
+        // print(e.response!.data);
 
         case 405:
 
@@ -56,16 +56,24 @@ void handelDioException(DioException e) {
           throw ServerException(
               errorModel: ErrorModel.fromJson(e.response!.data));
 
-        case 409: 
+        case 409:
           //cofficient
           throw ServerException(
               errorModel: ErrorModel.fromJson(e.response!.data));
-        case 422: 
-           //  Unprocessable Entity
+        case 422:
+          //  Unprocessable Entity
           throw ServerException(
               errorModel: ErrorModel.fromJson(e.response!.data));
 
-        case 504: 
+        case 500:
+          throw ServerException(
+            errorModel: e.response?.data is Map<String, dynamic>
+                ? ErrorModel.fromJson(e.response!.data)
+                : ErrorModel(
+                    message: 'the server failed to fulfil an apparently valid request' , status: 500 , error: []),
+          );
+
+        case 504:
           // Server exception
           throw ServerException(
               errorModel: ErrorModel.fromJson(e.response!.data));

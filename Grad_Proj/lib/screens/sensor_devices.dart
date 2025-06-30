@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
+import 'package:grd_proj/bloc/sensor_bloc/sensor_bloc.dart';
+import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/sensor_model.dart';
 import 'package:grd_proj/screens/sensor_view.dart';
@@ -10,7 +12,10 @@ class SensorDevices extends StatefulWidget {
   final String farmId;
   final SensorDevice? updatedDevice;
   const SensorDevices(
-      {super.key, required this.farmName, required this.farmId , this.updatedDevice});
+      {super.key,
+      required this.farmName,
+      required this.farmId,
+      this.updatedDevice});
 
   @override
   State<SensorDevices> createState() => _SensorDevicesState();
@@ -19,9 +24,9 @@ class SensorDevices extends StatefulWidget {
 class _SensorDevicesState extends State<SensorDevices> {
   @override
   void initState() {
-    context
-        .read<FieldBloc>()
-        .add(OpenFarmSensorUnitsEvent(farmId: widget.farmId));
+    print("==================================================");
+    context.read<SensorBloc>().add(ConnectToHub(
+        farmId: widget.farmId, token: CacheHelper.getData(key: 'token')));
 
     super.initState();
   }
@@ -191,129 +196,152 @@ class _SensorDevicesState extends State<SensorDevices> {
                                   const SizedBox(
                                     height: 24,
                                   ),
-                                  Row(children: [
-                                    Container(
-                                        width: 100,
-                                        height: 110,
-                                        padding: const EdgeInsets.all(15),
-                                        decoration: BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              25, 8, 159, 252),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                  BlocConsumer<SensorBloc, SensorState>(
+                                    listener: (context, state) {
+                                      if ( state is SensorConnected){
+                                        print("=============${state.farmId}============");
+                                      }else if(state is SensorDataReceived){
+                                        print("==============${state.data}");
+                                      }
+                                    },
+                                    builder: (context, state) {
+                                      return Row(children: [
+                                        Container(
+                                            width: 100,
+                                            height: 110,
+                                            padding: const EdgeInsets.all(15),
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                  25, 8, 159, 252),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/water-outline.png',
+                                                    height: 24,
+                                                    width: 24,
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                      "${item.moisture!.toStringAsFixed(2)}%",
+                                                      style: const TextStyle(
+                                                        color:
+                                                            Color(0xFF000000),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontFamily: "manrope",
+                                                      )),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  const Text("Moisture",
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xFF757575),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontFamily: "manrope",
+                                                      )),
+                                                ])),
+                                        const SizedBox(
+                                          width: 16,
                                         ),
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Image.asset(
-                                                'assets/images/water-outline.png',
-                                                height: 24,
-                                                width: 24,
-                                              ),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                  "${item.moisture!.toStringAsFixed(2)}%",
-                                                  style: const TextStyle(
-                                                    color: Color(0xFF000000),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily: "manrope",
-                                                  )),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              const Text("Moisture",
-                                                  style: TextStyle(
-                                                    color: Color(0xFF757575),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily: "manrope",
-                                                  )),
-                                            ])),
-                                    const SizedBox(
-                                      width: 16,
-                                    ),
-                                    Container(
-                                        width: 100,
-                                        height: 110,
-                                        padding: const EdgeInsets.all(15),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0x18D12A00),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                        Container(
+                                            width: 100,
+                                            height: 110,
+                                            padding: const EdgeInsets.all(15),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0x18D12A00),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/temp2.png',
+                                                    height: 24,
+                                                    width: 24,
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                      "${item.temperature!.toStringAsFixed(2)}°C",
+                                                      style: const TextStyle(
+                                                        color:
+                                                            Color(0xFF000000),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontFamily: "manrope",
+                                                      )),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  const Text("Temp",
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xFF757575),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontFamily: "manrope",
+                                                      )),
+                                                ])),
+                                        const SizedBox(
+                                          width: 16,
                                         ),
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Image.asset(
-                                                'assets/images/temp2.png',
-                                                height: 24,
-                                                width: 24,
-                                              ),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                  "${item.temperature!.toStringAsFixed(2)}°C",
-                                                  style: const TextStyle(
-                                                    color: Color(0xFF000000),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily: "manrope",
-                                                  )),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              const Text("Temp",
-                                                  style: TextStyle(
-                                                    color: Color(0xFF757575),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily: "manrope",
-                                                  )),
-                                            ])),
-                                    const SizedBox(
-                                      width: 16,
-                                    ),
-                                    Container(
-                                        width: 100,
-                                        height: 110,
-                                        padding: const EdgeInsets.all(15),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0x1825C462),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Image.asset(
-                                                'assets/images/Hum.png',
-                                                height: 24,
-                                                width: 24,
-                                              ),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                  "${item.humidity!.toStringAsFixed(2)}°C",
-                                                  style: const TextStyle(
-                                                    color: Color(0xFF000000),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily: "manrope",
-                                                  )),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              const Text("Humidity",
-                                                  style: TextStyle(
-                                                    color: Color(0xFF757575),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily: "manrope",
-                                                  )),
-                                            ]))
-                                  ])
+                                        Container(
+                                            width: 100,
+                                            height: 110,
+                                            padding: const EdgeInsets.all(15),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0x1825C462),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/Hum.png',
+                                                    height: 24,
+                                                    width: 24,
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                      "${item.humidity!.toStringAsFixed(2)}°C",
+                                                      style: const TextStyle(
+                                                        color:
+                                                            Color(0xFF000000),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontFamily: "manrope",
+                                                      )),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  const Text("Humidity",
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xFF757575),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontFamily: "manrope",
+                                                      )),
+                                                ]))
+                                      ]);
+                                    },
+                                  )
                                 ],
                               ),
                             ),

@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unused_local_variable
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +46,6 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
         } else {
           emit(FarmEmpty());
         }
-        print(response);
       } on ServerException catch (e) {
         emit(FarmFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -57,7 +56,6 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
       try {
         final response =
             await api.delete('${EndPoints.farmControl}/${event.farmId}');
-        print(response);
         emit(DeleteFarmSuccess());
       } on ServerException catch (e) {
         emit(DeleteFarmFailure(
@@ -78,8 +76,6 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
         farm = FarmModel.fromJson(response);
         // save part we will need every time we use the app to cache
         CacheHelper.saveData(key: 'farmId', value: farm!.farmId);
-
-        print(response);
         emit(FarmInfoSuccess(farm: farm!));
       } on ServerException catch (e) {
         emit(FarmInfoFailure(
@@ -97,7 +93,6 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
             ApiKey.roleName: roleName.text,
           },
         );
-        print(response);
         emit(AddingMember());
       } on ServerException catch (e) {
         emit(AddingMemberFailure(
@@ -110,7 +105,6 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
         final response = await api.delete(
           '${EndPoints.team}/${event.farmId}/Invitations/${event.invitationId}',
         );
-        print(response);
         emit(DeletingMember());
       } on ServerException catch (e) {
         emit(DeletingMemberFailure(
@@ -152,13 +146,12 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
 
     on<EditFarmEvent>((event, emit) async {
       try {
-        // ignore: unused_local_variable
         final response =
             await api.put("${EndPoints.farmControl}/${event.farmId}", data: {
-          ApiKey.name: event.farmName,
-          ApiKey.area: event.area,
-          ApiKey.location: event.location,
-          ApiKey.soilType: event.soilType
+          ApiKey.name: name.text,
+          ApiKey.area: int.tryParse(area.text),
+          ApiKey.location: location.text,
+          ApiKey.soilType: int.tryParse(soilType.text)
         });
         //create a var to store the response
         emit(FarmEditSuccess());

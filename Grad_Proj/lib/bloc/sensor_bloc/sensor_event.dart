@@ -1,43 +1,27 @@
 // sensor_event.dart
 part of 'sensor_bloc.dart';
 
-abstract class SensorEvent extends Equatable {
-  const SensorEvent();
-
-  @override
-  List<Object> get props => [];
-}
+abstract class SensorEvent {}
 
 class ConnectToHub extends SensorEvent {
-  final String token ;
-  final String farmId ; 
-  const ConnectToHub({required this.token,required this.farmId });
+  final String token;
+  final String farmId;
+  ConnectToHub({required this.token, required this.farmId});
 }
 
 class DisconnectFromHub extends SensorEvent {
   final String error;
-  const DisconnectFromHub({required this.error});
-
-  @override
-  List<Object> get props => [error];
+  DisconnectFromHub({required this.error});
 }
 
 class NewSensorDataReceived extends SensorEvent {
   final String unitId;
   final String data;
-  const NewSensorDataReceived({required this.unitId, required this.data});
-
-  @override
-  List<Object> get props => [unitId, data];
+  NewSensorDataReceived({required this.unitId, required this.data});
 }
-
 
 class UpdateSensorFromSignalREvent extends SensorEvent {
   final SensorDevice updatedDevice;
 
-  const UpdateSensorFromSignalREvent({required this.updatedDevice});
-
-  @override
-  List<Object> get props => [updatedDevice];
+  UpdateSensorFromSignalREvent({required this.updatedDevice});
 }
-

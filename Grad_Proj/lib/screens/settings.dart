@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
-import 'package:flutter/services.dart';
 import 'package:grd_proj/components/notfication_settings.dart';
 import 'package:grd_proj/components/personal_settings.dart';
 import 'package:grd_proj/components/security_settings.dart';
