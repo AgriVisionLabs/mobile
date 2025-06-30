@@ -26,6 +26,13 @@ class _LoginScreenState extends State<LoginScreen> {
   UnAuthorizeModel? response;
 
   @override
+  void didChangeDependencies() {
+    context.read<UserCubit>().signInEmail.clear();
+    context.read<UserCubit>().signInPassword.clear();
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Future<void> login() async {
       final prefs = await SharedPreferences.getInstance();
@@ -49,10 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
               context,
               MaterialPageRoute(builder: (context) => HomeScreen()),
             );
-            context.read<UserCubit>().signInEmail.clear();
-             context.read<UserCubit>().signInPassword.clear();
           } else if (state is SignInFailure) {
-            if (state.errMessage == 'Unauthorized' || state.errMessage == 'Forbidden') {
+            if (state.errMessage == 'Unauthorized' ||
+                state.errMessage == 'Forbidden') {
               description = state.errors[0]['description'];
             } else {
               response = UnAuthorizeModel.fromJson(state.errors);
@@ -152,16 +158,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
-                                if(response != null){
-                                if (response!.email != null) {
-                                  if (value!.isEmpty) {
-                                    return response!.email![0];
-                                  } else if (!value.contains("@")) {
-                                    return response!.email![0];
+                                if (response != null) {
+                                  if (response!.email != null) {
+                                    if (value!.isEmpty) {
+                                      return response!.email![0];
+                                    } else if (!value.contains("@")) {
+                                      return response!.email![0];
+                                    }
                                   }
-                                } }else if (description.isNotEmpty &&
-                                    description ==
-                                        "Email is not confirmed.") {
+                                } else if (description.isNotEmpty &&
+                                    description == "Email is not confirmed.") {
                                   return description;
                                 }
                                 return null;
@@ -205,22 +211,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                         obscureText = !obscureText;
                                       });
                                     },
-                                    child: Image.asset(obscureText
-                                        ? 'assets/images/visiability on.png' 
-                                        : 'assets/images/visiability off.png' ,
-                                        )),
+                                    child: Image.asset(
+                                      obscureText
+                                          ? 'assets/images/visiability on.png'
+                                          : 'assets/images/visiability off.png',
+                                    )),
                               ),
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
-                                if( response != null){
-                                if (response!.password != null) {
-                                  if (value!.isEmpty) {
-                                    return response!.password![0];
-                                  } else {
-                                    return response!.password![0];
+                                if (response != null) {
+                                  if (response!.password != null) {
+                                    if (value!.isEmpty) {
+                                      return response!.password![0];
+                                    } else {
+                                      return response!.password![0];
+                                    }
                                   }
-                                }}
+                                }
                                 return null;
                               },
                             ),

@@ -28,7 +28,7 @@ class _RigesterState extends State<Rigester> {
   UnAuthorizeModel? response;
 
   @override
-  void dispose() {
+  void didChangeDependencies() {
     context.read<UserCubit>().signUpFirstName.clear();
     context.read<UserCubit>().signUpLastName.clear();
     context.read<UserCubit>().signUpName.clear();
@@ -37,13 +37,14 @@ class _RigesterState extends State<Rigester> {
     context.read<UserCubit>().signUpPhoneNumber.clear();
     confirmPasswordController.clear();
     passwordController.clear();
-    super.dispose();
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserCubit, UserState>(listener: (context, state) {
       if (state is SignUpSuccess) {
+        response = null;
         ScaffoldMessenger.of(context).clearSnackBars();
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ScaffoldMessenger.of(context).showSnackBar(
