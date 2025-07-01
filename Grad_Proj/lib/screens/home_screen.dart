@@ -13,10 +13,9 @@ import 'package:grd_proj/screens/fields_screen.dart';
 import 'package:grd_proj/screens/irrigation_control.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
 import 'package:grd_proj/screens/settings.dart';
-import '../Components/color.dart';
+import '../components/color.dart';
 import 'dash_board.dart';
 import 'farms_screen.dart';
-import 'scan_screen.dart';
 import 'tasks_screen.dart';
 import 'more_screen.dart';
 
@@ -32,11 +31,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int indexing = 0;
   late int initialIndex;
-  
 
   // Define screens
   final List<Widget> _screens = [];
@@ -58,7 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> screens = [
     const DashBoard(),
     const FarmsScreen(),
-    const ScanScreen(),
     const TaskScreen(),
     const MoreScreen(),
     const FieldsScreen(),
@@ -74,19 +70,17 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-   Timer? _timer;
-
+  Timer? _timer;
 
   void _startTimer() {
-     // Start a timer that will call function to refresh token after 30 minutes
-    _timer = Timer.periodic(const Duration(minutes:29), (timer) {
-      setState(() {     
+    // Start a timer that will call function to refresh token after 30 minutes
+    _timer = Timer.periodic(const Duration(minutes: 29), (timer) {
+      setState(() {
         context.read<UserCubit>().refreshToken();
-       });
+      });
     });
   }
 
-  
   @override
   void dispose() {
     _timer?.cancel();
@@ -161,56 +155,60 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: indexing > 4 ? 2 : indexing,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: Image.asset('assets/images/dashboard.png',
-                  height: 24,
-                  width: 24,
-                  color: indexing == 0 ? Colors.green[900] : Colors.black),
-              label: 'Dashboard',
-            ),
-            BottomNavigationBarItem(
-              icon: 
-              Image.asset('assets/images/farms.png',
-                  height: 30,
-                  width: 30,
-                  color: indexing == 1 
-                      ? Colors.green[900]
-                      : Colors.black),
-              label: 'Farms',
-              
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset('assets/images/Scan.png',
-                  height: 30,
-                  width: 30,
-                  color: indexing == 2 ? Colors.green[900] : Colors.black),
-              label: 'Scan',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset('assets/images/tasks.png',
-                  height: 25,
-                  width: 25,
-                  color: indexing == 3 ? Colors.green[900] : Colors.black),
-              label: 'Tasks',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset('assets/images/more.png',
-                  height: 25,
-                  width: 25,
-                  color: indexing == 4 ? Colors.green[900] : Colors.black),
-              label: 'More',
-            ),
-          ],
-          selectedItemColor: Colors.green[900],
-          unselectedItemColor: Colors.black,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
+        bottomNavigationBar: Container(
+          padding: EdgeInsets.only(top: 10),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: borederColor2,
+                width: 3
+              )
+            )
+          ),
+          child: BottomNavigationBar(
+            backgroundColor: bottomBarColor,
+            type: BottomNavigationBarType.fixed,
+            currentIndex: indexing > 4 ? 2 : indexing,
+            onTap: _onItemTapped,
+            items: [
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/images/dashboard.png',
+                    height: 24,
+                    width: 24,
+                    color: indexing == 0 ? primaryColor : bottomBarIconColor),
+                label: 'Dashboard',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/images/location.png',
+                    height: 24,
+                    width: 24,
+                    color: indexing == 1 ? primaryColor : bottomBarIconColor),
+                label: 'Farms',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/images/tabler_checkbox.png',
+                    height: 24,
+                    width: 24,
+                    color: indexing == 2 ? primaryColor : bottomBarIconColor),
+                label: 'Tasks',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/images/more.png',
+                    height: 24,
+                    width: 24,
+                    color: indexing == 3 ? primaryColor : bottomBarIconColor),
+                label: 'More',
+              ),
+            ],
+            selectedItemColor: primaryColor,
+            unselectedItemColor: bottomBarTextColor,
+            selectedLabelStyle: TextStyle(
+                fontSize: 12, fontFamily: "manrope", fontWeight: FontWeight.w600),
+            unselectedLabelStyle: TextStyle(
+                fontSize: 12, fontFamily: "manrope", fontWeight: FontWeight.w600),
+            showSelectedLabels: true,
+            showUnselectedLabels: true,
+          ),
         ),
 
         body: screens[indexing], // Show selected page

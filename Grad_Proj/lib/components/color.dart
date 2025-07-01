@@ -4,3 +4,7 @@ const secondaryColor = Color.fromRGBO(30, 105, 48, 0.30);
 const borderColor = Color(0xff9F9F9F);
 const errorColor = Color(0xffB91C1C);
 const grayColor = Color(0xff616161);
+const bottomBarIconColor = Color(0xff9CA3AF);
+const bottomBarTextColor = Color(0xff374151);
+const bottomBarColor = Color(0xffF7F7F7);
+const borederColor2 = Color.fromARGB(70, 13, 18, 28);
