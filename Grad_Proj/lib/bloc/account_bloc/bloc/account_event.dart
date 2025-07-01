@@ -4,4 +4,5 @@ abstract class AccountEvent {}
 
 class ViewAccountDetails extends AccountEvent{}
 class EditAccountDetails extends AccountEvent{}
-class EditPassword extends AccountEvent{}
+class ChangedPassword extends AccountEvent{}
+class VerifyOtp extends AccountEvent{}

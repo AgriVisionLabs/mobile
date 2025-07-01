@@ -357,16 +357,18 @@ class _RigesterState extends State<Rigester> {
                                   if (response!.password != null) {
                                     if (value!.isEmpty) {
                                       return response!.password![0];
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content:
-                                              Text("${response!.password![0]}"),
-                                        ),
-                                      );
-                                      return response!.password![0];
                                     }
+                                  } else if (value!.length < 8) {
+                                    return "Password must be at least 8 characters";
+                                  } else if (!value
+                                      .contains(RegExp(r'[A-Z]'))) {
+                                    return "Password must be contain at least one uppercase letter";
+                                  } else if (!value.contains(
+                                      RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                                    return "Password must be contain at least one special character";
+                                  } else if (!value
+                                      .contains(RegExp(r'[0-9]'))) {
+                                    return "Password must be contain at least one number";
                                   }
                                 }
                                 return null;

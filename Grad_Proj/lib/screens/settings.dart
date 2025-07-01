@@ -92,7 +92,7 @@ class _SettingsState extends State<Settings> {
               ),
               SizedBox(height: 20),
               if (selectedTab == 0) PersonalSetting(),
-              // if (selectedTab == 1) SecuritySettings(),
+              if (selectedTab == 1) SecuritySettings(),
               // if (selectedTab == 2) SubcreptionSetting(),
               // if (selectedTab == 3) NotificationSettings(),
           ]),

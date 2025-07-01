@@ -33,17 +33,24 @@ class EditAccountDetailsFailure extends AccountState {
 
 }
 
-class EditPasswordSuccess extends AccountState {
-  final UserModel user;
+class ChangePasswordSuccess extends AccountState {}
 
-   EditPasswordSuccess({required this.user});
- 
-}
-
-class EditPasswordFailure extends AccountState {
+class ChangePasswordFailure extends AccountState {
   final String errMessage;
   final dynamic errors;
-   EditPasswordFailure({
+   ChangePasswordFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
+
+class VerifySuccess extends AccountState {}
+
+class VerifyFailure extends AccountState {
+  final String errMessage;
+  final dynamic errors;
+   VerifyFailure({
     required this.errMessage,
     required this.errors,
   });

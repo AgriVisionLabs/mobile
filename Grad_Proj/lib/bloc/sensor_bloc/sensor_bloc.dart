@@ -1,4 +1,6 @@
 // sensor_bloc.dart
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:grd_proj/models/sensor_model.dart';
@@ -38,25 +40,25 @@ class SensorBloc extends Bloc<SensorEvent, SensorState> {
           add(NewSensorDataReceived(
               unitId: unitId.toString(), data: prettyData));
           print("ReceiveReading fired: ${args.toString()}");
-          print("===== Received Data: $prettyData =====");
+          print("================Received Data: $prettyData==============");
         }
       });
 
       _connection!.on('message', (args) {
-        print("📨 Generic message received: ${args?.toString()}");
+        print("================Generic message received: ${args?.toString()}================");
       });
 
       //start connection
       try {
         if (_connection != null) {
           await _connection!.start();
-          print("Connected");
+          print("================Connected================");
         }
         
         if (_connection != null) {
           await _connection!
               .invoke("SubscribeToFarm", args: [event.farmId.toString()]);
-          print("Subscribed to farm: ${event.farmId}");
+          print("================Subscribed to farm: ${event.farmId}================");
         }
 
         emit(SensorConnected(farmId: event.farmId.toString()));
@@ -66,6 +68,7 @@ class SensorBloc extends Bloc<SensorEvent, SensorState> {
     });
 
     on<DisconnectFromHub>((event, emit) async {
+      print("================Disconnected================");
       emit(SensorDisconnected(error: event.error));
     });
 

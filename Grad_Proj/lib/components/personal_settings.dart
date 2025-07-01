@@ -37,7 +37,6 @@ class _PersonalSettingState extends State<PersonalSetting> {
     context.read<AccountBloc>().firstName.clear();
     context.read<AccountBloc>().lastName.clear();
     context.read<AccountBloc>().userName.clear();
-    context.read<AccountBloc>().email.clear();
     context.read<AccountBloc>().phoneNumber.clear();
     super.didChangeDependencies();
   }

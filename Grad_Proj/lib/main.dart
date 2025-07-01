@@ -112,8 +112,8 @@ class _MyAppState extends State<MyApp> {
       // ScheduleMaintenance()
       // SensorView()
       // SplashScreen()
-      // LoginScreen()
-      HomeScreen(initialIndex: 7,)
+      LoginScreen()
+      // HomeScreen(initialIndex: 7,)
     );
   }
 }

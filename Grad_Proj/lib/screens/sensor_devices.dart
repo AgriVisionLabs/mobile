@@ -22,13 +22,21 @@ class SensorDevices extends StatefulWidget {
 }
 
 class _SensorDevicesState extends State<SensorDevices> {
+  SensorBloc? _sensorBloc;
   @override
   void initState() {
-    print("==================================================");
+    _sensorBloc = context.read<SensorBloc>();
     context.read<SensorBloc>().add(ConnectToHub(
         farmId: widget.farmId, token: CacheHelper.getData(key: 'token')));
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _sensorBloc!.add(DisconnectFromHub(
+        error: "Close Connection"));
+    super.dispose();
   }
 
   @override
@@ -201,7 +209,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                       if ( state is SensorConnected){
                                         print("=============${state.farmId}============");
                                       }else if(state is SensorDataReceived){
-                                        print("==============${state.data}");
+                                        print("==============${state.data}============}");
                                       }
                                     },
                                     builder: (context, state) {

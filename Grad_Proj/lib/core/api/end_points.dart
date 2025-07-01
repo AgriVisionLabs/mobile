@@ -17,6 +17,8 @@ class EndPoints {
   static const String automationRules = '/farms';
   static const String task = '/farms';
   static const String account = 'Accounts';
+  static const String changePassword = 'Accounts/change-password';
+
 }
 
 class ApiKey{
@@ -34,8 +36,9 @@ class ApiKey{
   static String refreshToken = 'refreshToken';
   static String refreshTokenExpiration = 'refreshTokenExpiration';
   static String errorMessage = 'title';
-  static String otp = 'Otp';
+  static String otp = 'OtpCode';
   static String newPassword = 'newPassword';
+  static String currentPassword = 'currentPassword';
   static String farmId = 'farmId';
   static String fieldId = 'fieldId';
   static String name = 'name';
