@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
@@ -53,7 +54,8 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
     return BlocConsumer<FieldBloc, FieldState>(
       listener: (context, state) {
         if (state is FieldInfoSuccess) {
-          print("======================================================${state.field.cropName}");
+          print(
+              "======================================================${state.field.cropName}");
           index = widget.currentIndex;
           index++;
           widget.onInputChanged(index, state.field);
@@ -232,47 +234,76 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                           fontWeight: FontWeight.w400,
                         )),
                     const SizedBox(height: 5),
-                    Container(
-                      height: 50,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(color: borderColor, width: 2),
-                        color: Colors.white,
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<int>(
-                          value: selectedCropType,
-                          isExpanded: true,
-                          icon: Image.asset(
-                            'assets/images/arrow.png',
-                            height: 20,
-                            width: 20,
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton2<int>(
+                        isExpanded: true,
+                        hint: Text(
+                          widget.edit ? cropName! : 'Enter Crop Type',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        value: selectedCropType,
+                        items: crops?.map((crop) {
+                          return DropdownMenuItem<int>(
+                            value: crop.cropType,
+                            child: Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    crop.name,
+                                    style: const TextStyle(
+                                      fontFamily: 'Manrope',
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                if (crop.supportsDiseaseDetection)
+                                  _buildTag(
+                                      "Disease Detection", Colors.green)
+                                else if (crop.recommended)
+                                  _buildTag("Recommended", Colors.blue)
+                                else
+                                  _buildTag("No Detection", Colors.grey)
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedCropType = value;
+                            _fieldBloc!.cropType.text =
+                                selectedCropType.toString();
+                          });
+                        },
+                        buttonStyleData: ButtonStyleData(
+                          height: 55,
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            border:
+                                Border.all(color: borderColor, width: 2),
+                            color: Colors.white,
                           ),
-                          dropdownColor: Colors.white,
-                          menuMaxHeight: 200,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: "Manrope",
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          maxHeight: 250,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white,
+                            border: Border.all(color: borderColor),
                           ),
-                          hint: Text(widget.edit ? cropName! : 'Soil Type'),
-                          onChanged: (crops == null || crops!.isEmpty)
-                              ? null
-                              : (newValue) {
-                                  setState(() {
-                                    selectedCropType = newValue;
-                                    _fieldBloc!.cropType.text =
-                                        selectedCropType.toString();
-                                  });
-                                },
-                          items: crops?.map<DropdownMenuItem<int>>((crop) {
-                            return DropdownMenuItem<int>(
-                              value: crop.cropType,
-                              child: Text(crop.name),
-                            );
-                          }).toList(),
+                          elevation: 2,
+                          offset: const Offset(
+                              0, -5), // تفتح لتحت بمسافة خفيفة من الزر
+                        ),
+                        iconStyleData: const IconStyleData(
+                          icon: Icon(Icons.keyboard_arrow_down_rounded),
+                          iconSize: 30,
+                          iconEnabledColor: Colors.black,
                         ),
                       ),
                     ),
@@ -321,6 +352,27 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                   ])),
         );
       },
+    );
+  }
+
+  Widget _buildTag(String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        // ignore: deprecated_member_use
+        color: color.withOpacity(0.1),
+        border: Border.all(color: color),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontFamily: 'Manrope',
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 }
