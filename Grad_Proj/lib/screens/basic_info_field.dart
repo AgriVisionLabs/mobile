@@ -246,8 +246,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                           return DropdownMenuItem<int>(
                             value: crop.cropType,
                             child: Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Expanded(
                                   child: Text(
@@ -260,8 +259,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                                   ),
                                 ),
                                 if (crop.supportsDiseaseDetection)
-                                  _buildTag(
-                                      "Disease Detection", Colors.green)
+                                  _buildTag("Disease Detection", Colors.green)
                                 else if (crop.recommended)
                                   _buildTag("Recommended", Colors.blue)
                                 else
@@ -270,21 +268,39 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                             ),
                           );
                         }).toList(),
-                        onChanged: (value) {
+                        onChanged: (crops == null || crops!.isEmpty)
+                            ? null
+                            : (value) {
                           setState(() {
                             selectedCropType = value;
                             _fieldBloc!.cropType.text =
                                 selectedCropType.toString();
                           });
                         },
+                        selectedItemBuilder: (crops == null || crops!.isEmpty)
+                            ? null
+                            : (BuildContext context) {
+                                return crops!.map((crop) {
+                                  return Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      crop.name,
+                                      style: const TextStyle(
+                                        fontFamily: 'Manrope',
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  );
+                                }).toList();
+                              },
                         buttonStyleData: ButtonStyleData(
                           height: 55,
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(25),
-                            border:
-                                Border.all(color: borderColor, width: 2),
+                            border: Border.all(color: borderColor, width: 2),
                             color: Colors.white,
                           ),
                         ),
@@ -297,8 +313,8 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                             border: Border.all(color: borderColor),
                           ),
                           elevation: 2,
-                          offset: const Offset(
-                              0, -5), // تفتح لتحت بمسافة خفيفة من الزر
+                          offset:
+                              const Offset(0, -5), // تفتح لتحت بمسافة  من الزر
                         ),
                         iconStyleData: const IconStyleData(
                           icon: Icon(Icons.keyboard_arrow_down_rounded),

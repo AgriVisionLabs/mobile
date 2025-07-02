@@ -1,5 +1,5 @@
 class EndPoints {
-  static const String baseUrl = 'https://agrivision.tryasp.net/';
+  static const String baseUrl = 'https://api.agrivisionlabs.tech/';
   static const String login = 'Auth';
   static const String register = 'Auth/register';
   static const String confirmEmailResand = '/Auth/resend-confirmation-email';

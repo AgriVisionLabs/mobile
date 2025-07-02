@@ -134,38 +134,47 @@ class _DashBoardState extends State<DashBoard> {
                                           ),
                                         );
                                       }).toList(),
+                                      onChanged: (farms == null ||
+                                              farms!.isEmpty)
+                                          ? null
+                                          : (value) {
+                                              setState(() {
+                                                final selectedFarm = farms!
+                                                    .where((farm) =>
+                                                        farm.farmId == value)
+                                                    .toList();
+                                                selectedFarmId = value;
+                                                roleName =
+                                                    selectedFarm.first.roleName;
+                                                _fieldBloc!.add(OpenFieldEvent(
+                                                    farmId: selectedFarmId!));
+                                              });
+                                            },
                                       selectedItemBuilder:
-                                          (BuildContext context) {
-                                        return farms!.map((farm) {
-                                          return Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              farm.name!,
-                                              style: const TextStyle(
-                                                fontFamily: 'Manrope',
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          );
-                                        }).toList();
-                                      },
-                                      onChanged: (value) {
-                                        setState(() {
-                                          final selectedFarm = farms!
-                                              .where((farm) =>
-                                                  farm.farmId == value)
-                                              .toList();
-                                          selectedFarmId = value;
-                                          roleName =
-                                              selectedFarm.first.roleName;
-                                          _fieldBloc!.add(OpenFieldEvent(
-                                              farmId: selectedFarmId!));
-                                        });
-                                      },
+                                          (farms == null || farms!.isEmpty)
+                                              ? null
+                                              : (BuildContext context) {
+                                                  return farms!.map((farm) {
+                                                    return Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Text(
+                                                        farm.name!,
+                                                        style: const TextStyle(
+                                                          fontFamily: 'Manrope',
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList();
+                                                },
                                       buttonStyleData: ButtonStyleData(
                                         height: 55,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
@@ -176,7 +185,6 @@ class _DashBoardState extends State<DashBoard> {
                                       ),
                                       dropdownStyleData: DropdownStyleData(
                                         maxHeight: 250,
-                                        padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(15),
@@ -633,21 +641,27 @@ class _DashBoardState extends State<DashBoard> {
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                               )),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: LinearProgressIndicator(
-                              value: (50 / 100),
-                              backgroundColor: Colors.grey[300],
-                              color: Colors.green[900],
-                              minHeight: 6,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            "Progress: 50%",
-                            style:
-                                TextStyle(fontSize: 14, color: Colors.black87),
-                          ),
+                          field.progress == null
+                              ? SizedBox(
+                                  height: 1,
+                                )
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    LinearProgressIndicator(
+                                      value: (field.progress! / 100),
+                                      backgroundColor: Colors.grey[300],
+                                      color: Colors.green[900],
+                                      minHeight: 6,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "Progress: ${field.progress}%",
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.black87),
+                                    ),
+                                  ],
+                                ),
                         ]),
                   ),
                 )),

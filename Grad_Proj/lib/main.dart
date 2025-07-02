@@ -9,6 +9,7 @@ import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/bloc/sensor_bloc/sensor_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/screens/field_view.dart';
 import 'package:grd_proj/service/api/dio_consumer.dart';
 import 'package:grd_proj/service/api/end_points.dart';
 import 'package:grd_proj/screens/add_irrigation_unit.dart';
@@ -113,7 +114,8 @@ class _MyAppState extends State<MyApp> {
       // SensorView()
       // SplashScreen()
       // LoginScreen(),
-      HomeScreen(initialIndex: 1,)
+      FieldView()
+      // HomeScreen()
       // HomeScreen(initialIndex: 7,)
     );
   }
