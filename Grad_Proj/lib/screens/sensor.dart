@@ -29,45 +29,79 @@ class Sensor extends StatefulWidget {
 class _SensorState extends State<Sensor> {
   List<Map<String, dynamic>> mySensorList = [];
   TextEditingController? serialNumberController;
-  String? sensorUnitName;
-  String serialNum = ' ';
-  List field = [];
   bool addOne = true;
   int index = 0;
   String description = '';
-  SensorDevice ? devices;
+  SensorDevice? devices;
+  FieldBloc? _fieldBloc;
   void _onInputChanged(String serialNumScaned) {
     setState(() {
       print(
           '=====================test=================$serialNumScaned======================================');
-      serialNum = serialNumScaned;
-      serialNumberController = TextEditingController(text: serialNum);
+      serialNumberController = TextEditingController(text: serialNumScaned);
     });
   }
 
   @override
+  void initState() {
+    _fieldBloc = context.read<FieldBloc>();
+    _fieldBloc!.add(OpenFarmSensorUnitsEvent(farmId: widget.farmId));
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (widget.form == true) {
-      if (context.read<FieldBloc>().sensorSerialNum.text.isNotEmpty&&context.read<FieldBloc>().nextStep2.text.isNotEmpty) {
-        addOne = false;
-        mySensorList.add({
-          'name': context.read<FieldBloc>().sensorUnitName.text,
-          'number': context.read<FieldBloc>().sensorSerialNum.text,
-        });
-      }
-    }
     return BlocConsumer<FieldBloc, FieldState>(
       listener: (context, state) {
         if (state is AddSensorUnitFailure) {
-          context
-              .read<FieldBloc>()
-              .addSensorUnitFormKey
-              .currentState!
-              .validate();
+          _fieldBloc!.addSensorUnitFormKey.currentState!.validate();
           if (state.errMessage == 'Conflict' ||
               state.errMessage == 'Not Found') {
             description = state.errors[0]['description'];
+            ScaffoldMessenger.of(context).clearSnackBars();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(description),
+                ),
+              );
+            });
+          } else {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errMessage),
+                ),
+              );
+            });
           }
+        }
+        if (state is AddSensorUnitSuccess) {
+          _fieldBloc!.addSensorUnitFormKey.currentState!.validate();
+          if (widget.form == false) {
+            index = widget.currentIndex;
+            index++;
+            widget.onInputChanged(index);
+            Navigator.pop(context);
+          } else {
+            devices = state.device;
+            _fieldBloc!.sensorId.text = state.device.id;
+            addOne = !addOne;
+            mySensorList.add({
+              'name': _fieldBloc!.sensorUnitName.text,
+              'number': _fieldBloc!.sensorSerialNum.text,
+            });
+          }
+        } else if (state is ViewFieldSensorUnitSuccess) {
+          _fieldBloc!.sensorUnitName.text = state.device.name;
+          _fieldBloc!.sensorSerialNum.text = state.device.serialNumber;
+          addOne = !addOne;
+          mySensorList.add({
+            'name': context.read<FieldBloc>().irrigationUnitName.text,
+            'number': context.read<FieldBloc>().irrigationSerialNum.text,
+          });
+        } else if (state is ViewFieldSensorUnitFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -76,26 +110,6 @@ class _SensorState extends State<Sensor> {
               ),
             );
           });
-        }
-        if (state is AddSensorUnitSuccess) {
-          context
-              .read<FieldBloc>()
-              .addSensorUnitFormKey
-              .currentState!
-              .validate();
-          if (widget.form == false) {
-            index = widget.currentIndex;
-            index++;
-            widget.onInputChanged(index);
-            Navigator.pop(context);
-          } else {
-            devices = state.device;
-            addOne = !addOne;
-            mySensorList.add({
-              'name': context.read<FieldBloc>().sensorUnitName.text,
-              'number': context.read<FieldBloc>().sensorSerialNum.text,
-            });
-          }
         }
       },
       builder: (context, state) {
@@ -156,11 +170,6 @@ class _SensorState extends State<Sensor> {
                         }
                         return null;
                       },
-                      onChanged: (value) {
-                        setState(() {
-                          sensorUnitName = value;
-                        });
-                      },
                     ),
                     const SizedBox(height: 16),
 
@@ -182,8 +191,7 @@ class _SensorState extends State<Sensor> {
                             width: 297,
                             height: 60,
                             child: TextFormField(
-                              controller:
-                                  context.read<FieldBloc>().sensorSerialNum,
+                              controller: serialNumberController,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
@@ -226,7 +234,7 @@ class _SensorState extends State<Sensor> {
                               },
                               onChanged: (value) {
                                 setState(() {
-                                  serialNum = value;
+                                  _fieldBloc!.sensorSerialNum.text = value;
                                 });
                               },
                             ),
@@ -250,7 +258,6 @@ class _SensorState extends State<Sensor> {
                                           builder: (context) => QrScan(
                                               onInputChanged:
                                                   _onInputChanged)));
-                                  print("========== $serialNum ==========");
                                 },
                                 icon: const Center(
                                     child: Icon(
@@ -276,17 +283,14 @@ class _SensorState extends State<Sensor> {
                             ),
                             child: TextButton(
                                 onPressed: () {
-                                  
-                                    if (addOne == true) {
-                                      context.read<FieldBloc>().add(
-                                          AddSensorUnitEvent(
-                                              farmId: widget.farmId,
-                                              fieldId: widget.fieldId));
-                                    context.read<FieldBloc>().nextStep2.text = 'moved';
-                                    } else {
-                                      print('Please Enter requested info');
-                                    }
-                                
+                                  if (addOne == true) {
+                                    context.read<FieldBloc>().add(
+                                        AddSensorUnitEvent(
+                                            farmId: widget.farmId,
+                                            fieldId: widget.fieldId));
+                                  } else {
+                                    print('Please Enter requested info');
+                                  }
                                 },
                                 child: const SizedBox(
                                   width: 380,
@@ -447,7 +451,6 @@ class _SensorState extends State<Sensor> {
                               child: IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      mySensorList.removeAt(index);
                                       mySensorList.removeAt(index);
                                       context.read<FieldBloc>().add(
                                           DeleteSensorUnitEvent(

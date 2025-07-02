@@ -23,7 +23,6 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
   GlobalKey<FormState> addMembermKey = GlobalKey();
   TextEditingController roleName = TextEditingController();
   TextEditingController recipient = TextEditingController();
-  FarmModel? farm;
   List<InvitationModel>? invitations;
   // String? farmId ;
   final cacheHelper = CacheHelper();
@@ -73,10 +72,10 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
           ApiKey.soilType: int.tryParse(soilType.text),
         });
         //create a var to store the response
-        farm = FarmModel.fromJson(response);
+        final farm = FarmModel.fromJson(response);
         // save part we will need every time we use the app to cache
-        CacheHelper.saveData(key: 'farmId', value: farm!.farmId);
-        emit(FarmInfoSuccess(farm: farm!));
+        CacheHelper.saveData(key: 'farmId', value: farm.farmId);
+        emit(FarmInfoSuccess(farm: farm));
       } on ServerException catch (e) {
         emit(FarmInfoFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -117,8 +116,8 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
         final response =
             await api.get("${EndPoints.farmControl}/${event.farmId}");
         //create a var to store the response
-        farm = FarmModel.fromJson(response);
-        emit(FarmSuccess(farm: farm!));
+        final farm = FarmModel.fromJson(response);
+        emit(FarmSuccess(farm: farm));
       } on ServerException catch (e) {
         emit(FarmFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -153,7 +152,7 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
           ApiKey.location: location.text,
           ApiKey.soilType: int.tryParse(soilType.text)
         });
-        //create a var to store the response
+  
         emit(FarmEditSuccess());
       } on ServerException catch (e) {
         emit(FarmEditFailure(

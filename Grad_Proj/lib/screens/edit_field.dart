@@ -8,16 +8,17 @@ import 'package:grd_proj/screens/review_field.dart';
 import 'package:grd_proj/screens/sensor.dart';
 import '../Components/color.dart';
 
-class NewFeild extends StatefulWidget {
+class EditField extends StatefulWidget {
   final String farmId;
   final int soilType;
-  const NewFeild({super.key, required this.farmId, required this.soilType});
+  final String fieldId;
+  const EditField({super.key, required this.farmId, required this.soilType, required this.fieldId});
 
   @override
-  State<NewFeild> createState() => _NewFeildState();
+  State<EditField> createState() => _EditFieldState();
 }
 
-class _NewFeildState extends State<NewFeild> {
+class _EditFieldState extends State<EditField> {
   int currentIndex = 0;
   FieldModel? field;
   FieldBloc? _fieldBloc;
@@ -37,6 +38,7 @@ class _NewFeildState extends State<NewFeild> {
   @override
   void initState() {
     _fieldBloc = context.read<FieldBloc>();
+    _fieldBloc!.add(ViewFieldDetails(farmId: widget.farmId, fieldId: widget.fieldId));
     super.initState();
   }
 
@@ -90,21 +92,12 @@ class _NewFeildState extends State<NewFeild> {
                 child: Column(
                   children: [
                     if (currentIndex == 0)
-                      if (edit)
-                        BasicInfoField(
+                      BasicInfoField(
                           onInputChanged: _onInputChanged2,
                           currentIndex: currentIndex,
                           farmId: widget.farmId,
                           field: field,
-                          edit: edit,
-                          soilType: widget.soilType,
-                        )
-                      else
-                        BasicInfoField(
-                          onInputChanged: _onInputChanged2,
-                          currentIndex: currentIndex,
-                          farmId: widget.farmId,
-                          edit: edit,
+                          edit: true,
                           soilType: widget.soilType,
                         )
                     else if (currentIndex == 1)
@@ -112,7 +105,7 @@ class _NewFeildState extends State<NewFeild> {
                         onInputChanged: _onInputChanged,
                         currentIndex: currentIndex,
                         farmId: widget.farmId,
-                        fieldId: field!.id,
+                        fieldId: widget.fieldId,
                         form: true,
                       )
                     else if (currentIndex == 2)
@@ -120,11 +113,11 @@ class _NewFeildState extends State<NewFeild> {
                         onInputChanged: _onInputChanged,
                         currentIndex: currentIndex,
                         farmId: widget.farmId,
-                        fieldId: field!.id,
+                        fieldId: widget.fieldId,
                         form: true,
                       )
                     else if (currentIndex == 3)
-                      ReviewField(farmId: widget.farmId,fieldId: field!.id,),
+                      ReviewField(farmId: widget.farmId,fieldId: widget.fieldId,),
                     const SizedBox(height: 20),
                   ],
                 ),

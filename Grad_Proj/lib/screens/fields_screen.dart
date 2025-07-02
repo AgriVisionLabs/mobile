@@ -5,6 +5,7 @@ import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/models/field_model.dart';
+import 'package:grd_proj/screens/edit_farm.dart';
 import 'package:grd_proj/screens/new_field.dart';
 
 import '../components/color.dart';
@@ -17,7 +18,6 @@ class FieldsScreen extends StatefulWidget {
 }
 
 FarmModel? farm;
-List<FieldModel>? fields;
 
 class _FieldsScreenState extends State<FieldsScreen> {
   @override
@@ -139,14 +139,23 @@ class _FieldsScreenState extends State<FieldsScreen> {
                               )),
                           const Spacer(),
                           IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditFarm(farmId: farm!.farmId!)));
+                              },
                               icon: Image.asset(
                                 'assets/images/edit.png',
                                 width: 24,
                                 height: 24,
                               )),
                           IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                context.read<FarmBloc>().add(
+                                    DeleteFarmEvent(farmId: farm!.farmId!));
+                              },
                               icon: Image.asset(
                                 'assets/images/delete.png',
                                 width: 24,
@@ -247,15 +256,17 @@ class _FieldsScreenState extends State<FieldsScreen> {
                         return SizedBox(
                             width: 400,
                             height: 450,
-                            child: _buildFeilds(context));
+                            child: _buildFeilds(context, state.fields));
                       } else if (state is FieldEmpty) {
                         return SizedBox(
                             width: 400,
                             height: 450,
-                            child: _buildEmptyState(context));
+                            child: _buildEmptyState(
+                              context,
+                            ));
                       }
                       return const Center(
-                        child:  CircularProgressIndicator(
+                        child: CircularProgressIndicator(
                           color: primaryColor,
                         ),
                       );
@@ -276,109 +287,106 @@ class _FieldsScreenState extends State<FieldsScreen> {
   }
 }
 
-Widget _buildFeilds(BuildContext content) {
+Widget _buildFeilds(BuildContext content, List<FieldModel> fields) {
   return ListView.builder(
       padding: const EdgeInsets.all(0),
-      itemCount: fields?.length,
+      itemCount: fields.length,
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {
-        final field = fields?[index];
-        //container of each task
-        return Container(
-          margin:
-              const EdgeInsets.only(bottom: 20, left: 15, right: 15, top: 20),
+        final field = fields[index];
+        //container of each field
+        return GestureDetector(
+          onTap: (){
+            
+          },
           child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 22),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Color.fromARGB(50, 0, 0, 0),
-                        blurRadius: 10,
-                        spreadRadius: 0.7,
-                        offset: Offset(0, 2.25))
-                  ]),
-
-              //listTile used for constant layout of each item
-              child: ListTile(
-                //task content
-                title: Row(
-                  children: [
-                    //Task Descrption
-                    SizedBox(
-                      width: 185,
-                      child: Text(
-                        field!.name,
-                        style: const TextStyle(
-                          fontFamily: 'Manrope',
-                          color: primaryColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          // decoration: TextDecoration.lineThrough
+            margin:
+                const EdgeInsets.only(bottom: 20, left: 5, right: 5, top: 20),
+            child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 22),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Color.fromARGB(50, 0, 0, 0),
+                          blurRadius: 10,
+                          spreadRadius: 3,
+                          offset: Offset(0, 1.25))
+                    ]),
+          
+                //listTile used for constant layout of each item
+                child: ListTile(
+                  //task content
+                  title: Row(
+                    children: [
+                      //Task Descrption
+                      SizedBox(
+                        width: 175,
+                        child: Text(
+                          field.name,
+                          style: const TextStyle(
+                            fontFamily: 'Manrope',
+                            color: primaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            // decoration: TextDecoration.lineThrough
+                          ),
                         ),
                       ),
-                    ),
-                    const Spacer(),
-
-                    //Due Date
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(30)),
-                      ),
-                      child:
-                          Text(field.isActive == true ? "Active" : "Inactive",
+                      const Spacer(),
+          
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(30)),
+                        ),
+                        child:
+                            Text(field.isActive  ? "Active" : "Inactive",
+                                style: const TextStyle(
+                                  fontFamily: 'Manrope',
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                )),
+                      )
+                    ],
+                  ),
+          
+                  subtitle: field.cropName==null ? const SizedBox(height: 1,) : Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(field.cropName ?? "Not Spacified",
                               style: const TextStyle(
                                 fontFamily: 'Manrope',
                                 color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
                               )),
-                    )
-                  ],
-                ),
-
-                subtitle: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            field.crop == 1
-                                ? "Corn"
-                                : field.crop == 2
-                                    ? "Wheat"
-                                    : field.crop == 3
-                                        ? "Rice"
-                                        : "Tomato",
-                            style: const TextStyle(
-                              fontFamily: 'Manrope',
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            )),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: LinearProgressIndicator(
-                            value: (50 / 100),
-                            backgroundColor: Colors.grey[300],
-                            color: Colors.green[900],
-                            minHeight: 6,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: LinearProgressIndicator(
+                              value: (field.progress! / 100),
+                              backgroundColor: Colors.grey[300],
+                              color: Colors.green[900],
+                              minHeight: 6,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          "Progress: 50%",
-                          style: TextStyle(fontSize: 14, color: Colors.black87),
-                        ),
-                      ]),
-                ),
-              )),
+                          const SizedBox(height: 4),
+                           Text(
+                            "Progress: ${field.progress!}%",
+                            style: const TextStyle(fontSize: 14, color: Colors.black87),
+                          ),
+                        ]),
+                  ),
+                )),
+          ),
         );
       });
 }

@@ -44,7 +44,7 @@ class _MoreScreen extends State<MoreScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => HomeScreen(
-                                  initialIndex: 6,
+                                  initialIndex: 5,
                                 )));
                   },
                   child: Container(
@@ -90,7 +90,7 @@ class _MoreScreen extends State<MoreScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => HomeScreen(
-                                  initialIndex: 8,
+                                  initialIndex: 7,
                                 )));
                   },
                   child: Container(
@@ -141,7 +141,7 @@ class _MoreScreen extends State<MoreScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => HomeScreen(
-                                  initialIndex: 7,
+                                  initialIndex: 6,
                                 )));
                   },
                   child: Container(
@@ -187,7 +187,7 @@ class _MoreScreen extends State<MoreScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => HomeScreen(
-                                  initialIndex: 9,
+                                  initialIndex: 8,
                                 )));
                   },
                   child: Container(

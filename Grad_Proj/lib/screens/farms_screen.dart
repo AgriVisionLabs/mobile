@@ -145,9 +145,9 @@ class _FarmsScreen extends State<FarmsScreen> {
           );
         } else {
           final farm = farms[index - 1];
-          soil = farm.soilType == 1
+          soil = farm.soilType == 0
               ? "Sandy"
-              : farm.soilType == 2
+              : farm.soilType == 1
                   ? "Clay"
                   : "Loamy";
           return GestureDetector(

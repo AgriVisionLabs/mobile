@@ -8,7 +8,7 @@ import 'package:grd_proj/models/farm_model.dart';
 import '../Components/color.dart';
 
 class BasicInfo extends StatefulWidget {
-  final Function(int, String) onInputChanged;
+  final Function(int, FarmModel) onInputChanged;
   final int currentIndex;
   final bool editFarm;
   final FarmModel? farm;
@@ -60,7 +60,7 @@ class _BasicInfoState extends State<BasicInfo> {
         if (state is FarmEditSuccess) {
           index = widget.currentIndex;
           index++;
-          widget.onInputChanged(index, widget.farm!.farmId!);
+          widget.onInputChanged(index, widget.farm!);
           context
               .read<FarmBloc>()
               .add(ViewFarmMembers(farmId: widget.farm!.farmId!));
@@ -82,7 +82,7 @@ class _BasicInfoState extends State<BasicInfo> {
           context.read<FarmBloc>().createFarmFormKey.currentState!.validate();
           index = widget.currentIndex;
           index++;
-          widget.onInputChanged(index, state.farm.farmId!);
+          widget.onInputChanged(index, state.farm);
         } else if (state is FarmInfoFailure) {
           if (state.errMessage == 'Conflict') {
             description = state.errors[0]['description'];

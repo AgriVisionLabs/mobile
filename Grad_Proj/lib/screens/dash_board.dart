@@ -569,14 +569,8 @@ class _DashBoardState extends State<DashBoard> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                              field.crop == 1
-                                  ? "Corn"
-                                  : field.crop == 2
-                                      ? "Wheat"
-                                      : field.crop == 3
-                                          ? "Rice"
-                                          : "Tomato",
+                          Text(field.cropName!
+                          ,
                               style: const TextStyle(
                                 fontFamily: 'Manrope',
                                 color: Colors.black,

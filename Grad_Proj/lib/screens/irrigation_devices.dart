@@ -62,6 +62,18 @@ class IrrigationDevicesState extends State<IrrigationDevices> {
               ),
             );
           });
+        } else if (state is DeleteIrrigationUnitSuccess) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Irrigation unit Removed Successfuly"),
+              ),
+            );
+          });
+          context
+              .read<FieldBloc>()
+              .add(OpenFarmIrrigationUnitsEvent(farmId: widget.farmId));
         }
       },
       builder: (context, state) {
@@ -76,12 +88,12 @@ class IrrigationDevicesState extends State<IrrigationDevices> {
           });
         } else if (state is ViewIrrigationUnitSuccess) {
           if (widget.fieldId != null && widget.statue != null) {
-            if (widget.fieldId!.isNotEmpty ) {
+            if (widget.fieldId!.isNotEmpty) {
               myDevices = state.devices
-                  .where((device) =>
-                      device.fieldId == widget.fieldId)
+                  .where((device) => device.fieldId == widget.fieldId)
                   .toList();
-            } if (widget.statue!.isNotEmpty) {
+            }
+            if (widget.statue!.isNotEmpty) {
               widget.statue == 'active' ? _status = 0 : _status = 1;
               myDevices = state.devices
                   .where((device) => device.status == _status)
@@ -253,9 +265,6 @@ class IrrigationDevicesState extends State<IrrigationDevices> {
                                             // ignore: avoid_print
                                             print(
                                                 "==========Delted===========");
-                                            context.read<FieldBloc>().add(
-                                                OpenFarmIrrigationUnitsEvent(
-                                                    farmId: item.farmId));
                                           },
                                           child: Image.asset(
                                               'assets/images/delete.png',

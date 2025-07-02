@@ -30,9 +30,9 @@ class _EditFarmState extends State<EditFarm> {
     });
   }
 
-  void _onInputChanged2(int index, String farmId) {
+  void _onInputChanged2(int index, FarmModel farm) {
     setState(() {
-      farmId = farmId;
+      this.farm = farm;
       currentIndex = index;
     });
   }

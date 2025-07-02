@@ -7,7 +7,7 @@ import 'package:grd_proj/models/field_model.dart';
 import '../Components/color.dart';
 
 class BasicInfoField extends StatefulWidget {
-  final Function(int, String) onInputChanged;
+  final Function(int, FieldModel) onInputChanged;
   final int currentIndex;
   final String farmId;
   final FieldModel? field;
@@ -32,6 +32,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
   FieldBloc? _fieldBloc;
   int? selectedCropType;
   List<CropModel>? crops;
+  String? cropName;
   @override
   void initState() {
     _fieldBloc = context.read<FieldBloc>();
@@ -41,8 +42,9 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
       final field = widget.field!;
       _fieldBloc!.name.text = field.name;
       _fieldBloc!.area.text = field.area.toString();
-      _fieldBloc!.cropType.text = field.crop.toString();
-      selectedCropType = field.crop;
+      _fieldBloc!.cropType.text = field.cropType.toString();
+      selectedCropType = field.cropType;
+      cropName = field.cropName;
     }
   }
 
@@ -51,12 +53,14 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
     return BlocConsumer<FieldBloc, FieldState>(
       listener: (context, state) {
         if (state is FieldInfoSuccess) {
+          print("======================================================${state.field.cropName}");
           index = widget.currentIndex;
           index++;
-          widget.onInputChanged(index, state.field.id);
+          widget.onInputChanged(index, state.field);
           _fieldBloc!.createFieldFormKey.currentState!.validate();
         } else if (state is FieldInfoFailure) {
-          if (state.errMessage == 'Conflict' || state.errMessage == "Bad Request" ) {
+          if (state.errMessage == 'Conflict' ||
+              state.errMessage == "Bad Request") {
             description = state.errors[0]['description'];
           }
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -72,9 +76,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
         if (state is FieldEditSuccess) {
           index = widget.currentIndex;
           index++;
-          widget.onInputChanged(index, widget.field!.farmId);
-          _fieldBloc!.add(OpenFieldIrrigationUnitsEvent(
-              farmId: widget.field!.farmId, fieldId: widget.field!.id));
+          widget.onInputChanged(index, widget.field!);
         } else if (state is FieldEditFailure) {
           if (state.errMessage == 'Conflict') {
             description = state.errors[0]['description'];
@@ -158,7 +160,9 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                           return "Please Enter Farm Name";
                         } else if (value.length < 3 || value.length > 32) {
                           return "Name must be between 3 and 100 characters.";
-                        } else if (description.isNotEmpty && description != "Field area is invalid or exceeds farm area.") {
+                        } else if (description.isNotEmpty &&
+                            description !=
+                                "Field area is invalid or exceeds farm area.") {
                           return description;
                         }
                         return null;
@@ -209,7 +213,9 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Field Size";
-                        }else if (description.isNotEmpty && description != "Farm already have a field with this name") {
+                        } else if (description.isNotEmpty &&
+                            description !=
+                                "Farm already have a field with this name.") {
                           return description;
                         }
                         return null;
@@ -228,14 +234,15 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                     const SizedBox(height: 5),
                     Container(
                       height: 50,
-                      padding: const EdgeInsets.symmetric(horizontal: 16 , vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
                         border: Border.all(color: borderColor, width: 2),
                         color: Colors.white,
                       ),
                       child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField<int>(
+                        child: DropdownButton<int>(
                           value: selectedCropType,
                           isExpanded: true,
                           icon: Image.asset(
@@ -244,18 +251,13 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                             width: 20,
                           ),
                           dropdownColor: Colors.white,
-                          menuMaxHeight: 200,    
+                          menuMaxHeight: 200,
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 16,
                             fontFamily: "Manrope",
                           ),
-                          decoration:
-                              const InputDecoration.collapsed(hintText: ''),
-                          hint: const Text(
-                            'Choose a crop',
-                            style: TextStyle(color: borderColor),
-                          ),
+                          hint: Text(widget.edit ? cropName! : 'Soil Type'),
                           onChanged: (crops == null || crops!.isEmpty)
                               ? null
                               : (newValue) {
@@ -288,10 +290,15 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                           ),
                           child: TextButton(
                               onPressed: () {
-                                widget.edit==true ? _fieldBloc!.add(
-                                    EditFieldEvent(farmId: widget.farmId , fieldId: widget.field!.id)):
-                               _fieldBloc!.add(
-                                    CreateFieldEvent(farmId: widget.farmId));                              },
+                                if (widget.edit == true) {
+                                  _fieldBloc!.add(EditFieldEvent(
+                                      farmId: widget.farmId,
+                                      fieldId: widget.field!.id));
+                                } else {
+                                  _fieldBloc!.add(
+                                      CreateFieldEvent(farmId: widget.farmId));
+                                }
+                              },
                               child: const SizedBox(
                                 width: 70,
                                 child: Row(

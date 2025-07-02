@@ -76,7 +76,54 @@ class _SensorAndDevicesState extends State<SensorAndDevices> {
                 const SizedBox(
                   height: 24,
                 ),
-                
+                Container(
+                  padding: const EdgeInsets.fromLTRB(17, 10, 17, 0),
+                  width: 289,
+                  height: 53,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: borderColor, width: 1)),
+                  child: DropdownButton<String>(
+                    dropdownColor: Colors.white,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    value: selectedFarmId,
+                    isExpanded: true,
+                    icon: Image.asset(
+                      'assets/images/arrow.png',
+                    ),
+                    onChanged: (farms == null || farms!.isEmpty)
+                        ? null
+                        : (newValue) {
+                            final selectedFarm = farms!
+                                .where((farm) => farm.farmId == newValue)
+                                .toList();
+                            if (selectedFarm.isNotEmpty) {
+                              setState(() {
+                                selectedFarmId = newValue;
+                                selectedFarmName = selectedFarm.first.name;
+                                isSensorSelected
+                                    ? context.read<FieldBloc>().add(
+                                        OpenFarmSensorUnitsEvent(
+                                            farmId: selectedFarmId!))
+                                    : context.read<FieldBloc>().add(
+                                        OpenFarmIrrigationUnitsEvent(
+                                            farmId: selectedFarmId!));
+                              });
+                            }
+                          },
+                    items: farms?.map<DropdownMenuItem<String>>((farm) {
+                      return DropdownMenuItem<String>(
+                        value: farm.farmId,
+                        child: Text(farm.name!),
+                      );
+                    }).toList(),
+                  ),
+                ),
                 const SizedBox(
                   height: 24,
                 ),

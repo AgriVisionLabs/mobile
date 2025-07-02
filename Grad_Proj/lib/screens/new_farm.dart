@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
@@ -19,24 +18,22 @@ class NewFarm extends StatefulWidget {
 
 class _NewFarmState extends State<NewFarm> {
   int currentIndex = 0;
-  String  farmId =  " ";
+  FarmModel? farm;
   void _onInputChanged(int index) {
     setState(() {
       currentIndex = index;
     });
   }
 
-  void _onInputChanged2(int index , String farmIdbasic) {
+  void _onInputChanged2(int index, FarmModel farm) {
     setState(() {
-      farmId = farmIdbasic;
+      this.farm = farm;
       currentIndex = index;
     });
   }
-  bool edit = false;
-  FarmModel ? farm;
-  FarmBloc ? _farmBloc;
 
- 
+  bool edit = false;
+  FarmBloc? _farmBloc;
 
   @override
   void initState() {
@@ -44,8 +41,8 @@ class _NewFarmState extends State<NewFarm> {
     super.initState();
   }
 
-   @override
-     void didChangeDependencies() {
+  @override
+  void didChangeDependencies() {
     _farmBloc!.name.clear();
     _farmBloc!.area.clear();
     _farmBloc!.location.clear();
@@ -60,80 +57,65 @@ class _NewFarmState extends State<NewFarm> {
     _farmBloc!.add(OpenFarmEvent());
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FarmBloc, FarmState>(
-      listener: (context, state) {
-        if (state is FarmSuccess) {
-          farm = state.farm;
-        }
-      },
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body: SafeArea(
-            child: Column(
-              children: [
-                // Fixed Top Section
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      top(),
-                      const SizedBox(height: 40),
-                      buildDots(),
-                    ],
-                  ),
-                ),
-        
-                // Scrollable Form Section
-                Expanded(
-                  child: SingleChildScrollView(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: [
-                        if (currentIndex == 0)
-                         if (edit)
-                          if (state is FarmSuccess || state is FarmEditFailure)
-                            BasicInfo(
-                              onInputChanged: _onInputChanged2,
-                              currentIndex: currentIndex,
-                              editFarm: true,
-                              farm: farm,
-                            )
-                          else
-                            const Center(
-                              child: CircularProgressIndicator(
-                                color: primaryColor,
-                              ),
-                            )
-                          else
-                            BasicInfo(
-                              onInputChanged: _onInputChanged2,
-                              currentIndex: currentIndex,
-                              editFarm: false,
-                            )
-                        else if (currentIndex == 1)
-                          Team(
-                              farmId: farmId,
-                              onInputChanged: _onInputChanged,
-                              currentIndex: currentIndex)
-                        else
-                          Review(
-                            farmId: farmId,
-                          ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Fixed Top Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  top(),
+                  const SizedBox(height: 40),
+                  buildDots(),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+
+            // Scrollable Form Section
+            Expanded(
+              child: SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    if (currentIndex == 0)
+                      if (edit)
+                        BasicInfo(
+                          onInputChanged: _onInputChanged2,
+                          currentIndex: currentIndex,
+                          editFarm: true,
+                          farm: farm,
+                        )
+                      else
+                        BasicInfo(
+                          onInputChanged: _onInputChanged2,
+                          currentIndex: currentIndex,
+                          editFarm: false,
+                        )
+                    else if (currentIndex == 1)
+                      Team(
+                          farmId: farm!.farmId!,
+                          onInputChanged: _onInputChanged,
+                          currentIndex: currentIndex)
+                    else
+                      Review(
+                        farmId: farm!.farmId!,
+                      ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -143,16 +125,15 @@ class _NewFarmState extends State<NewFarm> {
         IconButton(
           onPressed: () {
             setState(() {
-              if(currentIndex == 2){
-                context.read<FarmBloc>().add(ViewFarmMembers(farmId: farmId));
-              }else if (currentIndex == 1){
+              if (currentIndex == 2) {
+                context.read<FarmBloc>().add(ViewFarmMembers(farmId: farm!.farmId!));
+              } else if (currentIndex == 1) {
                 edit = true;
-                context.read<FarmBloc>().add(ViewFarmDetails(farmId: farmId));
-              }else{
+                context.read<FarmBloc>().add(ViewFarmDetails(farmId: farm!.farmId!));
+              } else {
                 Navigator.pop(context);
               }
               if (currentIndex > 0) currentIndex--;
-              
             });
           },
           icon: Icon(Icons.arrow_back_rounded,
