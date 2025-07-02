@@ -5,6 +5,7 @@ import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/screens/widget/border.dart';
 import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:grd_proj/screens/widget/text.dart';
+import 'package:intl/intl.dart';
 
 class FieldView extends StatefulWidget {
   const FieldView({super.key});
@@ -13,11 +14,19 @@ class FieldView extends StatefulWidget {
   State<FieldView> createState() => _FieldViewState();
 }
 
+int calculateDaysDifference(DateTime apiDateString) {
+  DateTime today = DateTime.now();
+
+  DateTime targetOnly =
+      DateTime(apiDateString.year, apiDateString.month, apiDateString.day);
+  DateTime todayOnly = DateTime(today.year, today.month, today.day);
+
+  return targetOnly.difference(todayOnly).inDays;
+}
+
 class _FieldViewState extends State<FieldView> {
   FieldBloc? _fieldBloc;
   int? selectedCropType;
-  final today = DateTime(2025, 6, 27);
-  final targetDate = DateTime(2025, 11, 26);
 
   @override
   void initState() {
@@ -30,8 +39,6 @@ class _FieldViewState extends State<FieldView> {
 
   @override
   Widget build(BuildContext context) {
-    final difference = targetDate.difference(today).inDays;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocBuilder<FieldBloc, FieldState>(
@@ -50,160 +57,269 @@ class _FieldViewState extends State<FieldView> {
           if (state is FieldSuccess) {
             return SafeArea(
                 child: Container(
-              margin: const EdgeInsets.fromLTRB(20, 100, 20, 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(
-                            Icons.arrow_back_rounded,
-                            color: grayColor2,
-                            size: 24,
-                          )),
-                      Text(state.field.name,
-                          style: const TextStyle(
-                            fontFamily: 'Manrope',
-                            color: primaryColor,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                          )),
-                      const Spacer(),
-                      buildTag(
-                        state.field.isActive ? "Activr" : "Inactive",
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  Container(
-                    width: 380,
-                    height: 220,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                        color: containerColor,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              margin: const EdgeInsets.fromLTRB(20, 100, 20, 30),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            Image.asset(
-                              'assets/images/alert.png',
-                              height: 20,
-                              width: 20,
-                            ),
-                            const SizedBox(width: 5),
-                            text(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                                label: "Field Information"),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 24,
-                        ),
-                        text(
-                            color: grayColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            label: "Area"),
-                        text(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            label: "${state.field.area.toString()} acres"),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        text(
-                            color: grayColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            label: "Crop Name"),
-                        text(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            label: state.field.cropName ?? "Not Exist"),
+                        IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back_rounded,
+                              color: grayColor2,
+                              size: 24,
+                            )),
+                        Text(state.field.name,
+                            style: const TextStyle(
+                              fontFamily: 'Manrope',
+                              color: primaryColor,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                            )),
+                        const Spacer(),
+                        buildTag(
+                          state.field.isActive ? "Activr" : "Inactive",
+                        )
                       ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  Container(
-                    width: 380,
-                    height: 230,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                        color: containerColor,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset(
-                              'assets/images/alert.png',
-                              height: 20,
-                              width: 20,
-                            ),
-                            const SizedBox(width: 5),
-                            text(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                                label: "Progress & Status"),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 24,
-                        ),
-                        text(
-                            color: grayColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            label: "Growth Progress"),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        text(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            label: state.field.progress == null
-                                ? "Not Exist"
-                                : "${state.field.progress.toString()}%"),
-                        state.field.progress == null
-                            ? const SizedBox(
-                                height: 1,
-                              )
-                            : LinearProgressIndicator(
-                                value: (state.field.progress! / 100),
-                                backgroundColor: Colors.grey[300],
-                                color: Colors.green[900],
-                                minHeight: 6,
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    Container(
+                      width: 380,
+                      height: 220,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                          color: containerColor,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/alert.png',
+                                color: primaryColor,
+                                height: 20,
+                                width: 20,
                               ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        text(
-                            color: grayColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            label: "Days Until Harvest"),
-                        text(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            label: state.field.expectedHarvestDate == null
-                                ? "Not Information"
-                                : difference.toString()),
-                      ],
+                              const SizedBox(width: 5),
+                              text(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  label: "Field Information"),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          text(
+                              color: grayColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              label: "Area"),
+                          text(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              label: "${state.field.area.toString()} acres"),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          text(
+                              color: grayColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              label: "Crop Name"),
+                          text(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              label: state.field.cropName ?? "Not Exist"),
+                        ],
+                      ),
                     ),
-                  )
-                ],
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    Container(
+                      width: 380,
+                      height: 230,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                          color: containerColor,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/prime_wave-pulse.png',
+                                height: 30,
+                                width: 30,
+                              ),
+                              const SizedBox(width: 5),
+                              text(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  label: "Progress & Status"),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          text(
+                              color: grayColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              label: "Growth Progress"),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          text(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              label: state.field.progress == null
+                                  ? "Not Exist"
+                                  : "${state.field.progress.toString()}%"),
+                          state.field.progress == null
+                              ? const SizedBox(
+                                  height: 1,
+                                )
+                              : LinearProgressIndicator(
+                                  value: (state.field.progress! / 100),
+                                  backgroundColor: Colors.grey[300],
+                                  color: Colors.green[900],
+                                  minHeight: 6,
+                                ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          text(
+                              color: grayColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              label: "Days Until Harvest"),
+                          text(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              label: state.field.expectedHarvestDate == null
+                                  ? "No Information"
+                                  : calculateDaysDifference(
+                                          state.field.expectedHarvestDate!)
+                                      .toString()),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    Container(
+                      width: 380,
+                      height: 230,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                          color: containerColor,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/calender.png',
+                                color: primaryColor,
+                                height: 20,
+                                width: 20,
+                              ),
+                              const SizedBox(width: 5),
+                              text(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  label: "Timeline"),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          text(
+                              color: grayColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              label: "Planting Date"),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          text(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              label: state.field.plantingDate == null
+                                  ? "Not Exist"
+                                  : DateFormat('MMM dd, yyyy')
+                                      .format(state.field.plantingDate!)),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          text(
+                              color: grayColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              label: "Expected Harvest Date"),
+                          text(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              label: state.field.expectedHarvestDate == null
+                                  ? "No Information"
+                                  : DateFormat('MMM dd, yyyy')
+                                      .format(state.field.expectedHarvestDate!))
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    Container(
+                      width: 380,
+                      height: 230,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                          color: containerColor,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/Vector (1).png',
+                                height: 20,
+                                width: 20,
+                              ),
+                              const SizedBox(width: 5),
+                              text(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  label: "Description"),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          text(
+                              color: grayColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              label: state.field.description == null
+                                  ? "Not Exist"
+                                  : state.field.description!),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ));
           }
