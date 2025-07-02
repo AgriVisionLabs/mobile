@@ -6,18 +6,8 @@ abstract class FieldEvent {}
 
 class OpenFieldEvent extends FieldEvent {
   final String farmId;
-  final String? farmname;
-  final String? roleName;
-  final int? size;
-  final String? location;
-  final int? soiltype;
   OpenFieldEvent({
     required this.farmId,
-    this.farmname,
-    this.roleName,
-    this.size,
-    this.location,
-    this.soiltype,
   });
   
   
@@ -40,7 +30,12 @@ class DeleteFieldEvent extends FieldEvent {
   });
 }
 
-class EditFieldEvent extends FieldEvent{}
+class EditFieldEvent extends FieldEvent{
+  final String farmId;
+  final String fieldId;
+
+  EditFieldEvent({required this.farmId, required this.fieldId});
+}
 
 class ViewFieldDetails extends FieldEvent {
   final String farmId;
@@ -51,6 +46,8 @@ class ViewFieldDetails extends FieldEvent {
   });
   
 }
+
+class ViewCropTypes extends FieldEvent {}
 
 class AddIrrigationUnitEvent extends FieldEvent {
   final String fieldId;

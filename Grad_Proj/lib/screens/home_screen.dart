@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: BottomNavigationBar(
             backgroundColor: bottomBarColor,
             type: BottomNavigationBarType.fixed,
-            currentIndex: indexing > 4 ? 2 : indexing,
+            currentIndex: indexing > 3 ? 0 : indexing,
             onTap: _onItemTapped,
             items: [
               BottomNavigationBarItem(

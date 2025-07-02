@@ -39,7 +39,11 @@ class FieldSuccess extends FieldState {
 }
 
 // دخلنا data و اتقبلت في basic info
-class FieldInfoSuccess extends FieldState {}
+class FieldInfoSuccess extends FieldState {
+  final FieldModel field;
+
+  FieldInfoSuccess({required this.field});
+}
 
 //حصل مشكلة و احنا بنعرض ال fields
 final class FieldFailure extends FieldState {
@@ -65,14 +69,31 @@ final class DeleteFieldFailure extends FieldState {
 
   DeleteFieldFailure({required this.errMessage, required this.errors});
 }
-class FarmDetailsSuccess extends FieldState{}
-class FarmDetailsFailure extends FieldState {
+
+class FieldEditSuccess extends FieldState {}
+
+//حصل مشكلة و احنا بنعرض ال farms
+final class FieldEditFailure extends FieldState {
   final String errMessage;
   final dynamic errors;
 
-  FarmDetailsFailure({required this.errMessage, required this.errors});
+  FieldEditFailure({required this.errMessage, required this.errors});
 }
 
+class ViewCropTypesSuccess extends FieldState {
+  final List<CropModel> crops;
+
+  ViewCropTypesSuccess({required this.crops});
+
+}
+
+//حصل مشكلة و احنا بنعرض ال farms
+final class ViewCropTypesFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+
+  ViewCropTypesFailure({required this.errMessage, required this.errors});
+}
 
 
 //=========================================================================

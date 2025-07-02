@@ -1,5 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
+import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
+import 'package:grd_proj/models/farm_model.dart';
+import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/alerts_bar.dart';
 import 'package:grd_proj/screens/todo_bar.dart';
 import 'package:grd_proj/screens/activity_bar.dart';
@@ -14,9 +19,17 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
-  String? selectedValue;
-  List<String> farms = ['Farm 1', 'Farm 2', 'Farm 3'];
-  
+  String? selectedFarmId;
+  List<FarmModel>? farms;
+  String? roleName;
+  FieldBloc? _fieldBloc;
+  @override
+  void initState() {
+    _fieldBloc = context.read<FieldBloc>();
+    context.read<FarmBloc>().add(OpenFarmEvent());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -27,302 +40,178 @@ class _DashBoardState extends State<DashBoard> {
           margin: const EdgeInsets.only(top: 16),
           height: MediaQuery.sizeOf(context).height,
           child: ListView(scrollDirection: Axis.vertical, children: [
-            Row(
-              children: [
-                SizedBox(width: 35),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(17, 0, 17, 0),
-                  width: 289,
-                  height: 53,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: borderColor, width: 1)),
-                  child: DropdownButton(
-                    dropdownColor: Colors.white,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400),
-                    value: selectedValue,
-                    isExpanded: true,
-                    icon: Image.asset(
-                      'assets/images/arrow.png',
-                    ),
-                    onChanged: (String? value) {
-                      setState(() {
-                        selectedValue = value;
-                      });
-                    },
-                    items: farms.map<DropdownMenuItem<String>>((dynamic value) {
-                      return DropdownMenuItem(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                Container(
-                  width: 76,
-                  height: 30,
-                  margin: const EdgeInsets.only(left: 25),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      border: Border.all(color: borderColor, width: 1)),
-                  child: Center(
-                    child: Text(
-                      "Owner",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                )
-              ],
-            ),
             SizedBox(height: 25),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
-                    child: Container(
-                        padding: const EdgeInsets.all(24),
-                        width: 380,
-                        height: 161,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                BlocConsumer<FarmBloc, FarmState>(
+                  listener: (context, state) {
+                    if (state is FarmEmpty) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('There is no farms to show'),
+                          ),
+                        );
+                      });
+                    } else if (state is FarmsLoaded) {
+                      farms = state.farms;
+                    } else if (state is FarmFailure) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.errMessage),
+                          ),
+                        );
+                      });
+                    }
+                  },
+                  builder: (context, state) {
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Field 1',
-                                      style: TextStyle(
-                                        color: Colors.green[900],
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'manrope',
-                                      )),
-                                  Spacer(),
-                                  Container(
-                                    width: 73,
-                                    height: 30,
-                                    margin: const EdgeInsets.only(left: 25),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(25),
-                                        border: Border.all(
-                                            color: borderColor, width: 1)),
-                                    child: Center(
-                                      child: Text(
-                                        "active",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400,
-                                            fontFamily: 'manrope'),
-                                      ),
-                                    ),
-                                  )
-                                ]),
-                            SizedBox(height: 18),
-                            Text('Corn',
-                                style: TextStyle(
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(17, 10, 17, 0),
+                              width: 289,
+                              height: 53,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5),
+                                  border:
+                                      Border.all(color: borderColor, width: 2)),
+                              child: DropdownButton<String>(
+                                dropdownColor: Colors.white,
+                                style: const TextStyle(
                                   color: Colors.black,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w500,
-                                )),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: LinearProgressIndicator(
-                                value: 0.65,
-                                backgroundColor: Colors.grey[300],
-                                color: Colors.green[900],
-                                minHeight: 6,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                value: selectedFarmId,
+                                isExpanded: true,
+                                icon: Image.asset(
+                                  'assets/images/arrow.png',
+                                ),
+                                onChanged: (farms == null || farms!.isEmpty)
+                                    ? null
+                                    : (newValue) {
+                                        final selectedFarm = farms!
+                                            .where((farm) =>
+                                                farm.farmId == newValue)
+                                            .toList();
+                                        if (selectedFarm.isNotEmpty) {
+                                          setState(() {
+                                            selectedFarmId = newValue;
+                                            roleName = selectedFarm.first.roleName;
+                                            _fieldBloc!.add(OpenFieldEvent(
+                                                farmId: selectedFarmId!));
+                                          });
+                                        }
+                                      },
+                                items: farms
+                                    ?.map<DropdownMenuItem<String>>((farm) {
+                                  return DropdownMenuItem<String>(
+                                    value: farm.farmId,
+                                    child: Text(farm.name!),
+                                  );
+                                }).toList(),
                               ),
                             ),
-                            SizedBox(height: 4),
-                            Text(
-                              "Progress: 65%",
-                              style: TextStyle(
-                                  fontSize: 14, color: Colors.black87),
+                            SizedBox(
+                              width: 24,
                             ),
-                          ],
-                        ))),
-                SizedBox(height: 24),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
-                    child: Container(
-                        padding: const EdgeInsets.all(24),
-                        width: 380,
-                        height: 161,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Field 2',
-                                      style: TextStyle(
-                                        color: Colors.green[900],
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w900,
-                                        fontFamily: 'manrope',
-                                      )),
-                                  Spacer(),
-                                  Container(
-                                    width: 73,
-                                    height: 30,
-                                    margin: const EdgeInsets.only(left: 25),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(25),
-                                        border: Border.all(
-                                            color: borderColor, width: 1)),
-                                    child: Center(
-                                      child: Text(
-                                        "active",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400,
-                                            fontFamily: 'manrope'),
-                                      ),
-                                    ),
-                                  )
-                                ]),
-                            SizedBox(height: 18),
-                            Text('Tomato',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w500,
-                                )),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: LinearProgressIndicator(
-                                value: 0.4,
-                                backgroundColor: Colors.grey[300],
-                                color: Colors.green[900],
-                                minHeight: 6,
+                            Container(
+                              width: 77,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(25),
+                                  border:
+                                      Border.all(color: borderColor, width: 2)),
+                              child: Center(
+                                child: Text(
+                                  roleName ?? '',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400),
+                                ),
                               ),
                             ),
-                            SizedBox(height: 4),
-                            Text(
-                              "Progress: 40%",
-                              style: TextStyle(
-                                  fontSize: 14, color: Colors.black87),
-                            ),
                           ],
-                        ))),
-                SizedBox(height: 24),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
-                    child: Container(
-                        padding: const EdgeInsets.all(24),
-                        width: 380,
-                        height: 161,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Field 3',
-                                      style: TextStyle(
-                                        color: Colors.green[900],
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'manrope',
-                                      )),
-                                  Spacer(),
-                                  Container(
-                                    width: 73,
-                                    height: 30,
-                                    margin: const EdgeInsets.only(left: 25),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(25),
-                                        border: Border.all(
-                                            color: borderColor, width: 1)),
+                        ),
+                        selectedFarmId != null
+                            ? BlocBuilder<FieldBloc, FieldState>(
+                                builder: (context, state) {
+                                  if (state is FieldLoadingFailure) {
+                                    return Container(
+                                      margin: EdgeInsets.all(10),
+                                      child: Center(
+                                        child: Text(
+                                          'Sonething went wrong',
+                                          style: const TextStyle(
+                                          fontFamily: 'Manrope',
+                                          color: primaryColor,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          // decoration: TextDecoration.lineThrough
+                                        )
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  if (state is FieldLoaded) {
+                                    return _buildFeilds(context , state.fields);
+                                  }else if ( state is FieldEmpty){
+                                    return Container(
+                                      margin: EdgeInsets.all(10),
+                                      child: Center(
+                                        child: Text(
+                                          'No Fields Found',
+                                          style: const TextStyle(
+                                          fontFamily: 'Manrope',
+                                          color: primaryColor,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          // decoration: TextDecoration.lineThrough
+                                        )
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return Container(
+                                    margin: EdgeInsets.all(20),
                                     child: Center(
-                                      child: Text(
-                                        "active",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400,
-                                            fontFamily: 'manrope'),
+                                      child: CircularProgressIndicator(
+                                        color: primaryColor,
                                       ),
                                     ),
-                                  )
-                                ]),
-                            SizedBox(height: 18),
-                            Text('Botato',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w500,
-                                )),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: LinearProgressIndicator(
-                                value: 0.86,
-                                backgroundColor: Colors.grey[300],
-                                color: Colors.green[900],
-                                minHeight: 6,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              "Progress: 86%",
-                              style: TextStyle(
-                                  fontSize: 14, color: Colors.black87),
-                            ),
-                          ],
-                        ))),
+                                  );
+                                },
+                              )
+                            : SizedBox(
+                                height: 0,
+                              )
+                      ],
+                    );
+                  },
+                ),
                 SizedBox(height: 20),
                 //Weather
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Color.fromARGB(50, 0, 0, 0),
+                              blurRadius: 10,
+                              spreadRadius: 0.7,
+                              offset: Offset(0, 2.25))
+                        ]),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -334,16 +223,16 @@ class _DashBoardState extends State<DashBoard> {
 
                 //Alerts
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Color.fromARGB(50, 0, 0, 0),
+                              blurRadius: 10,
+                              spreadRadius: 0.7,
+                              offset: Offset(0, 2.25))
+                        ]),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -360,16 +249,16 @@ class _DashBoardState extends State<DashBoard> {
                 ),
                 SizedBox(height: 20),
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Color.fromARGB(50, 0, 0, 0),
+                              blurRadius: 10,
+                              spreadRadius: 0.7,
+                              offset: Offset(0, 2.25))
+                        ]),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -408,17 +297,17 @@ class _DashBoardState extends State<DashBoard> {
                           ],
                         ))),
                 SizedBox(height: 24),
-               Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Color.fromARGB(50, 0, 0, 0),
+                              blurRadius: 10,
+                              spreadRadius: 0.7,
+                              offset: Offset(0, 2.25))
+                        ]),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -458,16 +347,16 @@ class _DashBoardState extends State<DashBoard> {
                         ))),
                 SizedBox(height: 24),
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Color.fromARGB(50, 0, 0, 0),
+                              blurRadius: 10,
+                              spreadRadius: 0.7,
+                              offset: Offset(0, 2.25))
+                        ]),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -484,9 +373,11 @@ class _DashBoardState extends State<DashBoard> {
                                     fontFamily: 'manrope',
                                   )),
                               Spacer(),
-                              Image.asset('assets/images/growth.png',
-                              height: 24,
-                              width: 24,)
+                              Image.asset(
+                                'assets/images/growth.png',
+                                height: 24,
+                                width: 24,
+                              )
                             ]),
                             SizedBox(height: 30),
                             Text('On Track',
@@ -509,16 +400,16 @@ class _DashBoardState extends State<DashBoard> {
                         ))),
                 SizedBox(height: 24),
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Color.fromARGB(50, 0, 0, 0),
+                              blurRadius: 10,
+                              spreadRadius: 0.7,
+                              offset: Offset(0, 2.25))
+                        ]),
                     child: Container(
                         padding: const EdgeInsets.all(24),
                         width: 380,
@@ -535,9 +426,11 @@ class _DashBoardState extends State<DashBoard> {
                                     fontFamily: 'manrope',
                                   )),
                               Spacer(),
-                              Image.asset('assets/images/forcast.png',
-                              height: 24,
-                              width: 24,)
+                              Image.asset(
+                                'assets/images/forcast.png',
+                                height: 24,
+                                width: 24,
+                              )
                             ]),
                             SizedBox(height: 30),
                             Text('4.2 tons/acre',
@@ -561,16 +454,16 @@ class _DashBoardState extends State<DashBoard> {
                 SizedBox(height: 50),
                 //Recent Activity
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Color.fromARGB(50, 0, 0, 0),
+                              blurRadius: 10,
+                              spreadRadius: 0.7,
+                              offset: Offset(0, 2.25))
+                        ]),
                     child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 22),
@@ -580,16 +473,16 @@ class _DashBoardState extends State<DashBoard> {
                 const SizedBox(height: 50),
                 //To-Do List
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 10,
-                      spreadRadius: 0.7,
-                      offset: Offset(0, 2.25)
-                    )]
-                   ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Color.fromARGB(50, 0, 0, 0),
+                              blurRadius: 10,
+                              spreadRadius: 0.7,
+                              offset: Offset(0, 2.25))
+                        ]),
                     child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 22),
@@ -601,5 +494,114 @@ class _DashBoardState extends State<DashBoard> {
             )
           ]),
         ));
+  }
+
+  Widget _buildFeilds(BuildContext content, List<FieldModel>? fields) {
+    return ListView.builder(
+        padding: const EdgeInsets.all(0),
+        itemCount: fields?.length,
+        scrollDirection: Axis.vertical,
+        itemBuilder: (context, index) {
+          final field = fields?[index];
+          //container of each task
+          return Container(
+            margin:
+                const EdgeInsets.only(bottom: 20, left: 15, right: 15, top: 20),
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 22),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Color.fromARGB(50, 0, 0, 0),
+                          blurRadius: 10,
+                          spreadRadius: 0.7,
+                          offset: Offset(0, 2.25))
+                    ]),
+
+                //listTile used for constant layout of each item
+                child: ListTile(
+                  //task content
+                  title: Row(
+                    children: [
+                      //Task Descrption
+                      SizedBox(
+                        width: 185,
+                        child: Text(
+                          field!.name,
+                          style: const TextStyle(
+                            fontFamily: 'Manrope',
+                            color: primaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            // decoration: TextDecoration.lineThrough
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+
+                      //Due Date
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(30)),
+                        ),
+                        child:
+                            Text(field.isActive == true ? "Active" : "Inactive",
+                                style: const TextStyle(
+                                  fontFamily: 'Manrope',
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                )),
+                      )
+                    ],
+                  ),
+
+                  subtitle: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              field.crop == 1
+                                  ? "Corn"
+                                  : field.crop == 2
+                                      ? "Wheat"
+                                      : field.crop == 3
+                                          ? "Rice"
+                                          : "Tomato",
+                              style: const TextStyle(
+                                fontFamily: 'Manrope',
+                                color: Colors.black,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              )),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: LinearProgressIndicator(
+                              value: (50 / 100),
+                              backgroundColor: Colors.grey[300],
+                              color: Colors.green[900],
+                              minHeight: 6,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            "Progress: 50%",
+                            style:
+                                TextStyle(fontSize: 14, color: Colors.black87),
+                          ),
+                        ]),
+                  ),
+                )),
+          );
+        });
   }
 }

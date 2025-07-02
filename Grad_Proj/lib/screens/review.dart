@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
@@ -35,7 +34,7 @@ class _ReviewState extends State<Review> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(widget.editFarm? "Edit Done" : "Farm Created"),
+                content: Text(widget.editFarm ? "Edit Done" : "Farm Created"),
               ),
             );
           });
@@ -48,11 +47,11 @@ class _ReviewState extends State<Review> {
               ),
             );
           });
-        }else if (state is LoadingMember){
+        } else if (state is LoadingMember) {
           invites = state.invites;
-        }else if (state is NoMember){
+        } else if (state is NoMember) {
           invites = [];
-        }else if (state is LoadingMemberFailure){
+        } else if (state is LoadingMemberFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -165,7 +164,7 @@ class _ReviewState extends State<Review> {
               const SizedBox(
                 height: 24,
               ),
-              _buildRolesList(),
+              invites == null || invites!.isEmpty ? SizedBox(height: 0,) : _buildRolesList(),
               const Spacer(),
               Align(
                 alignment: Alignment.bottomRight,
@@ -257,24 +256,25 @@ class _ReviewState extends State<Review> {
                               )),
 
                           Align(
-                                  heightFactor: 1,
-                                  alignment: Alignment.centerRight,
-                                  child: SizedBox(
-                                    width: 20,
-                                    height: 30,
-                                    child: IconButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          context.read<FarmBloc>().add(OpenFarmEvent());
-                                        },
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: Colors.black,
-                                          size: 18,
-                                        )),
-                                  ),
-                                )
-                              
+                            heightFactor: 1,
+                            alignment: Alignment.centerRight,
+                            child: SizedBox(
+                              width: 20,
+                              height: 30,
+                              child: IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    context
+                                        .read<FarmBloc>()
+                                        .add(OpenFarmEvent());
+                                  },
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 18,
+                                  )),
+                            ),
+                          )
                         ],
                       ),
                     ),

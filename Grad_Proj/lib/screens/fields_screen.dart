@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/new_field.dart';
 
@@ -14,220 +16,263 @@ class FieldsScreen extends StatefulWidget {
   State<FieldsScreen> createState() => _FieldsScreenState();
 }
 
+FarmModel? farm;
 List<FieldModel>? fields;
 
 class _FieldsScreenState extends State<FieldsScreen> {
   @override
-  Widget build(BuildContext context) {
-    String name = CacheHelper.getData(key: 'farmname');
-    int size = CacheHelper.getData(key: 'area');
-    String location = CacheHelper.getData(key: 'location');
-    int soilnum = CacheHelper.getData(key: 'soiltype');
-    String role = CacheHelper.getData(key: 'roleName');
-    String soil = soilnum == 1
-        ? "Sandy"
-        : soilnum == 2
-            ? "Clay"
-            : "Loamy";
+  void initState() {
+    context
+        .read<FarmBloc>()
+        .add(ViewFarmDetails(farmId: CacheHelper.getData(key: 'farmId')));
+    super.initState();
+  }
 
-    return BlocConsumer<FieldBloc, FieldState>(
-      listener: (context, state) {
-        if (state is FieldLoaded) {
-          fields = state.fields;
-        }
-      },
-      builder: (context, state) {
+  String? soilName;
+  Map soil = {'Sandy': 0, 'Clay': 1, 'Loamy': 2};
+  String? getSoilName(int soiltype) {
+    return soil.entries
+        .firstWhere(
+          (entry) => entry.value == soiltype,
+          orElse: () => const MapEntry('Unknown', null),
+        )
+        .key;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<FarmBloc, FarmState>(builder: (context, state) {
+      if (state is FarmFailure) {
+        return const Scaffold(
+          body: Center(
+            child: Text('Sorry something went wrong',
+                style: TextStyle(
+                  fontFamily: 'Manrope',
+                  color: Colors.black,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w400,
+                )),
+          ),
+        );
+      }
+      if (state is FarmSuccess) {
+        soilName = getSoilName(state.farm.soilType!);
+        farm = state.farm;
+
         return Scaffold(
             backgroundColor: Colors.white,
-            body: state is FieldInitial
-                ? const Center(
-                    child: CircularProgressIndicator(
-                    color: primaryColor,
-                  ))
-                : Center(
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 150),
-                      width: 400,
-                      height: MediaQuery.of(context).size.height,
-                      child: Column(children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  name,
-                                  style: const TextStyle(
-                                    fontFamily: 'Manrope',
-                                    color: primaryColor,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const Spacer(),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(color: Colors.black),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(30)),
-                                  ),
-                                  child: Text(role,
-                                      style: const TextStyle(
-                                        fontFamily: 'Manrope',
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        // decoration: TextDecoration.lineThrough
-                                      )),
-                                )
-                              ]),
-                        ),
-                        Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.location_on_outlined,
-                                  color: borderColor,
-                                ),
-                                Text(location,
-                                    style: const TextStyle(
-                                      fontFamily: 'Manrope',
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      // decoration: TextDecoration.lineThrough
-                                    )),
-                                const SizedBox(
-                                  width: 25,
-                                ),
-                                Image.asset('assets/images/soil.png'),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Text(soil,
-                                    style: const TextStyle(
-                                      fontFamily: 'Manrope',
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      // decoration: TextDecoration.lineThrough
-                                    )),
-                                const Spacer(),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon:
-                                        Image.asset('assets/images/users.png')),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon:
-                                        Image.asset('assets/images/edit.png')),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Image.asset(
-                                        'assets/images/analytics.png')),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Image.asset(
-                                      'assets/images/delete.png',
-                                      color: Colors.red,
-                                    ))
-                              ],
-                            )),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Image.asset('assets/images/ruler.png'),
-                            const SizedBox(
-                              width: 8,
+            body: Center(
+              child: Container(
+                margin: const EdgeInsets.only(top: 150, left: 24, right: 24),
+                width: 400,
+                height: MediaQuery.of(context).size.height,
+                child: Column(children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            farm!.name!,
+                            style: const TextStyle(
+                              fontFamily: 'Manrope',
+                              color: primaryColor,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
                             ),
-                            Text('$size! acres',
+                          ),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: borderColor, width: 2),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(30)),
+                            ),
+                            child: Text(farm!.roleName!,
                                 style: const TextStyle(
                                   fontFamily: 'Manrope',
                                   color: Colors.black,
                                   fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  // decoration: TextDecoration.lineThrough
+                                  fontWeight: FontWeight.w600,
                                 )),
-                          ],
+                          )
+                        ]),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.location_on_outlined,
+                            color: borderColor,
+                          ),
+                          Text(farm!.location!,
+                              style: const TextStyle(
+                                fontFamily: 'Manrope',
+                                color: grayColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                // decoration: TextDecoration.lineThrough
+                              )),
+                          const SizedBox(
+                            width: 25,
+                          ),
+                          Image.asset(
+                            'assets/images/soil.png',
+                            width: 24,
+                            height: 24,
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Text(soilName!,
+                              style: const TextStyle(
+                                fontFamily: 'Manrope',
+                                color: grayColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                // decoration: TextDecoration.lineThrough
+                              )),
+                          const Spacer(),
+                          IconButton(
+                              onPressed: () {},
+                              icon: Image.asset(
+                                'assets/images/edit.png',
+                                width: 24,
+                                height: 24,
+                              )),
+                          IconButton(
+                              onPressed: () {},
+                              icon: Image.asset(
+                                'assets/images/delete.png',
+                                width: 24,
+                                height: 24,
+                                color: Colors.red,
+                              ))
+                        ],
+                      )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        'assets/images/ruler.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      const Text(' acres',
+                          style: TextStyle(
+                            fontFamily: 'Manrope',
+                            color: grayColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            // decoration: TextDecoration.lineThrough
+                          )),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Fields',
+                        style: TextStyle(
+                          fontFamily: 'Manrope',
+                          color: Colors.black,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          // decoration: TextDecoration.lineThrough
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Fields',
+                      ),
+                      const Spacer(),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 24),
+                        height: 38,
+                        width: 119,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: primaryColor,
+                        ),
+                        child: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                //add new field here
+                                Navigator.push(
+                                    context,
+                                    // ignore: prefer_const_constructors
+                                    MaterialPageRoute(
+                                        builder: (context) => NewFeild(
+                                              farmId: farm!.farmId!,
+                                              soilType: farm!.soilType!,
+                                            )));
+                              });
+                            },
+                            child: const Row(
+                              children: [
+                                Icon(Icons.add, color: Colors.white, size: 20),
+                                SizedBox(width: 3),
+                                Text(
+                                  'Add Field',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(width: 3),
+                              ],
+                            )),
+                      )
+                    ],
+                  ),
+                  BlocBuilder<FieldBloc, FieldState>(
+                    builder: (context, state) {
+                      if (state is FieldLoadingFailure) {
+                        return const Center(
+                          child: Text('Sorry something went wrong',
                               style: TextStyle(
                                 fontFamily: 'Manrope',
-                                color: primaryColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                // decoration: TextDecoration.lineThrough
-                              ),
-                            ),
-                            const Spacer(),
-                            Container(
-                              margin: const EdgeInsets.symmetric(vertical: 24),
-                              height: 38,
-                              width: 119,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: primaryColor,
-                              ),
-                              child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      //add new field here
-                                      Navigator.push(
-                                          context,
-                                          // ignore: prefer_const_constructors
-                                          MaterialPageRoute(
-                                              builder: (context) => NewFeild(
-                                                    farmId: CacheHelper.getData(
-                                                        key: 'farmId'),
-                                                  )));
-                                    });
-                                  },
-                                  child: const Row(
-                                    children: [
-                                      Icon(Icons.add,
-                                          color: Colors.white, size: 20),
-                                      SizedBox(width: 3),
-                                      Text(
-                                        'Add Field',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      SizedBox(width: 3),
-                                    ],
-                                  )),
-                            )
-                          ],
+                                color: Colors.black,
+                                fontSize: 30,
+                                fontWeight: FontWeight.w400,
+                              )),
+                        );
+                      }
+                      if (state is FieldLoaded) {
+                        return SizedBox(
+                            width: 400,
+                            height: 450,
+                            child: _buildFeilds(context));
+                      } else if (state is FieldEmpty) {
+                        return SizedBox(
+                            width: 400,
+                            height: 450,
+                            child: _buildEmptyState(context));
+                      }
+                      return const Center(
+                        child:  CircularProgressIndicator(
+                          color: primaryColor,
                         ),
-                        SizedBox(
-                          width: 400,
-                          height: 450,
-                          child: state is FieldLoaded
-                              ? _buildFeilds(context)
-                              : state is FieldEmpty
-                                  ? _buildEmptyState(context)
-                                  : const Center(
-                                      child: CircularProgressIndicator(
-                                        color: primaryColor,
-                                      ),
-                                    ),
-                        )
-                      ]),
-                    ),
-                  ));
-      },
-    );
+                      );
+                    },
+                  )
+                ]),
+              ),
+            ));
+      }
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: primaryColor,
+          ),
+        ),
+      );
+    });
   }
 }
 

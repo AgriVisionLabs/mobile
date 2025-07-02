@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:grd_proj/core/errors/error_model.dart';
+import 'package:grd_proj/service/errors/error_model.dart';
 
 ///Api Expection
 class ServerException implements Exception {

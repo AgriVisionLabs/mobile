@@ -1,29 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
-import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/models/crop_model.dart';
+import 'package:grd_proj/models/field_model.dart';
 
 import '../Components/color.dart';
 
 class BasicInfoField extends StatefulWidget {
-  final Function(int) onInputChanged;
+  final Function(int, String) onInputChanged;
   final int currentIndex;
   final String farmId;
+  final FieldModel? field;
+  final bool edit;
+  final int soilType;
   const BasicInfoField(
-      {super.key, required this.onInputChanged, required this.currentIndex ,required this.farmId});
+      {super.key,
+      required this.onInputChanged,
+      required this.currentIndex,
+      required this.farmId,
+      this.edit = false,
+      this.field,
+      required this.soilType});
 
   @override
   State<BasicInfoField> createState() => _BasicInfoFieldState();
 }
 
 class _BasicInfoFieldState extends State<BasicInfoField> {
-  GlobalKey<FormState> formstate = GlobalKey();
-  String fieldName = '';
-  String fieldSize = '';
-  String cropType = '';
   int index = 0;
-  List field = [];
   String description = '';
+  FieldBloc? _fieldBloc;
+  int? selectedCropType;
+  List<CropModel>? crops;
+  @override
+  void initState() {
+    _fieldBloc = context.read<FieldBloc>();
+    _fieldBloc!.add(ViewCropTypes());
+    super.initState();
+    if (widget.edit && widget.field != null) {
+      final field = widget.field!;
+      _fieldBloc!.name.text = field.name;
+      _fieldBloc!.area.text = field.area.toString();
+      _fieldBloc!.cropType.text = field.crop.toString();
+      selectedCropType = field.crop;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +53,29 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
         if (state is FieldInfoSuccess) {
           index = widget.currentIndex;
           index++;
-          widget.onInputChanged(index);
-          context.read<FieldBloc>().add(ViewFieldDetails(
-            farmId: CacheHelper.getData(key: 'farmId'),
-            fieldId: CacheHelper.getData(key: 'fieldId')
-          ));
+          widget.onInputChanged(index, state.field.id);
+          _fieldBloc!.createFieldFormKey.currentState!.validate();
         } else if (state is FieldInfoFailure) {
+          if (state.errMessage == 'Conflict' || state.errMessage == "Bad Request" ) {
+            description = state.errors[0]['description'];
+          }
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
+          _fieldBloc!.createFieldFormKey.currentState!.validate();
+        }
+        if (state is FieldEditSuccess) {
+          index = widget.currentIndex;
+          index++;
+          widget.onInputChanged(index, widget.field!.farmId);
+          _fieldBloc!.add(OpenFieldIrrigationUnitsEvent(
+              farmId: widget.field!.farmId, fieldId: widget.field!.id));
+        } else if (state is FieldEditFailure) {
           if (state.errMessage == 'Conflict') {
             description = state.errors[0]['description'];
           }
@@ -49,8 +87,21 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
               ),
             );
           });
+          _fieldBloc!.createFieldFormKey.currentState!.validate();
+        } else if (state is ViewCropTypesSuccess) {
+          crops = state.crops
+              .where((crop) => crop.soilType == widget.soilType)
+              .toList();
+        } else if (state is ViewCropTypesFailure) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
         }
-        context.read<FieldBloc>().createFieldFormKey.currentState!.validate();
       },
       builder: (context, state) {
         return Container(
@@ -58,7 +109,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
           width: 380,
           height: 680,
           child: Form(
-              key: context.read<FieldBloc>().createFieldFormKey,
+              key: _fieldBloc!.createFieldFormKey,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -73,7 +124,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                     const SizedBox(height: 5),
                     TextFormField(
                       keyboardType: TextInputType.name,
-                      controller: context.read<FieldBloc>().name,
+                      controller: _fieldBloc!.name,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
@@ -107,7 +158,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                           return "Please Enter Farm Name";
                         } else if (value.length < 3 || value.length > 32) {
                           return "Name must be between 3 and 100 characters.";
-                        } else if (description.isNotEmpty) {
+                        } else if (description.isNotEmpty && description != "Field area is invalid or exceeds farm area.") {
                           return description;
                         }
                         return null;
@@ -126,7 +177,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                     const SizedBox(height: 5),
                     TextFormField(
                       keyboardType: TextInputType.number,
-                      controller: context.read<FieldBloc>().area,
+                      controller: _fieldBloc!.area,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
@@ -158,6 +209,8 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Field Size";
+                        }else if (description.isNotEmpty && description != "Farm already have a field with this name") {
+                          return description;
                         }
                         return null;
                       },
@@ -173,44 +226,55 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                           fontWeight: FontWeight.w400,
                         )),
                     const SizedBox(height: 5),
-                    TextFormField(
-                      keyboardType: TextInputType.number,
-                      controller: context.read<FieldBloc>().cropType,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 17),
-                        hintText: "Enter Crop Type",
-                        hintStyle: const TextStyle(color: borderColor),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              const BorderSide(color: borderColor, width: 3.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              const BorderSide(color: primaryColor, width: 3.0),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              const BorderSide(color: errorColor, width: 3.0),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              const BorderSide(color: errorColor, width: 3.0),
+                    Container(
+                      height: 50,
+                      padding: const EdgeInsets.symmetric(horizontal: 16 , vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(color: borderColor, width: 2),
+                        color: Colors.white,
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButtonFormField<int>(
+                          value: selectedCropType,
+                          isExpanded: true,
+                          icon: Image.asset(
+                            'assets/images/arrow.png',
+                            height: 20,
+                            width: 20,
+                          ),
+                          dropdownColor: Colors.white,
+                          menuMaxHeight: 200,    
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontFamily: "Manrope",
+                          ),
+                          decoration:
+                              const InputDecoration.collapsed(hintText: ''),
+                          hint: const Text(
+                            'Choose a crop',
+                            style: TextStyle(color: borderColor),
+                          ),
+                          onChanged: (crops == null || crops!.isEmpty)
+                              ? null
+                              : (newValue) {
+                                  setState(() {
+                                    selectedCropType = newValue;
+                                    _fieldBloc!.cropType.text =
+                                        selectedCropType.toString();
+                                  });
+                                },
+                          items: crops?.map<DropdownMenuItem<int>>((crop) {
+                            return DropdownMenuItem<int>(
+                              value: crop.cropType,
+                              child: Text(crop.name),
+                            );
+                          }).toList(),
                         ),
                       ),
-                      autocorrect: false,
-                      textCapitalization: TextCapitalization.none,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter Crop Type";
-                        }
-                        return null;
-                      },
                     ),
+
                     const Spacer(),
                     Align(
                       alignment: Alignment.bottomRight,
@@ -224,10 +288,10 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                           ),
                           child: TextButton(
                               onPressed: () {
-                                context.read<FieldBloc>().add(CreateFieldEvent(
-                                  farmId: widget.farmId
-                                ));
-                              },
+                                widget.edit==true ? _fieldBloc!.add(
+                                    EditFieldEvent(farmId: widget.farmId , fieldId: widget.field!.id)):
+                               _fieldBloc!.add(
+                                    CreateFieldEvent(farmId: widget.farmId));                              },
                               child: const SizedBox(
                                 width: 70,
                                 child: Row(

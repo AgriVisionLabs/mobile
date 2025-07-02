@@ -1,4 +1,4 @@
-import 'package:grd_proj/core/api/end_points.dart';
+import 'package:grd_proj/service/api/end_points.dart';
 
 class ErrorModel {
   final int status;

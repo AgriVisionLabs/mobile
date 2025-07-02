@@ -34,15 +34,31 @@ class _NewFarmState extends State<NewFarm> {
   }
   bool edit = false;
   FarmModel ? farm;
+  FarmBloc ? _farmBloc;
 
-  void didChangeDependencies() {
-    context.read<FarmBloc>().name.clear();
-    context.read<FarmBloc>().area.clear();
-    context.read<FarmBloc>().location.clear();
-    context.read<FarmBloc>().soilType.clear();
-    context.read<FarmBloc>().recipient.clear();
-    context.read<FarmBloc>().roleName.clear();
+ 
+
+  @override
+  void initState() {
+    _farmBloc = context.read<FarmBloc>();
+    super.initState();
+  }
+
+   @override
+     void didChangeDependencies() {
+    _farmBloc!.name.clear();
+    _farmBloc!.area.clear();
+    _farmBloc!.location.clear();
+    _farmBloc!.soilType.clear();
+    _farmBloc!.recipient.clear();
+    _farmBloc!.roleName.clear();
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _farmBloc!.add(OpenFarmEvent());
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -98,7 +114,6 @@ class _NewFarmState extends State<NewFarm> {
                               onInputChanged: _onInputChanged2,
                               currentIndex: currentIndex,
                               editFarm: false,
-                              farm: farm,
                             )
                         else if (currentIndex == 1)
                           Team(
@@ -134,7 +149,6 @@ class _NewFarmState extends State<NewFarm> {
                 edit = true;
                 context.read<FarmBloc>().add(ViewFarmDetails(farmId: farmId));
               }else{
-                context.read<FarmBloc>().add(OpenFarmEvent());
                 Navigator.pop(context);
               }
               if (currentIndex > 0) currentIndex--;
@@ -158,7 +172,6 @@ class _NewFarmState extends State<NewFarm> {
         Spacer(),
         IconButton(
           onPressed: () {
-            context.read<FarmBloc>().add(OpenFarmEvent());
             Navigator.pop(context);
           },
           icon: const Icon(Icons.close_rounded,

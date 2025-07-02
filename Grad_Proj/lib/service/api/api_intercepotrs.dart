@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dio/dio.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
-import 'package:grd_proj/core/api/end_points.dart';
+import 'package:grd_proj/service/api/end_points.dart';
 import 'package:grd_proj/models/sign_in_model.dart';
 
 class ApiIntercepotrs extends Interceptor {

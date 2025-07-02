@@ -24,6 +24,7 @@ class _FarmsScreen extends State<FarmsScreen> {
     context.read<FarmBloc>().add(OpenFarmEvent());
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     List<FarmModel>? farms;
@@ -103,7 +104,7 @@ class _FarmsScreen extends State<FarmsScreen> {
 
   Widget _buildFieldList(List<FarmModel> farms) {
     return ListView.builder(
-      itemCount: farms.length,
+      itemCount: farms.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
           return Padding(
@@ -142,132 +143,131 @@ class _FarmsScreen extends State<FarmsScreen> {
               ],
             ),
           );
-        }
+        } else {
+          final farm = farms[index - 1];
+          soil = farm.soilType == 1
+              ? "Sandy"
+              : farm.soilType == 2
+                  ? "Clay"
+                  : "Loamy";
+          return GestureDetector(
+            onTap: () {
+              context.read<FieldBloc>().add(OpenFieldEvent(
+                  farmId: farm.farmId!,
+                  ));
 
-        final farm = farms[index - 1];
-        soil = farm.soilType == 1
-            ? "Sandy"
-            : farm.soilType == 2
-                ? "Clay"
-                : "Loamy";
-        return GestureDetector(
-          onTap: () {
-            context.read<FieldBloc>().add(OpenFieldEvent(
-                farmId: farm.farmId!,
-                farmname: farm.name,
-                size: farm.area,
-                location: farm.location,
-                soiltype: farm.soilType,
-                roleName: farm.roleName));
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => HomeScreen(
-                          initialIndex: 5,
-                        )));
-          },
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(
-                  25,
-                ),
-                border: Border.all(
-                    color: const Color.fromARGB(11, 13, 18, 28), width: 2),
-                boxShadow: const [
-                  BoxShadow(
-                      color: Color.fromARGB(50, 0, 0, 0),
-                      blurRadius: 15,
-                      spreadRadius: 3,
-                      offset: Offset(-2, 2))
-                ]),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  farm.name!,
-                  style: const TextStyle(
-                    color: Color(0xff1E6930),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "manrope",
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomeScreen(
+                            initialIndex: 4,
+                          )));
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(
+                    25,
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Icon(Icons.location_on_outlined, color: Color(0xff616161)),
-                    SizedBox(width: 8),
-                    Text(farm.location!, style: TextStyle(fontSize: 18)),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Text("Fields : ${farm.fieldsNo}",
-                        style: TextStyle(fontSize: 18)),
-                    Spacer(),
-                    Text("Area : ${farm.area}", style: TextStyle(fontSize: 18)),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Text("Avg. Growth : 75%", style: TextStyle(fontSize: 18)),
-                    Spacer(),
-                    Text("Soil Type : $soil", style: TextStyle(fontSize: 18)),
-                  ],
-                ),
-                SizedBox(height: 22),
-                Row(
-                  children: [
-                    Container(
-                      width: 77,
-                      height: 30,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                          border: Border.all(color: borderColor, width: 1)),
-                      child: Center(
-                        child: Text(
-                          farm.roleName!,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500),
+                  border: Border.all(
+                      color: const Color.fromARGB(11, 13, 18, 28), width: 2),
+                  boxShadow: const [
+                    BoxShadow(
+                        color: Color.fromARGB(50, 0, 0, 0),
+                        blurRadius: 15,
+                        spreadRadius: 3,
+                        offset: Offset(-2, 2))
+                  ]),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    farm.name!,
+                    style: const TextStyle(
+                      color: Color(0xff1E6930),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "manrope",
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Icon(Icons.location_on_outlined,
+                          color: Color(0xff616161)),
+                      SizedBox(width: 8),
+                      Text(farm.location!, style: TextStyle(fontSize: 18)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Text("Fields : ${farm.fieldsNo}",
+                          style: TextStyle(fontSize: 18)),
+                      Spacer(),
+                      Text("Area : ${farm.area}",
+                          style: TextStyle(fontSize: 18)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Text("Avg. Growth : 75%", style: TextStyle(fontSize: 18)),
+                      Spacer(),
+                      Text("Soil Type : $soil", style: TextStyle(fontSize: 18)),
+                    ],
+                  ),
+                  SizedBox(height: 22),
+                  Row(
+                    children: [
+                      Container(
+                        width: 77,
+                        height: 30,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(color: borderColor, width: 1)),
+                        child: Center(
+                          child: Text(
+                            farm.roleName!,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500),
+                          ),
                         ),
                       ),
-                    ),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditFarm(farmId: farm.farmId!)));
-                      },
-                      child: Image.asset('assets/images/edit.png',
-                          width: 30, height: 30),
-                    ),
-                    SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () {
-                        context
-                            .read<FarmBloc>()
-                            .add(DeleteFarmEvent(farmId: farm.farmId!));
-                      },
-                      child: Image.asset('assets/images/delete.png',
-                          width: 30, height: 30),
-                    ),
-                  ],
-                )
-              ],
+                      Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      EditFarm(farmId: farm.farmId!)));
+                        },
+                        child: Image.asset('assets/images/edit.png',
+                            width: 30, height: 30),
+                      ),
+                      SizedBox(width: 20),
+                      GestureDetector(
+                        onTap: () {
+                          context
+                              .read<FarmBloc>()
+                              .add(DeleteFarmEvent(farmId: farm.farmId!));
+                        },
+                        child: Image.asset('assets/images/delete.png',
+                            width: 30, height: 30),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
-          ),
-        );
+          );
+        }
       },
     );
   }

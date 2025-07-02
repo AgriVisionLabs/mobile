@@ -18,6 +18,7 @@ class EndPoints {
   static const String task = '/farms';
   static const String account = 'Accounts';
   static const String changePassword = 'Accounts/change-password';
+  static const String cropType = '/Crops';
 
 }
 
@@ -49,7 +50,7 @@ class ApiKey{
   static String roleName = 'roleName';
   static String ownerId = 'ownerId';
   static String isOwner = 'isOwner';
-  static String crop = 'crop';
+  static String crop = 'cropType';
   static String recipient = 'recipient';
   static String serialNumber = 'serialNumber';
   static String sensorId = 'sensorId';

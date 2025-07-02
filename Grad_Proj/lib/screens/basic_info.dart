@@ -26,7 +26,7 @@ class BasicInfo extends StatefulWidget {
 class _BasicInfoState extends State<BasicInfo> {
   int? selectedValue;
   int index = 0;
-  Map soil = {'Sandy': 1, 'Clay': 2, 'Loamy': 3};
+  Map soil = {'Sandy': 0, 'Clay': 1, 'Loamy': 2};
   String? getSoilName(int soiltype) {
     return soil.entries
         .firstWhere(
@@ -44,9 +44,10 @@ class _BasicInfoState extends State<BasicInfo> {
     super.initState();
     if (widget.editFarm && widget.farm != null) {
       final farm = widget.farm!;
-      context.read<FarmBloc>().name.text = farm.name ?? '';
-      context.read<FarmBloc>().area.text = farm.area?.toString() ?? '';
-      context.read<FarmBloc>().location.text = farm.location ?? '';
+      context.read<FarmBloc>().name.text = farm.name!;
+      context.read<FarmBloc>().area.text = farm.area!.toString();
+      context.read<FarmBloc>().location.text = farm.location!;
+      context.read<FarmBloc>().soilType.text = farm.soilType!.toString();
       selectedValue = farm.soilType;
       soilName = getSoilName(farm.soilType!);
     }
@@ -79,9 +80,6 @@ class _BasicInfoState extends State<BasicInfo> {
         }
         if (state is FarmInfoSuccess) {
           context.read<FarmBloc>().createFarmFormKey.currentState!.validate();
-          context
-              .read<FarmBloc>()
-              .add(ViewFarmMembers(farmId: state.farm.farmId!));
           index = widget.currentIndex;
           index++;
           widget.onInputChanged(index, state.farm.farmId!);

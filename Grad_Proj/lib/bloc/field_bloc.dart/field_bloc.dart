@@ -3,9 +3,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
-import 'package:grd_proj/core/api/api_consumer.dart';
-import 'package:grd_proj/core/api/end_points.dart';
-import 'package:grd_proj/core/errors/exception.dart';
+import 'package:grd_proj/models/crop_model.dart';
+import 'package:grd_proj/service/api/api_consumer.dart';
+import 'package:grd_proj/service/api/end_points.dart';
+import 'package:grd_proj/service/errors/exception.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/models/irrigation_model.dart';
 import 'package:grd_proj/models/sensor_model.dart';
@@ -33,22 +34,15 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
   TextEditingController sensorNewFieldId = TextEditingController();
   TextEditingController nextStep1 = TextEditingController();
   TextEditingController nextStep2 = TextEditingController();
-  
+
   FieldModel? fieldmodel;
-  
+
   //default value
   FieldBloc(this.api) : super(FieldInitial(const [])) {
     //get all farms FarmScreen
     on<OpenFieldEvent>((event, emit) async {
       try {
         emit(FieldInitial(const []));
-        if (event.farmname != null) {
-          CacheHelper.saveData(key: 'farmname', value: event.farmname);
-          CacheHelper.saveData(key: 'area', value: event.size);
-          CacheHelper.saveData(key: 'soiltype', value: event.soiltype);
-          CacheHelper.saveData(key: 'location', value: event.location);
-          CacheHelper.saveData(key: 'roleName', value: event.roleName);
-        }
         CacheHelper.saveData(key: 'farmId', value: event.farmId);
         emit(FieldLoading());
         final response =
@@ -78,7 +72,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         });
         fieldmodel = FieldModel.fromJson(response);
         CacheHelper.saveData(key: 'fieldId', value: fieldmodel!.id);
-        emit(FieldInfoSuccess());
+        emit(FieldInfoSuccess(field: fieldmodel!));
       } on ServerException catch (e) {
         emit(FieldInfoFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -88,7 +82,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
     on<DeleteFieldEvent>((event, emit) async {
       try {
         final response = await api.delete(
-            '${EndPoints.farmControl}/${event.farmId}/Fields/${event.fieldId}}');
+            '${EndPoints.feild}/${event.farmId}/Fields/${event.fieldId}}');
         emit(DeleteFieldSuccess());
       } on ServerException catch (e) {
         emit(DeleteFieldFailure(
@@ -96,6 +90,38 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       }
     });
 
+    on<EditFieldEvent>((event, emit) async {
+      try {
+        final response = await api.put(
+            "${EndPoints.feild}/${event.farmId}/Fields/${event.fieldId}",
+            data: {
+              ApiKey.name: name.text,
+              ApiKey.area: int.tryParse(area.text),
+              ApiKey.crop: int.tryParse(cropType.text)
+            });
+        //create a var to store the response
+        emit(FieldEditSuccess());
+      } on ServerException catch (e) {
+        emit(FieldEditFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<ViewCropTypes>((event, emit) async {
+      try {
+        final response = await api.get(EndPoints.cropType);
+        final crops =  response
+              .map<CropModel>((json) => CropModel.fromJson(json))
+              .toList();
+        emit(ViewCropTypesSuccess(crops: crops));
+      } on ServerException catch (e) {
+        emit(ViewCropTypesFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+//=========================================================================
+//========================= IrrigationDeviceState =========================
+//=========================================================================
 
     on<ViewFieldDetails>((event, emit) async {
       try {
@@ -125,7 +151,6 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       }
     });
 
-
     on<OpenFarmIrrigationUnitsEvent>((event, emit) async {
       try {
         final response = await api
@@ -151,9 +176,9 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         final response = await api.get(
             "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits");
         final irrigationUnit = IrrigationDevice.fromJson(response);
-          emit(ViewFieldIrrigationUnitSuccess(
-            device: irrigationUnit,
-          ));
+        emit(ViewFieldIrrigationUnitSuccess(
+          device: irrigationUnit,
+        ));
       } on ServerException catch (e) {
         emit(ViewIrrigationUnitFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -178,7 +203,8 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
 
     on<DeleteIrrigationUnitEvent>((event, emit) async {
       try {
-        final response = await api.delete('${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits');
+        final response = await api.delete(
+            '${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits');
         emit(DeleteIrrigationUnitSuccess());
       } on ServerException catch (e) {
         emit(DeleteIrrigationUnitFailure(
@@ -188,14 +214,19 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
 
     on<IrrigationUnitToggleEvent>((event, emit) async {
       try {
-        final response = await api.post('${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits/toggle');
+        final response = await api.post(
+            '${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits/toggle');
         emit(IrrigationUnitToggleSuccess());
       } on ServerException catch (e) {
         emit(IrrigationUnitToggleFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });
-//====================================================================================
+
+//=====================================================================
+//========================= SensorDeviceState =========================
+//=====================================================================
+
     on<AddSensorUnitEvent>((event, emit) async {
       // bloc takes stream of event and give stream of states
       try {
@@ -205,7 +236,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
               ApiKey.serialNumber: sensorSerialNum.text,
               ApiKey.name: sensorUnitName.text,
             });
-            final sensorUnits = SensorDevice.fromJson(response);
+        final sensorUnits = SensorDevice.fromJson(response);
         emit(AddSensorUnitSuccess(device: sensorUnits));
       } on ServerException catch (e) {
         emit(AddSensorUnitFailure(
@@ -215,8 +246,8 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
 
     on<OpenFarmSensorUnitsEvent>((event, emit) async {
       try {
-        final response = await api
-            .get("${EndPoints.sensor}/${event.farmId}/SensorUnits");
+        final response =
+            await api.get("${EndPoints.sensor}/${event.farmId}/SensorUnits");
         if (response is List && response.isNotEmpty) {
           final sensorUnits = response
               .map<SensorDevice>((json) => SensorDevice.fromJson(json))
@@ -238,9 +269,9 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
         final response = await api.get(
             "${EndPoints.sensor}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}");
         final sensorUnit = SensorDevice.fromJson(response);
-          emit(ViewFieldSensorUnitSuccess(
-            device: sensorUnit,
-          ));
+        emit(ViewFieldSensorUnitSuccess(
+          device: sensorUnit,
+        ));
       } on ServerException catch (e) {
         emit(ViewFieldSensorUnitFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -265,15 +296,16 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
 
     on<DeleteSensorUnitEvent>((event, emit) async {
       try {
-        final response = await api.delete('${EndPoints.sensor}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}');
+        final response = await api.delete(
+            '${EndPoints.sensor}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}');
         emit(DeleteSensorUnitSuccess());
       } on ServerException catch (e) {
         emit(DeleteSensorUnitFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });
+
     ///=================================================================
     ///
-    
   }
 }

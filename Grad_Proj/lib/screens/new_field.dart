@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/basic_info_field.dart';
 import 'package:grd_proj/screens/irrigation.dart';
 import 'package:grd_proj/screens/review_field.dart';
@@ -8,7 +11,8 @@ import '../Components/color.dart';
 
 class NewFeild extends StatefulWidget {
   final String farmId;
-  const NewFeild({super.key, required this.farmId});
+  final int soilType;
+  const NewFeild({super.key, required this.farmId, required this.soilType});
 
   @override
   State<NewFeild> createState() => _NewFeildState();
@@ -16,77 +20,135 @@ class NewFeild extends StatefulWidget {
 
 class _NewFeildState extends State<NewFeild> {
   int currentIndex = 0;
-  List field = [];
-  void _onInputChanged( int index) {
+  String fieldId = ' ';
+  FieldBloc? _fieldBloc;
+  void _onInputChanged(int index) {
     setState(() {
       currentIndex = index;
-      // ignore: avoid_print
-      print(field);
+    });
+  }
+
+  void _onInputChanged2(int index, String farmIdbasic) {
+    setState(() {
+      fieldId = farmIdbasic;
+      currentIndex = index;
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Fixed Top Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  pageTop(),
-                  const SizedBox(height: 40),
-                  buildDots(),
-                ],
-              ),
-            ),
+  void initState() {
+    _fieldBloc = context.read<FieldBloc>();
+    super.initState();
+  }
 
-            // Scrollable Form Section
-            Expanded(
-              child: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    if (currentIndex == 0)
-                      BasicInfoField(
-                          onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex,
-                          farmId: widget.farmId,)
-                    else if (currentIndex == 1)
-                      Irrigation(
-                          onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex,
-                          farmId: widget.farmId,
-                          fieldId: CacheHelper.getData(key: 'fieldId'),
-                          form: true,
-                          )
-                    else if (currentIndex == 2)
-                      Sensor(
-                          onInputChanged: _onInputChanged,
-                          currentIndex: currentIndex,
-                          farmId: widget.farmId,
-                          fieldId: CacheHelper.getData(key: 'fieldId',),
-                          form: true,)
-                    else
-                      ReviewField(
-                        name: CacheHelper.getData(key: 'farmname'),
-                        size: CacheHelper.getData(key: 'area'),
-                        crop: CacheHelper.getData(key: 'crop'),
-                      ),
-                    const SizedBox(height: 20),
-                  ],
+  @override
+  void didChangeDependencies() {
+    _fieldBloc!.name.clear();
+    _fieldBloc!.area.clear();
+    _fieldBloc!.cropType.clear();
+    _fieldBloc!.irrigationUnitName.clear();
+    _fieldBloc!.irrigationSerialNum.clear();
+    _fieldBloc!.sensorUnitName.clear();
+    _fieldBloc!.sensorSerialNum.clear();
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _fieldBloc!.add(OpenFieldEvent(farmId: widget.farmId));
+    super.dispose();
+  }
+
+  bool edit = false;
+  FieldModel? field;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<FieldBloc, FieldState>(
+      listener: (context, state) {
+        if (state is FieldSuccess) {
+          field = state.field;
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Column(
+              children: [
+                // Fixed Top Section
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      pageTop(),
+                      const SizedBox(height: 40),
+                      buildDots(),
+                    ],
+                  ),
                 ),
-              ),
+
+                // Scrollable Form Section
+                Expanded(
+                  child: SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        if (currentIndex == 0)
+                          if (edit)
+                            BasicInfoField(
+                              onInputChanged: _onInputChanged2,
+                              currentIndex: currentIndex,
+                              farmId: widget.farmId,
+                              field: field,
+                              edit: edit,
+                              soilType: widget.soilType,
+                            )
+                          else
+                            BasicInfoField(
+                              onInputChanged: _onInputChanged2,
+                              currentIndex: currentIndex,
+                              farmId: widget.farmId,
+                              edit: edit,
+                              soilType: widget.soilType,
+                            )
+                        else if (currentIndex == 1)
+                          Irrigation(
+                            onInputChanged: _onInputChanged,
+                            currentIndex: currentIndex,
+                            farmId: widget.farmId,
+                            fieldId: CacheHelper.getData(key: 'fieldId'),
+                            form: true,
+                          )
+                        else if (currentIndex == 2)
+                          Sensor(
+                            onInputChanged: _onInputChanged,
+                            currentIndex: currentIndex,
+                            farmId: widget.farmId,
+                            fieldId: CacheHelper.getData(
+                              key: 'fieldId',
+                            ),
+                            form: true,
+                          )
+                        else if (currentIndex == 3)
+                          ReviewField(
+                            name: CacheHelper.getData(key: 'farmname'),
+                            size: CacheHelper.getData(key: 'area'),
+                            crop: CacheHelper.getData(key: 'crop'),
+                          ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -102,13 +164,20 @@ class _NewFeildState extends State<NewFeild> {
             IconButton(
                 onPressed: () {
                   setState(() {
-                    if (currentIndex > 0) {
-                      currentIndex--;
-                      // ignore: avoid_print
-                      print('stop');
-                    }else if(currentIndex == 0){
+                    if (currentIndex == 2) {
+                      // _fieldBloc!.add(OpenFieldSensorUnitsEvent(
+                      //     fieldId: fieldId, farmId: widget.farmId , sensorId: ));
+                    } else if (currentIndex == 2) {
+                      _fieldBloc!.add(OpenFieldIrrigationUnitsEvent(
+                          fieldId: fieldId, farmId: widget.farmId));
+                    } else if (currentIndex == 1) {
+                      edit = true;
+                      _fieldBloc!.add(ViewFieldDetails(
+                          farmId: widget.farmId, fieldId: fieldId));
+                    } else {
                       Navigator.pop(context);
                     }
+                    if (currentIndex > 0) currentIndex--;
                   });
                 },
                 icon: const Icon(

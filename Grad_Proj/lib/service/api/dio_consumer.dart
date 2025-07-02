@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:grd_proj/core/api/api_consumer.dart';
-import 'package:grd_proj/core/api/api_intercepotrs.dart';
-import 'package:grd_proj/core/errors/exception.dart';
+import 'package:grd_proj/service/api/api_consumer.dart';
+import 'package:grd_proj/service/api/api_intercepotrs.dart';
+import 'package:grd_proj/service/errors/exception.dart';
 
 
 import 'end_points.dart';

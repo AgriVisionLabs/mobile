@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
@@ -108,8 +107,16 @@ class _ReviewFieldState extends State<ReviewField> {
             const SizedBox(
               height: 24,
             ),
-            context.read<FieldBloc>().irrigationSerialNum.text.isNotEmpty?_buildDevicesList(false):SizedBox(height: 0,),
-            context.read<FieldBloc>().sensorSerialNum.text.isNotEmpty?_buildDevicesList(true):SizedBox(height: 0,),
+            context.read<FieldBloc>().irrigationSerialNum.text.isNotEmpty
+                ? _buildDevicesList(false)
+                : SizedBox(
+                    height: 0,
+                  ),
+            context.read<FieldBloc>().sensorSerialNum.text.isNotEmpty
+                ? _buildDevicesList(true)
+                : SizedBox(
+                    height: 0,
+                  ),
             const Spacer(),
             Align(
               alignment: Alignment.bottomRight,
@@ -126,12 +133,8 @@ class _ReviewFieldState extends State<ReviewField> {
                       onPressed: () {
                         Navigator.pop(context);
                         context.read<FieldBloc>().add(OpenFieldEvent(
-                            farmname: CacheHelper.getData(key: 'farmname'),
-                            farmId: CacheHelper.getData(key: 'farmId'),
-                            roleName: CacheHelper.getData(key: 'roleName'),
-                            size: CacheHelper.getData(key: 'area'),
-                            location: CacheHelper.getData(key: 'location'),
-                            soiltype: CacheHelper.getData(key: 'soiltype')));
+                              farmId: CacheHelper.getData(key: 'farmId'),
+                            ));
                       },
                       child: Text(
                         'Create Feild',
@@ -174,7 +177,9 @@ class _ReviewFieldState extends State<ReviewField> {
                   children: [
                     //Task Descrption
                     Text(
-                      !isSensor? context.read<FieldBloc>().irrigationUnitName.text :context.read<FieldBloc>().sensorUnitName.text,
+                      !isSensor
+                          ? context.read<FieldBloc>().irrigationUnitName.text
+                          : context.read<FieldBloc>().sensorUnitName.text,
                       style: const TextStyle(
                         fontFamily: 'Manrope',
                         color: Colors.black,
@@ -187,7 +192,10 @@ class _ReviewFieldState extends State<ReviewField> {
                       height: 7,
                     ),
 
-                    Text(!isSensor? context.read<FieldBloc>().irrigationSerialNum.text :context.read<FieldBloc>().sensorSerialNum.text,
+                    Text(
+                        !isSensor
+                            ? context.read<FieldBloc>().irrigationSerialNum.text
+                            : context.read<FieldBloc>().sensorSerialNum.text,
                         style: const TextStyle(
                           fontFamily: 'Manrope',
                           color: borderColor,
