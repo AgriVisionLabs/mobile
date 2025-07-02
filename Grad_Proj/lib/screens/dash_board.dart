@@ -38,7 +38,7 @@ class _DashBoardState extends State<DashBoard> {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Colors.white,
-        body: Container(
+        body: SizedBox(
           height: MediaQuery.sizeOf(context).height,
           child: ListView(
               scrollDirection: Axis.vertical,
@@ -78,7 +78,7 @@ class _DashBoardState extends State<DashBoard> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
+                                SizedBox(
                                   width: 280,
                                   height: 60,
                                   child: DropdownButtonHideUnderline(
@@ -247,9 +247,10 @@ class _DashBoardState extends State<DashBoard> {
                                       }
                                       if (state is FieldLoaded) {
                                         return Container(
-                                          height: 500,
+                                          height: state.fields.length>3 ? 570 : null,
+                                          padding: EdgeInsets.all(8),
                                           margin: EdgeInsets.only(
-                                              bottom: 30, top: 30),
+                                              bottom: 20, top: 30 , left: 5 ,right: 5),
                                           child: _buildFeilds(
                                               context, state.fields),
                                         );
@@ -562,110 +563,113 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   Widget _buildFeilds(BuildContext content, List<FieldModel>? fields) {
-    return ListView.builder(
-        padding: const EdgeInsets.all(0),
-        itemCount: fields?.length,
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, index) {
-          final field = fields?[index];
-          //container of each task
-          return Container(
-            margin:
-                const EdgeInsets.only(bottom: 10, left: 15, right: 15, top: 10),
-            child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 22),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color.fromARGB(50, 0, 0, 0),
-                          blurRadius: 10,
-                          spreadRadius: 0.7,
-                          offset: Offset(0, 2.25))
-                    ]),
-
-                //listTile used for constant layout of each item
-                child: ListTile(
-                  //task content
-                  title: Row(
-                    children: [
-                      //Task Descrption
-                      SizedBox(
-                        width: 185,
-                        child: Text(
-                          field!.name,
-                          style: const TextStyle(
-                            fontFamily: 'Manrope',
-                            color: primaryColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            // decoration: TextDecoration.lineThrough
+    return Expanded(
+      child: ListView.builder(
+          padding: const EdgeInsets.all(0),
+          shrinkWrap: true,
+          itemCount: fields?.length,
+          scrollDirection: Axis.vertical,
+          itemBuilder: (context, index) {
+            final field = fields?[index];
+            //container of each task
+            return Container(
+              margin:
+                  const EdgeInsets.only(bottom: 10, left: 15, right: 15, top: 10),
+              child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 22),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Color.fromARGB(50, 0, 0, 0),
+                            blurRadius: 10,
+                            spreadRadius: 0.7,
+                            offset: Offset(0, 2.25))
+                      ]),
+      
+                  //listTile used for constant layout of each item
+                  child: ListTile(
+                    //task content
+                    title: Row(
+                      children: [
+                        //Task Descrption
+                        SizedBox(
+                          width: 185,
+                          child: Text(
+                            field!.name,
+                            style: const TextStyle(
+                              fontFamily: 'Manrope',
+                              color: primaryColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              // decoration: TextDecoration.lineThrough
+                            ),
                           ),
                         ),
-                      ),
-                      const Spacer(),
-
-                      //Due Date
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(30)),
-                        ),
-                        child:
-                            Text(field.isActive == true ? "Active" : "Inactive",
+                        const Spacer(),
+      
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.black),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(30)),
+                          ),
+                          child:
+                              Text(field.isActive == true ? "Active" : "Inactive",
+                                  style: const TextStyle(
+                                    fontFamily: 'Manrope',
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  )),
+                        )
+                      ],
+                    ),
+      
+                    subtitle: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            field.cropName == null ? SizedBox(height: 1,):
+                            Text(field.cropName!,
                                 style: const TextStyle(
                                   fontFamily: 'Manrope',
                                   color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
                                 )),
-                      )
-                    ],
-                  ),
-
-                  subtitle: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(field.cropName!,
-                              style: const TextStyle(
-                                fontFamily: 'Manrope',
-                                color: Colors.black,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          field.progress == null
-                              ? SizedBox(
-                                  height: 1,
-                                )
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    LinearProgressIndicator(
-                                      value: (field.progress! / 100),
-                                      backgroundColor: Colors.grey[300],
-                                      color: Colors.green[900],
-                                      minHeight: 6,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Progress: ${field.progress}%",
-                                      style: TextStyle(
-                                          fontSize: 14, color: Colors.black87),
-                                    ),
-                                  ],
-                                ),
-                        ]),
-                  ),
-                )),
-          );
-        });
+                            field.progress == null
+                                ? SizedBox(
+                                    height: 1,
+                                  )
+                                : Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      LinearProgressIndicator(
+                                        value: (field.progress! / 100),
+                                        backgroundColor: Colors.grey[300],
+                                        color: Colors.green[900],
+                                        minHeight: 6,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        "Progress: ${field.progress}%",
+                                        style: TextStyle(
+                                            fontSize: 14, color: Colors.black87),
+                                      ),
+                                    ],
+                                  ),
+                          ]),
+                    ),
+                  )),
+            );
+          }),
+    );
   }
 }

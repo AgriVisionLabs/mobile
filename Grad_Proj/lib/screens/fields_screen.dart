@@ -6,6 +6,7 @@ import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/edit_farm.dart';
+import 'package:grd_proj/screens/field_view.dart';
 import 'package:grd_proj/screens/new_field.dart';
 
 import '../components/color.dart';
@@ -189,6 +190,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Text(
+                        /// The above code snippet is written in Dart and it contains a string literal with the value 'Fields'.
                         'Fields',
                         style: TextStyle(
                           fontFamily: 'Manrope',
@@ -296,14 +298,21 @@ Widget _buildFeilds(BuildContext content, List<FieldModel> fields) {
         final field = fields[index];
         //container of each field
         return GestureDetector(
-          onTap: (){
-            
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FieldView(
+                          farmId: field.farmId,
+                          fieldId: field.id,
+                        )));
           },
           child: Container(
             margin:
                 const EdgeInsets.only(bottom: 20, left: 5, right: 5, top: 20),
             child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 22),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 22),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(25),
@@ -314,7 +323,7 @@ Widget _buildFeilds(BuildContext content, List<FieldModel> fields) {
                           spreadRadius: 3,
                           offset: Offset(0, 1.25))
                     ]),
-          
+
                 //listTile used for constant layout of each item
                 child: ListTile(
                   //task content
@@ -335,7 +344,7 @@ Widget _buildFeilds(BuildContext content, List<FieldModel> fields) {
                         ),
                       ),
                       const Spacer(),
-          
+
                       Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 5, horizontal: 10),
@@ -345,46 +354,50 @@ Widget _buildFeilds(BuildContext content, List<FieldModel> fields) {
                           borderRadius:
                               const BorderRadius.all(Radius.circular(30)),
                         ),
-                        child:
-                            Text(field.isActive  ? "Active" : "Inactive",
-                                style: const TextStyle(
-                                  fontFamily: 'Manrope',
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                )),
+                        child: Text(field.isActive ? "Active" : "Inactive",
+                            style: const TextStyle(
+                              fontFamily: 'Manrope',
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            )),
                       )
                     ],
                   ),
-          
-                  subtitle: field.cropName==null ? const SizedBox(height: 1,) : Container(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(field.cropName ?? "Not Spacified",
-                              style: const TextStyle(
-                                fontFamily: 'Manrope',
-                                color: Colors.black,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: LinearProgressIndicator(
-                              value: (field.progress! / 100),
-                              backgroundColor: Colors.grey[300],
-                              color: Colors.green[900],
-                              minHeight: 6,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                           Text(
-                            "Progress: ${field.progress!}%",
-                            style: const TextStyle(fontSize: 14, color: Colors.black87),
-                          ),
-                        ]),
-                  ),
+
+                  subtitle: field.cropName == null
+                      ? const SizedBox(
+                          height: 1,
+                        )
+                      : Container(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(field.cropName ?? "Not Spacified",
+                                    style: const TextStyle(
+                                      fontFamily: 'Manrope',
+                                      color: Colors.black,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: LinearProgressIndicator(
+                                    value: (field.progress! / 100),
+                                    backgroundColor: Colors.grey[300],
+                                    color: Colors.green[900],
+                                    minHeight: 6,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  "Progress: ${field.progress!}%",
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Colors.black87),
+                                ),
+                              ]),
+                        ),
                 )),
           ),
         );

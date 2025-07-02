@@ -114,8 +114,7 @@ class _MyAppState extends State<MyApp> {
       // SensorView()
       // SplashScreen()
       // LoginScreen(),
-      FieldView()
-      // HomeScreen()
+      HomeScreen()
       // HomeScreen(initialIndex: 7,)
     );
   }

@@ -1,3 +1,19 @@
+/// The `FieldView` class in Dart is a StatefulWidget that displays detailed information about a field,
+/// including area, crop name, growth progress, days until harvest, timeline, and description, fetched
+/// from a Bloc state.
+///
+/// Args:
+///   apiDateString (DateTime): The `apiDateString` parameter in the `calculateDaysDifference` function
+/// is a `DateTime` object representing a date obtained from an API response. This parameter is used to
+/// calculate the difference in days between the provided date and the current date.
+///
+/// Returns:
+///   The `FieldView` widget is being returned. This widget is a `StatefulWidget` that displays
+/// information about a field, including its name, area, crop name, growth progress, days until harvest,
+/// timeline information (planting date and expected harvest date), and a description. The widget makes
+/// use of various UI components like `Container`, `Row`, `Column`, `Text`, `IconButton`,
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
@@ -8,7 +24,9 @@ import 'package:grd_proj/screens/widget/text.dart';
 import 'package:intl/intl.dart';
 
 class FieldView extends StatefulWidget {
-  const FieldView({super.key});
+  final String farmId;
+  final String fieldId;
+  const FieldView({super.key, required this.farmId, required this.fieldId});
 
   @override
   State<FieldView> createState() => _FieldViewState();
@@ -31,9 +49,8 @@ class _FieldViewState extends State<FieldView> {
   @override
   void initState() {
     _fieldBloc = context.read<FieldBloc>();
-    _fieldBloc!.add(ViewFieldDetails(
-        farmId: '552fc0cc-4937-49d7-9807-2f80ff22290a',
-        fieldId: 'd38d0893-f7c9-40a6-a9d6-183d103d163d'));
+    _fieldBloc!
+        .add(ViewFieldDetails(farmId: widget.farmId, fieldId: widget.fieldId));
     super.initState();
   }
 
@@ -57,7 +74,7 @@ class _FieldViewState extends State<FieldView> {
           if (state is FieldSuccess) {
             return SafeArea(
                 child: Container(
-              margin: const EdgeInsets.fromLTRB(20, 100, 20, 30),
+              margin: const EdgeInsets.fromLTRB(20, 10, 20, 30),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,7 +200,7 @@ class _FieldViewState extends State<FieldView> {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               label: state.field.progress == null
-                                  ? "Not Exist"
+                                  ? "No Information"
                                   : "${state.field.progress.toString()}%"),
                           state.field.progress == null
                               ? const SizedBox(
@@ -257,7 +274,7 @@ class _FieldViewState extends State<FieldView> {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               label: state.field.plantingDate == null
-                                  ? "Not Exist"
+                                  ? "No Information"
                                   : DateFormat('MMM dd, yyyy')
                                       .format(state.field.plantingDate!)),
                           const SizedBox(
@@ -283,7 +300,7 @@ class _FieldViewState extends State<FieldView> {
                     ),
                     Container(
                       width: 380,
-                      height: 230,
+                      height: 180,
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
                           color: containerColor,
@@ -317,6 +334,51 @@ class _FieldViewState extends State<FieldView> {
                                   : state.field.description!),
                         ],
                       ),
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                            onTap: () {
+
+                            },
+                            child: Container(
+                              width: 99,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(0, 255, 255, 255),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: const Color(0xFF616161),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/delete.png',
+                                      height: 20,
+                                      width: 20,
+                                      color: const Color(0xFF616161),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    const Text(
+                                      "Edit",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontFamily: "Manrope",
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF616161),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ],
                     )
                   ],
                 ),

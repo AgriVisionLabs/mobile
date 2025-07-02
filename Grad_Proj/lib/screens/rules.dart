@@ -161,9 +161,9 @@ class _RulesState extends State<Rules> {
                             ? context.read<ControlBloc>().ruleName.text
                             : "Enter Rule Name",
                         hintStyle: widget.form
-                            ? TextStyle(
-                                color: const Color.fromARGB(255, 0, 0, 0))
-                            : TextStyle(color: borderColor),
+                            ? const TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 0))
+                            : const TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
                           borderSide:
