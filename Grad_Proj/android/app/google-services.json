@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "769027848160",
+    "project_id": "graduation-project-c880c",
+    "storage_bucket": "graduation-project-c880c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:769027848160:android:0fdd8953c8973434a4dd85",
+        "android_client_info": {
+          "package_name": "com.example.grd_proj"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfpm4iQ-NiC9-TD4UBPgGZFTvOn8rw5cI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
