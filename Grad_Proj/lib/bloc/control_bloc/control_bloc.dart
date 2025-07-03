@@ -34,6 +34,7 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
   GlobalKey<FormState> itemFormKey = GlobalKey();
   TextEditingController fieldId = TextEditingController();
   TextEditingController itemName = TextEditingController();
+  TextEditingController thresholdQuantity = TextEditingController();
   TextEditingController itemCategory = TextEditingController();
   TextEditingController quantity = TextEditingController();
   TextEditingController unitCost = TextEditingController();
@@ -232,13 +233,20 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
         final response = await api.post(
             "${EndPoints.task}/${event.farmId}/InventoryItems",
             data: {
-              ApiKey
+              ApiKey.farmId : fieldId.text.isEmpty ? null : fieldId.text,
+              ApiKey.name : itemName.text,
+              ApiKey.category : itemCategory.text,
+              ApiKey.quantity : quantity.text,
+              ApiKey.thresholdQuantity : thresholdQuantity.text,
+              ApiKey.unitCost : unitCost.text,
+              ApiKey.measurementUnit : measurementUnit.text,
+              ApiKey.expirationDate : expirationDate.text.isEmpty ? null : expirationDate.text
             });
-        final task = TaskModel.fromJson(response);
+        final item = InvItemModel.fromJson(response);
 
-        emit(AddTaskSuccess(task: task));
+        emit(AddItemSuccess(item: item));
       } on ServerException catch (e) {
-        emit(AddTaskFailure(
+        emit(AddItemFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });

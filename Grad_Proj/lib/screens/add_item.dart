@@ -1,9 +1,11 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/components/date_input_formatter.dart';
 import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/widget/text.dart';
@@ -19,10 +21,19 @@ class AddItem extends StatefulWidget {
 class _AddItemState extends State<AddItem> {
   String? selectedFarmId;
   String? selectedFieldId;
+  int? selectedCategory;
+  int? selectedUnit;
   FieldBloc? _fieldBloc;
   ControlBloc? _controlBloc;
   List<FieldModel>? fields;
   String? description;
+  Map category = {
+    "Fertilizer": 0,
+    "Chemicals": 1,
+    "Treatments": 2,
+    "Produce": 3
+  };
+  Map measurementUnit = {"Kg": 0, "L": 1, "g": 2, "mL": 3, "Ibs": 4, "oz": 5};
   @override
   void initState() {
     _fieldBloc = context.read<FieldBloc>();
@@ -74,7 +85,7 @@ class _AddItemState extends State<AddItem> {
                             label: "Add New Inventory Item",
                             fontWeight: FontWeight.w600,
                             color: primaryColor),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
                           onPressed: () {
                             Navigator.pop(context);
@@ -84,14 +95,14 @@ class _AddItemState extends State<AddItem> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 24,
                     ),
                     text(
                         fontSize: 20,
                         label: "Farm",
                         fontWeight: FontWeight.w600),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     SizedBox(
@@ -153,14 +164,14 @@ class _AddItemState extends State<AddItem> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 24,
                     ),
                     text(
                         fontSize: 20,
                         label: "Field",
                         fontWeight: FontWeight.w600),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     BlocConsumer<FieldBloc, FieldState>(
@@ -200,11 +211,11 @@ class _AddItemState extends State<AddItem> {
                                 fontWeight: FontWeight.w600,
                                 color: borderColor),
                             value: selectedFieldId,
-                            items: widget.farms.map((farm) {
+                            items: fields!.map((field) {
                               return DropdownMenuItem<String>(
-                                value: farm.farmId,
+                                value: field.id,
                                 child: Text(
-                                  farm.name!,
+                                  field.name,
                                   style: const TextStyle(
                                     fontFamily: 'Manrope',
                                     fontSize: 20,
@@ -252,10 +263,13 @@ class _AddItemState extends State<AddItem> {
                         ),
                       );
                     }),
-                    SizedBox(
+                    const SizedBox(
                       height: 24,
                     ),
-                    text(fontSize: 20, label: "Name" , fontWeight: FontWeight.w600),
+                    text(
+                        fontSize: 20,
+                        label: "Name",
+                        fontWeight: FontWeight.w600),
                     const SizedBox(height: 5),
                     TextFormField(
                       keyboardType: TextInputType.name,
@@ -263,7 +277,7 @@ class _AddItemState extends State<AddItem> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
-                        hintText: "Enter Field Name",
+                        hintText: "Enter item Name",
                         hintStyle: const TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
@@ -291,92 +305,96 @@ class _AddItemState extends State<AddItem> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Farm Name";
-                        } else if (value.length < 3 || value.length > 32) {
-                          return "Name must be between 3 and 100 characters.";
-                        } else if (description!.isNotEmpty &&
-                            description !=
-                                "Field area is invalid or exceeds farm area.") {
+                        } else if (description!.isNotEmpty) {
                           return description;
                         }
                         return null;
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 24,
                     ),
+                    text(
+                        fontSize: 20,
+                        label: "Category",
+                        fontWeight: FontWeight.w600),
+                    const SizedBox(
+                      height: 5,
+                    ),
                     SizedBox(
-                        width: 380,
-                        height: 52,
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton2<String>(
-                            isExpanded: true,
-                            hint: text(
-                                fontSize: 18,
-                                label: "select field",
-                                fontWeight: FontWeight.w600,
-                                color: borderColor),
-                            value: selectedFieldId,
-                            items: widget.farms.map((farm) {
-                              return DropdownMenuItem<String>(
-                                value: farm.farmId,
-                                child: Text(
-                                  farm.name!,
-                                  style: const TextStyle(
-                                    fontFamily: 'Manrope',
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                      width: 380,
+                      height: 52,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<int>(
+                          isExpanded: true,
+                          hint: text(
+                              fontSize: 18,
+                              label: "select category",
+                              fontWeight: FontWeight.w600,
+                              color: borderColor),
+                          value: selectedCategory,
+                          items: category.entries.map((cat) {
+                            return DropdownMenuItem<int>(
+                              value: cat.value,
+                              child: Text(
+                                cat.key!,
+                                style: const TextStyle(
+                                  fontFamily: 'Manrope',
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                              );
-                            }).toList(),
-                            onChanged: (fields == null || fields!.isEmpty)
-                                ? null
-                                : (value) {
-                                    setState(() {
-                                      selectedFieldId = value;
-                                      _controlBloc!.fieldId.text =
-                                          selectedFieldId!;
-                                    });
-                                  },
-                            buttonStyleData: ButtonStyleData(
-                              height: 55,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                border:
-                                    Border.all(color: borderColor, width: 2),
-                                color: Colors.white,
                               ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCategory = value;
+                              _controlBloc!.itemCategory.text =
+                                  selectedCategory.toString();
+                            });
+                          },
+                          buttonStyleData: ButtonStyleData(
+                            height: 55,
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(color: borderColor, width: 2),
+                              color: Colors.white,
                             ),
-                            dropdownStyleData: DropdownStyleData(
-                              maxHeight: 250,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.white,
-                                border: Border.all(color: borderColor),
-                              ),
-                              elevation: 2,
-                              offset: const Offset(0, -5),
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: 250,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.white,
+                              border: Border.all(color: borderColor),
                             ),
-                            iconStyleData: const IconStyleData(
-                              icon: Icon(Icons.keyboard_arrow_down_rounded),
-                              iconSize: 40,
-                              iconEnabledColor: Colors.black,
-                            ),
+                            elevation: 2,
+                            offset: const Offset(0, -5),
+                          ),
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(Icons.keyboard_arrow_down_rounded),
+                            iconSize: 40,
+                            iconEnabledColor: Colors.black,
                           ),
                         ),
                       ),
-                      SizedBox(height: 24,),
-                    text(fontSize: 20, label: "Quentity" , fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    text(
+                        fontSize: 20,
+                        label: "Quentity",
+                        fontWeight: FontWeight.w600),
                     const SizedBox(height: 5),
                     TextFormField(
-                      keyboardType: TextInputType.name,
+                      keyboardType: TextInputType.number,
                       controller: _controlBloc!.quantity,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
-                        hintText: "Enter Field Name",
+                        hintText: "0.00",
                         hintStyle: const TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
@@ -404,15 +422,281 @@ class _AddItemState extends State<AddItem> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Farm Name";
-                        } else if (value.length < 3 || value.length > 32) {
-                          return "Name must be between 3 and 100 characters.";
-                        } else if (description!.isNotEmpty &&
-                            description !=
-                                "Field area is invalid or exceeds farm area.") {
+                        } else if (description!.isNotEmpty) {
                           return description;
                         }
                         return null;
                       },
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    text(
+                        fontSize: 20,
+                        label: "Measurement Unit",
+                        fontWeight: FontWeight.w600),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    SizedBox(
+                      width: 380,
+                      height: 52,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<int>(
+                          isExpanded: true,
+                          hint: text(
+                              fontSize: 18,
+                              label: "select unit",
+                              fontWeight: FontWeight.w600,
+                              color: borderColor),
+                          value: selectedUnit,
+                          items: measurementUnit.entries.map((cat) {
+                            return DropdownMenuItem<int>(
+                              value: cat.value,
+                              child: Text(
+                                cat.key!,
+                                style: const TextStyle(
+                                  fontFamily: 'Manrope',
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedUnit = value;
+                              _controlBloc!.measurementUnit.text =
+                                  selectedUnit.toString();
+                            });
+                          },
+                          buttonStyleData: ButtonStyleData(
+                            height: 55,
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(color: borderColor, width: 2),
+                              color: Colors.white,
+                            ),
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: 250,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.white,
+                              border: Border.all(color: borderColor),
+                            ),
+                            elevation: 2,
+                            offset: const Offset(0, -5),
+                          ),
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(Icons.keyboard_arrow_down_rounded),
+                            iconSize: 40,
+                            iconEnabledColor: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    text(
+                        fontSize: 20,
+                        label: "Treshold Quentity",
+                        fontWeight: FontWeight.w600),
+                    const SizedBox(height: 5),
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: _controlBloc!.thresholdQuantity,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 17),
+                        hintText: "0.00",
+                        hintStyle: const TextStyle(color: borderColor),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: borderColor, width: 3.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: primaryColor, width: 3.0),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: errorColor, width: 3.0),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: errorColor, width: 3.0),
+                        ),
+                      ),
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter Threshold Quentity";
+                        } else if (description!.isNotEmpty) {
+                          return description;
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    text(
+                        fontSize: 20,
+                        label: "Unit Cost",
+                        fontWeight: FontWeight.w600),
+                    const SizedBox(height: 5),
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: _controlBloc!.unitCost,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 17),
+                        hintText: "0.00",
+                        hintStyle: const TextStyle(color: borderColor),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: borderColor, width: 3.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: primaryColor, width: 3.0),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: errorColor, width: 3.0),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: errorColor, width: 3.0),
+                        ),
+                      ),
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter Unit Cost";
+                        } else if (description!.isNotEmpty) {
+                          return description;
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    text(
+                        fontSize: 20,
+                        label: "Expiration Date",
+                        fontWeight: FontWeight.w600),
+                    const SizedBox(height: 5),
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: _controlBloc!.expirationDate,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(8),
+                        DateInputFormatter()
+                      ],
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 17),
+                        hintText: "DD/MM/YYYY",
+                        hintStyle: const TextStyle(color: borderColor),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: borderColor, width: 3.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: primaryColor, width: 3.0),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: errorColor, width: 3.0),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              const BorderSide(color: errorColor, width: 3.0),
+                        ),
+                      ),
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                    ),
+                    const SizedBox(height: 24,),
+                    Row(
+                      children: [
+                        GestureDetector(
+                            onTap: () {
+                            },
+                            child: Container(
+                              width: 170,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(0, 255, 255, 255),
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(
+                                  color: const Color.fromARGB(255, 255, 0, 0),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Center(
+                                child: const Text(
+                                  "Cancle",
+                                  style: TextStyle(
+                                    fontSize: 19,
+                                    fontFamily: "Manrope",
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            )),
+                        SizedBox(width: 10,),
+                        GestureDetector(
+                          onTap: () {
+
+                          },
+                          child: Container(
+                            width: 99,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: const Color(0xFF616161),
+                                width: 1,
+                              ),
+                            ),
+                            child: Center(
+                              child: const Text(
+                                "Edit",
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  fontFamily: "Manrope",
+                                  fontWeight: FontWeight.w600,
+                                  color: whiteColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
