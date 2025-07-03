@@ -9,6 +9,6 @@ const bottomBarIconColor = Color(0xff9CA3AF);
 const bottomBarTextColor = Color(0xff374151);
 const bottomBarColor = Color(0xffF7F7F7);
 const borederColor2 = Color.fromARGB(70, 13, 18, 28);
-const containerColor = Color(0xffF5F5F5);
+const whiteColor = Color(0xffF5F5F5);
 const testColor = Color(0xff0D121C);
-
+const imgColor = Color(0xff9CA3AF);

@@ -82,7 +82,6 @@ class _OnboardingState extends State<Onboarding> {
                       child: Image.asset(
                           controller.items[index].image,
                           height: 485,
-                          width: 412 ,
                           fit: BoxFit.fill
                         ),
                     ),),
@@ -119,7 +118,7 @@ class _OnboardingState extends State<Onboarding> {
 
   //Dots
   Widget buildDots() {
-    return Container(
+    return SizedBox(
       child: SmoothPageIndicator(
       controller: pageController, // PageController
       count: 3,

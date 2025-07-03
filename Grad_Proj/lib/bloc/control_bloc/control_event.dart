@@ -120,3 +120,53 @@ class CompleteTaskEvent extends ControlEvent {
 }
 
 
+class AddItem extends ControlEvent {
+  final String farmId;
+  AddItem({
+    required this.farmId,
+  });
+  
+}
+
+class OpenFarmItemsEvent extends ControlEvent {
+  final String farmId;
+  OpenFarmItemsEvent({
+    required this.farmId,
+  });
+}
+
+class OpenItemEvent extends ControlEvent {
+  final String farmId;
+  final String itemId;
+  OpenItemEvent({
+    required this.farmId,
+    required this.itemId,
+  });
+}
+
+class DeteteItemEvent extends ControlEvent {
+ final String farmId;
+  final String itemId;
+  DeteteItemEvent({
+    required this.farmId,
+    required this.itemId,
+  });
+}
+
+class EditItemEvent extends ControlEvent {
+  final String farmId;
+  final String itemId;
+  EditItemEvent({
+    required this.farmId,
+    required this.itemId,
+  });
+}
+
+class AddLogEvent extends ControlEvent {
+  final String farmId;
+  final String itemId;
+  AddLogEvent({
+    required this.farmId,
+    required this.itemId,
+  });
+}

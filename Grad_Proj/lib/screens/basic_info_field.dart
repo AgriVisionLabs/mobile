@@ -13,7 +13,7 @@ class BasicInfoField extends StatefulWidget {
   final String farmId;
   final FieldModel? field;
   final bool edit;
-  final int soilType;
+  final int? soilType;
   const BasicInfoField(
       {super.key,
       required this.onInputChanged,
@@ -21,7 +21,7 @@ class BasicInfoField extends StatefulWidget {
       required this.farmId,
       this.edit = false,
       this.field,
-      required this.soilType});
+      this.soilType});
 
   @override
   State<BasicInfoField> createState() => _BasicInfoFieldState();
@@ -34,11 +34,11 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
   int? selectedCropType;
   List<CropModel>? crops;
   String? cropName;
+  int? soilType;
   @override
   void initState() {
     _fieldBloc = context.read<FieldBloc>();
     _fieldBloc!.add(ViewCropTypes());
-    super.initState();
     if (widget.edit && widget.field != null) {
       final field = widget.field!;
       _fieldBloc!.name.text = field.name;
@@ -47,6 +47,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
       selectedCropType = field.cropType;
       cropName = field.cropName;
     }
+    super.initState();
   }
 
   @override
@@ -54,8 +55,6 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
     return BlocConsumer<FieldBloc, FieldState>(
       listener: (context, state) {
         if (state is FieldInfoSuccess) {
-          print(
-              "======================================================${state.field.cropName}");
           index = widget.currentIndex;
           index++;
           widget.onInputChanged(index, state.field);
@@ -93,9 +92,13 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
           });
           _fieldBloc!.createFieldFormKey.currentState!.validate();
         } else if (state is ViewCropTypesSuccess) {
-          crops = state.crops
-              .where((crop) => crop.soilType == widget.soilType)
-              .toList();
+          if (widget.soilType != null) {
+            crops = state.crops
+                .where((crop) => crop.soilType == widget.soilType)
+                .toList();
+          } else {
+            crops = state.crops.toList();
+          }
         } else if (state is ViewCropTypesFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -105,6 +108,12 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
               ),
             );
           });
+        }
+        if (state is ViewCropTypesSuccess && crops != null && !widget.edit) {
+          final cropSoilType =
+              crops!.firstWhere((crop) => crop.name == cropName).soilType;
+          crops =
+              crops!.where((crop) => crop.soilType == cropSoilType).toList();
         }
       },
       builder: (context, state) {
@@ -238,7 +247,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                       child: DropdownButton2<int>(
                         isExpanded: true,
                         hint: Text(
-                          widget.edit ? cropName! : 'Enter Crop Type',
+                          'Enter Crop Type',
                           style: const TextStyle(fontSize: 16),
                         ),
                         value: selectedCropType,
@@ -271,12 +280,12 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                         onChanged: (crops == null || crops!.isEmpty)
                             ? null
                             : (value) {
-                          setState(() {
-                            selectedCropType = value;
-                            _fieldBloc!.cropType.text =
-                                selectedCropType.toString();
-                          });
-                        },
+                                setState(() {
+                                  selectedCropType = value;
+                                  _fieldBloc!.cropType.text =
+                                      selectedCropType.toString();
+                                });
+                              },
                         selectedItemBuilder: (crops == null || crops!.isEmpty)
                             ? null
                             : (BuildContext context) {
@@ -392,3 +401,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
     );
   }
 }
+
+
+
+

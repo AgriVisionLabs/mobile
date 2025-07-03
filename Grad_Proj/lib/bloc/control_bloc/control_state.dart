@@ -156,3 +156,71 @@ class CompleteTaskFailure extends ControlState {
   });
 
 }
+
+//========================================================================
+//============================== Item State ==============================
+//========================================================================
+
+class AddItemSuccess extends ControlState {
+  final InvItemModel item;
+  AddItemSuccess({
+    required this.item,
+  });
+
+}
+
+class AddItemFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+  AddItemFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
+
+class ViewItemsSuccess extends ControlState {
+  final List<InvItemModel> items;
+  ViewItemsSuccess({
+    required this.items,
+  });
+}
+class ViewItemsFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+  ViewItemsFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
+class ItemEmpty extends ControlState{}
+
+class ViewItemSuccess extends ControlState {
+  final InvItemModel item;
+  ViewItemSuccess({
+    required this.item,
+  });
+
+}
+
+class ViewItemFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+  ViewItemFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
+
+class DeleteItemSuccess extends ControlState {}
+class DeleteItemFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+  DeleteItemFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+}
+

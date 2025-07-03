@@ -1,4 +1,3 @@
-// import 'package:firebase_auth/firebase_auth.dart';
 // ignore_for_file: prefer_const_constructors, avoid_print
 
 import 'dart:async';
@@ -10,6 +9,7 @@ import 'package:grd_proj/bloc/user_state.dart';
 import 'package:grd_proj/screens/Login_Screen.dart';
 import 'package:grd_proj/screens/disease_detection.dart';
 import 'package:grd_proj/screens/fields_screen.dart';
+import 'package:grd_proj/screens/inve_manage.dart';
 import 'package:grd_proj/screens/irrigation_control.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
 import 'package:grd_proj/screens/settings.dart';
@@ -34,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int indexing = 0;
   late int initialIndex;
-
   // Define screens
   final List<Widget> _screens = [];
 
@@ -48,7 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
       DashBoard(), // Dashboard Screen
       FarmsScreen(), // Pass farms list to FarmsScreen
     ]);
-    super.initState();
   }
 
   // String? selectedValue;
@@ -61,7 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
     const IrrigationConrtol(),
     const SensorAndDevices(),
     const DiseaseDetection(),
-    const Settings()
+    const Settings(),
+    const InventoryManagementScreen()
   ];
 
   void _onItemTapped(int index) {
@@ -111,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -134,8 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(width: 20),
               GestureDetector(
                 onTap: () {
-                  print("call acc");
-                  context.read<UserCubit>().logout();
+                  // _login();
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => LoginScreen()),
                     (Route<dynamic> route) =>
@@ -151,20 +149,15 @@ class _HomeScreenState extends State<HomeScreen> {
             preferredSize: const Size.fromHeight(1.0),
             child: Container(
               height: 1.0,
-              color: borderColor,
+              color: const Color.fromARGB(255, 240, 26, 26),
             ),
           ),
         ),
         bottomNavigationBar: Container(
           padding: EdgeInsets.only(top: 10),
+          margin: EdgeInsets.only(top: 1),
           decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(
-                color: borederColor2,
-                width: 3
-              )
-            )
-          ),
+              border: Border(top: BorderSide(color: borederColor2, width: 3))),
           child: BottomNavigationBar(
             backgroundColor: bottomBarColor,
             type: BottomNavigationBarType.fixed,
@@ -203,9 +196,13 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedItemColor: primaryColor,
             unselectedItemColor: bottomBarTextColor,
             selectedLabelStyle: TextStyle(
-                fontSize: 12, fontFamily: "manrope", fontWeight: FontWeight.w600),
+                fontSize: 12,
+                fontFamily: "manrope",
+                fontWeight: FontWeight.w600),
             unselectedLabelStyle: TextStyle(
-                fontSize: 12, fontFamily: "manrope", fontWeight: FontWeight.w600),
+                fontSize: 12,
+                fontFamily: "manrope",
+                fontWeight: FontWeight.w600),
             showSelectedLabels: true,
             showUnselectedLabels: true,
           ),

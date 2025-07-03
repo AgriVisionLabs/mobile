@@ -1,17 +1,15 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
-import 'package:grd_proj/cache/cache_helper.dart';
 
 import '../Components/color.dart';
 
 class ReviewField extends StatefulWidget {
   final String farmId;
   final String fieldId;
-
-  const ReviewField({super.key, required this.fieldId, required this.farmId});
+  final bool? edit;
+  const ReviewField({super.key, required this.fieldId, required this.farmId, this.edit=false});
 
   @override
   State<ReviewField> createState() => _ReviewFieldState();
@@ -34,6 +32,7 @@ class _ReviewFieldState extends State<ReviewField> {
         .add(ViewFieldDetails(farmId: widget.farmId, fieldId: widget.fieldId));
     super.initState();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -161,11 +160,9 @@ class _ReviewFieldState extends State<ReviewField> {
                     child: TextButton(
                         onPressed: () {
                           Navigator.pop(context);
-                          context.read<FieldBloc>().add(OpenFieldEvent(
-                                farmId: CacheHelper.getData(key: 'farmId'),
-                              ));
                         },
                         child: Text(
+                          widget.edit! ? "Edit Field":
                           'Create Feild',
                           style: TextStyle(
                             color: Colors.white,

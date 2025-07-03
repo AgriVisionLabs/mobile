@@ -1,0 +1,2 @@
+D:/New folder (15)/mobile/Grad_Proj/android/app/.cxx/Debug/4a471k5j/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/New folder (15)/mobile/Grad_Proj/android/app/.cxx/Debug/4a471k5j/armeabi-v7a/CMakeFiles/rebuild_cache.dir

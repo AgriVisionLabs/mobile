@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/screens/home_screen.dart';
+import 'package:grd_proj/screens/widget/text.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -68,17 +69,10 @@ class _MoreScreen extends State<MoreScreen> {
                     child: Column(
                       children: [
                         SizedBox(height: 18),
-                        Image.asset('assets/images/Irrigation.png',
-                            width: 35, height: 35),
+                        Image.asset('assets/images/ph_drop.png',
+                            color: imgColor, width: 35, height: 35),
                         SizedBox(height: 12),
-                        Text(
-                          'Irrigation',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                          ),
-                        ),
+                        text(fontSize: 18, label: 'Irrigation')
                       ],
                     ),
                   ),
@@ -114,18 +108,10 @@ class _MoreScreen extends State<MoreScreen> {
                     child: Column(
                       children: [
                         SizedBox(height: 18),
-                        Image.asset('assets/images/disease_detection.png',
+                        Image.asset('assets/images/bug.png',
                             width: 35, height: 35),
                         SizedBox(height: 12),
-                        Text(
-                          'Disease Detection',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                            fontFamily: 'Manrope',
-                          ),
-                        ),
+                        text(fontSize: 18, label: 'Disease Detection')
                       ],
                     ),
                   ),
@@ -165,17 +151,94 @@ class _MoreScreen extends State<MoreScreen> {
                     child: Column(
                       children: [
                         SizedBox(height: 18),
-                        Image.asset('assets/images/Sensors_and_devices.png',
+                        Image.asset('assets/images/sensor.png',
                             width: 35, height: 35),
                         SizedBox(height: 12),
-                        Text(
-                          'Sensors and devices',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                          ),
+                        text(fontSize: 18, label: 'Sensors and devices')
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 32),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomeScreen(
+                                  initialIndex: 9,
+                                )));
+                  },
+                  child: Container(
+                    width: 180,
+                    height: 125,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(
+                          color: const Color.fromARGB(135, 159, 159, 159),
+                          width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0x3E9E9E9E),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3), // changes position of shadow
                         ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 18),
+                        Image.asset('assets/images/invet.png',
+                            width: 35, height: 35),
+                        SizedBox(height: 12),
+                        text(fontSize: 18, label: 'Inventory')
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 22,
+            ),
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomeScreen(
+                                  initialIndex: 8,
+                                )));
+                  },
+                  child: Container(
+                    width: 180,
+                    height: 125,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(
+                          color: const Color.fromARGB(135, 159, 159, 159),
+                          width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0x3E9E9E9E),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 18),
+                        Image.asset('assets/images/chat.png',
+                            width: 35, height: 35),
+                        SizedBox(height: 12),
+                        text(fontSize: 18, label: 'Chat')
                       ],
                     ),
                   ),
@@ -211,23 +274,16 @@ class _MoreScreen extends State<MoreScreen> {
                     child: Column(
                       children: [
                         SizedBox(height: 18),
-                        Image.asset('assets/images/Settings.png',
+                        Image.asset('assets/images/settings (2).png',
                             width: 35, height: 35),
                         SizedBox(height: 12),
-                        Text(
-                          'Settings',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                          ),
-                        ),
+                        text(fontSize: 18, label: 'Settings')
                       ],
                     ),
                   ),
                 ),
               ],
-            ),
+            )
           ],
         ),
       ),

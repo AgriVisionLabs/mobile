@@ -3,6 +3,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/models/inv_item_model.dart';
 import 'package:grd_proj/service/api/api_consumer.dart';
 import 'package:grd_proj/service/api/end_points.dart';
 import 'package:grd_proj/service/errors/exception.dart';
@@ -30,6 +31,15 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
   TextEditingController dueDate = TextEditingController();
   TextEditingController itemPriority = TextEditingController();
   TextEditingController category = TextEditingController();
+  GlobalKey<FormState> itemFormKey = GlobalKey();
+  TextEditingController fieldId = TextEditingController();
+  TextEditingController itemName = TextEditingController();
+  TextEditingController itemCategory = TextEditingController();
+  TextEditingController quantity = TextEditingController();
+  TextEditingController unitCost = TextEditingController();
+  TextEditingController measurementUnit = TextEditingController();
+  TextEditingController expirationDate = TextEditingController();
+
 
   ControlBloc(this.api) : super(ControlInitial()) {
     on<AddAutomationRulesEvent>((event, emit) async {
@@ -216,6 +226,22 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
       }
     });
 
+    on<AddItem>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response = await api.post(
+            "${EndPoints.task}/${event.farmId}/InventoryItems",
+            data: {
+              ApiKey
+            });
+        final task = TaskModel.fromJson(response);
+
+        emit(AddTaskSuccess(task: task));
+      } on ServerException catch (e) {
+        emit(AddTaskFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
 
   }
 }

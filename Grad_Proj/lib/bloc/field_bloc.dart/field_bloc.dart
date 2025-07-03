@@ -81,7 +81,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
     on<DeleteFieldEvent>((event, emit) async {
       try {
         final response = await api.delete(
-            '${EndPoints.feild}/${event.farmId}/Fields/${event.fieldId}}');
+            '${EndPoints.feild}/${event.farmId}/Fields/${event.fieldId}');
         emit(DeleteFieldSuccess());
       } on ServerException catch (e) {
         emit(DeleteFieldFailure(

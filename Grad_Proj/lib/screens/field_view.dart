@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/screens/edit_field.dart';
 import 'package:grd_proj/screens/widget/border.dart';
 import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:grd_proj/screens/widget/text.dart';
@@ -55,10 +56,40 @@ class _FieldViewState extends State<FieldView> {
   }
 
   @override
+  void dispose() {
+    _fieldBloc!.add(OpenFieldEvent(farmId: widget.farmId));
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: BlocBuilder<FieldBloc, FieldState>(
+      body: BlocConsumer<FieldBloc, FieldState>(
+        listener: (context, state) {
+          if (state is DeleteFieldFailure) {
+            _fieldBloc!.add(ViewFieldDetails(
+                farmId: widget.farmId, fieldId: widget.fieldId));
+            ScaffoldMessenger.of(context).clearSnackBars();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errMessage),
+                ),
+              );
+            });
+          } else if (state is DeleteFieldSuccess) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Field deleted successfully"),
+                ),
+              );
+            });
+            Navigator.pop(context);
+          }
+        },
         builder: (context, state) {
           if (state is FieldFailure) {
             return const Center(
@@ -111,7 +142,7 @@ class _FieldViewState extends State<FieldView> {
                       height: 220,
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                          color: containerColor,
+                          color: whiteColor,
                           borderRadius: BorderRadius.circular(15)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +197,7 @@ class _FieldViewState extends State<FieldView> {
                       height: 230,
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                          color: containerColor,
+                          color: whiteColor,
                           borderRadius: BorderRadius.circular(15)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,7 +270,7 @@ class _FieldViewState extends State<FieldView> {
                       height: 230,
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                          color: containerColor,
+                          color: whiteColor,
                           borderRadius: BorderRadius.circular(15)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,7 +334,7 @@ class _FieldViewState extends State<FieldView> {
                       height: 180,
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                          color: containerColor,
+                          color: whiteColor,
                           borderRadius: BorderRadius.circular(15)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,20 +366,25 @@ class _FieldViewState extends State<FieldView> {
                         ],
                       ),
                     ),
+                    const SizedBox(
+                      height: 24,
+                    ),
                     Row(
                       children: [
                         GestureDetector(
                             onTap: () {
-
+                              _fieldBloc!.add(DeleteFieldEvent(
+                                  farmId: state.field.farmId,
+                                  fieldId: state.field.id));
                             },
                             child: Container(
-                              width: 99,
+                              width: 170,
                               height: 45,
                               decoration: BoxDecoration(
                                 color: const Color.fromARGB(0, 255, 255, 255),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(15),
                                 border: Border.all(
-                                  color: const Color(0xFF616161),
+                                  color: const Color.fromARGB(255, 255, 0, 0),
                                   width: 1,
                                 ),
                               ),
@@ -360,26 +396,77 @@ class _FieldViewState extends State<FieldView> {
                                       'assets/images/delete.png',
                                       height: 20,
                                       width: 20,
-                                      color: const Color(0xFF616161),
+                                      color: Colors.red,
                                     ),
                                     const SizedBox(
                                       width: 5,
                                     ),
                                     const Text(
-                                      "Edit",
+                                      "Delete Field",
                                       style: TextStyle(
                                         fontSize: 19,
                                         fontFamily: "Manrope",
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF616161),
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.red,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                             )),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditField(
+                                        farmId: state.field.farmId,
+                                        fieldId: state.field.id,
+                                      )),
+                            );
+                          },
+                          child: Container(
+                            width: 99,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: const Color(0xFF616161),
+                                width: 1,
+                              ),
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/edit.png',
+                                    height: 20,
+                                    width: 20,
+                                    color: whiteColor,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const Text(
+                                    "Edit",
+                                    style: TextStyle(
+                                      fontSize: 19,
+                                      fontFamily: "Manrope",
+                                      fontWeight: FontWeight.w600,
+                                      color: whiteColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
-                    )
+                    ),
+                    const SizedBox(height: 24,),
                   ],
                 ),
               ),

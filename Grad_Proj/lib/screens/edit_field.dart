@@ -6,13 +6,13 @@ import 'package:grd_proj/screens/basic_info_field.dart';
 import 'package:grd_proj/screens/irrigation.dart';
 import 'package:grd_proj/screens/review_field.dart';
 import 'package:grd_proj/screens/sensor.dart';
+import 'package:grd_proj/screens/widget/circule_indector.dart';
 import '../Components/color.dart';
 
 class EditField extends StatefulWidget {
   final String farmId;
-  final int soilType;
   final String fieldId;
-  const EditField({super.key, required this.farmId, required this.soilType, required this.fieldId});
+  const EditField({super.key, required this.farmId, required this.fieldId});
 
   @override
   State<EditField> createState() => _EditFieldState();
@@ -38,7 +38,8 @@ class _EditFieldState extends State<EditField> {
   @override
   void initState() {
     _fieldBloc = context.read<FieldBloc>();
-    _fieldBloc!.add(ViewFieldDetails(farmId: widget.farmId, fieldId: widget.fieldId));
+    _fieldBloc!
+        .add(ViewFieldDetails(farmId: widget.farmId, fieldId: widget.fieldId));
     super.initState();
   }
 
@@ -57,7 +58,7 @@ class _EditFieldState extends State<EditField> {
 
   @override
   void dispose() {
-    _fieldBloc!.add(OpenFieldEvent(farmId: widget.farmId));
+    _fieldBloc!.add(ViewFieldDetails(farmId: widget.farmId , fieldId: widget.fieldId));
     super.dispose();
   }
 
@@ -65,67 +66,82 @@ class _EditFieldState extends State<EditField> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Fixed Top Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  pageTop(),
-                  const SizedBox(height: 40),
-                  buildDots(),
-                ],
-              ),
-            ),
-
-            // Scrollable Form Section
-            Expanded(
-              child: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    if (currentIndex == 0)
-                      BasicInfoField(
-                          onInputChanged: _onInputChanged2,
-                          currentIndex: currentIndex,
-                          farmId: widget.farmId,
-                          field: field,
-                          edit: true,
-                          soilType: widget.soilType,
-                        )
-                    else if (currentIndex == 1)
-                      Irrigation(
-                        onInputChanged: _onInputChanged,
-                        currentIndex: currentIndex,
-                        farmId: widget.farmId,
-                        fieldId: widget.fieldId,
-                        form: true,
-                      )
-                    else if (currentIndex == 2)
-                      Sensor(
-                        onInputChanged: _onInputChanged,
-                        currentIndex: currentIndex,
-                        farmId: widget.farmId,
-                        fieldId: widget.fieldId,
-                        form: true,
-                      )
-                    else if (currentIndex == 3)
-                      ReviewField(farmId: widget.farmId,fieldId: widget.fieldId,),
-                    const SizedBox(height: 20),
-                  ],
+    return BlocConsumer<FieldBloc, FieldState>(
+      listener: (context, state) {
+        if(state is FieldSuccess){
+          field = state.field;
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Column(
+              children: [
+                // Fixed Top Section
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      pageTop(),
+                      const SizedBox(height: 40),
+                      buildDots(),
+                    ],
+                  ),
                 ),
-              ),
+
+                // Scrollable Form Section
+                Expanded(
+                  child: SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        if (currentIndex == 0)
+                        if(field !=null)
+                          BasicInfoField(
+                            onInputChanged: _onInputChanged2,
+                            currentIndex: currentIndex,
+                            farmId: widget.farmId,
+                            field: field,
+                            edit: true,
+                          )
+                         else
+                         circularProgressIndicator()
+                        else if (currentIndex == 1)
+                          Irrigation(
+                            onInputChanged: _onInputChanged,
+                            currentIndex: currentIndex,
+                            farmId: widget.farmId,
+                            fieldId: widget.fieldId,
+                            form: true,
+                          )
+                        else if (currentIndex == 2)
+                          Sensor(
+                            onInputChanged: _onInputChanged,
+                            currentIndex: currentIndex,
+                            farmId: widget.farmId,
+                            fieldId: widget.fieldId,
+                            form: true,
+                          )
+                        else if (currentIndex == 3)
+                          ReviewField(
+                            farmId: widget.farmId,
+                            fieldId: widget.fieldId,
+                            edit: true,
+                          ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -235,4 +251,3 @@ class _EditFieldState extends State<EditField> {
             }));
   }
 }
-

@@ -1,5 +1,5 @@
 class EndPoints {
-  static const String baseUrl = 'https://agrivision.tryasp.net/';
+  static const String baseUrl = 'https://api.agrivisionlabs.tech/';
   static const String login = 'Auth';
   static const String register = 'Auth/register';
   static const String confirmEmailResand = '/Auth/resend-confirmation-email';
@@ -71,4 +71,9 @@ class ApiKey{
   static String dueDate = 'dueDate';
   static String itemPriority = 'itemPriority';
   static String category = 'category';
+   static String quantity = 'quantity';
+  static String thresholdQuantity = 'thresholdQuantity';
+  static String unitCost = 'unitCost';
+  static String measurementUnit = 'measurementUnit';
+  static String expirationDate = 'expirationDate';
 }

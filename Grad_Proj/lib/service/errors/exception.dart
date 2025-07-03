@@ -36,7 +36,10 @@ void handelDioException(DioException e) {
 
           ///unauthorized
           throw ServerException(
-              errorModel: ErrorModel.fromJson(e.response!.data));
+            errorModel: e.response?.data is Map<String, dynamic>
+                ? ErrorModel.fromJson(e.response!.data)
+                : ErrorModel(
+                    message: 'unauthorized' , status: 401 , error: []),);
         case 403:
 
           ///forbidden
