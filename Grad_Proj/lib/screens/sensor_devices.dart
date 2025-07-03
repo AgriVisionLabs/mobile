@@ -29,6 +29,9 @@ class _SensorDevicesState extends State<SensorDevices> {
     context.read<SensorBloc>().add(ConnectToHub(
         farmId: widget.farmId, token: CacheHelper.getData(key: 'token')));
 
+    context.read<FieldBloc>().add(OpenFarmSensorUnitsEvent(
+          farmId: widget.farmId,
+        ));
     super.initState();
   }
 
@@ -54,7 +57,7 @@ class _SensorDevicesState extends State<SensorDevices> {
           });
         } else if (state is ViewSensorUnitsSuccess) {
           return SizedBox(
-            height: 430,
+            height: 425,
             child: CustomScrollView(
               shrinkWrap: true,
               slivers: [

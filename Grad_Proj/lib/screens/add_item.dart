@@ -655,8 +655,8 @@ class _AddItemState extends State<AddItem> {
                                   width: 1,
                                 ),
                               ),
-                              child: Center(
-                                child: const Text(
+                              child: const Center(
+                                child: Text(
                                   "Cancle",
                                   style: TextStyle(
                                     fontSize: 19,
@@ -667,7 +667,7 @@ class _AddItemState extends State<AddItem> {
                                 ),
                               ),
                             )),
-                        SizedBox(width: 10,),
+                        const SizedBox(width: 10,),
                         GestureDetector(
                           onTap: () {
 
@@ -683,8 +683,8 @@ class _AddItemState extends State<AddItem> {
                                 width: 1,
                               ),
                             ),
-                            child: Center(
-                              child: const Text(
+                            child: const Center(
+                              child: Text(
                                 "Edit",
                                 style: TextStyle(
                                   fontSize: 19,

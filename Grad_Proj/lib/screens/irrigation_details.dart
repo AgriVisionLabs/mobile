@@ -16,6 +16,13 @@ class IrrigationDetails extends StatefulWidget {
 }
 
 class _IrrigationDetailsState extends State<IrrigationDetails> {
+  @override
+  void initState() {
+    context.read<FieldBloc>().add(OpenFarmIrrigationUnitsEvent(
+          farmId: widget.farmId,
+        ));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,7 @@ class _IrrigationDetailsState extends State<IrrigationDetails> {
           });
         } else if (state is ViewIrrigationUnitSuccess) {
           return SizedBox(
-            height: 430,
+            height: 425,
             child: CustomScrollView(
               shrinkWrap: true,
               slivers: [

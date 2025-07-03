@@ -19,12 +19,25 @@ class NewTask extends StatefulWidget {
 
 class _NewTaskState extends State<NewTask> {
   Map priority = {'Low': 0, 'Medium': 1, 'High': 2};
-  Map category = {'Irrigation': 0, 'Fertilization': 1, 'PlantingOrHarvesting': 2 ,'Maintenance': 3, 'Inspection': 4 , "PestAndHealthControl" : 5};
+  Map category = {
+    'Irrigation': 0,
+    'Fertilization': 1,
+    'PlantingOrHarvesting': 2,
+    'Maintenance': 3,
+    'Inspection': 4,
+    "PestAndHealthControl": 5
+  };
   int? selectedtype;
   String? selectedFieldId;
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     context.read<FieldBloc>().add(OpenFieldEvent(farmId: widget.farmId));
+    super.initState();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
     return BlocConsumer<ControlBloc, ControlState>(
       listener: (context, state) {
         if (state is AddTaskSuccess) {
@@ -36,6 +49,9 @@ class _NewTaskState extends State<NewTask> {
               ),
             );
           });
+          context.read<ControlBloc>().add(OpenFarmTasksEvent(
+                farmId: widget.farmId,
+              ));
           Navigator.pop(context);
         } else if (state is AddTaskFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();

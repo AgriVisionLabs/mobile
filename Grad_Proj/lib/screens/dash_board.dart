@@ -247,7 +247,7 @@ class _DashBoardState extends State<DashBoard> {
                                       }
                                       if (state is FieldLoaded) {
                                         return Container(
-                                          height: state.fields.length>3 ? 570 : null,
+                                          height: state.fields.length>3 ? 530 : null,
                                           padding: EdgeInsets.all(8),
                                           margin: EdgeInsets.only(
                                               bottom: 20, top: 30 , left: 5 ,right: 5),

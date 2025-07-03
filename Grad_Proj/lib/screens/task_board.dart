@@ -34,7 +34,7 @@ class _TaskBoardState extends State<TaskBoard> {
               state.tasks.where((task) => task.completedAt == null).toList();
           return Container(
             padding: const EdgeInsets.only(bottom: 20),
-            height: myTasks.length == 1 ? 250 : 530,
+            height: 530,
             child: CustomScrollView(
               shrinkWrap: true,
               slivers: [

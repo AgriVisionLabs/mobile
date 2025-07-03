@@ -149,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
             preferredSize: const Size.fromHeight(1.0),
             child: Container(
               height: 1.0,
-              color: const Color.fromARGB(255, 240, 26, 26),
+              color: borderColor,
             ),
           ),
         ),

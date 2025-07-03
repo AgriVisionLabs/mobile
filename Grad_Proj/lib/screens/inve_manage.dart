@@ -69,7 +69,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                       children: [
                         Row(
                           children: [
-                            Text(
+                            const Text(
                               "Inventory Management ",
                               style: TextStyle(
                                 fontSize: 25,
@@ -78,7 +78,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                                 fontFamily: "manrope",
                               ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Container(
                               width: 40,
                               height: 40,
@@ -87,7 +87,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: IconButton(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.add,
                                     color: Colors.white,
                                     size: 24,
@@ -103,16 +103,16 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
                         SizedBox(
                           width: 280,
                           height: 60,
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton2<String>(
                               isExpanded: true,
-                              hint: Text(
+                              hint: const Text(
                                 'Choose Farm',
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 16,
                                     fontFamily: 'Manrope',
                                     fontWeight: FontWeight.w600),
@@ -167,7 +167,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 30),
+                        const SizedBox(height: 30),
                         Container(
                           height: 62,
                           padding: const EdgeInsets.symmetric(
@@ -214,7 +214,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                             }),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                       ]),
                 )));
       },

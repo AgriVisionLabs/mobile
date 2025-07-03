@@ -246,9 +246,9 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
                     DropdownButtonHideUnderline(
                       child: DropdownButton2<int>(
                         isExpanded: true,
-                        hint: Text(
+                        hint: const Text(
                           'Enter Crop Type',
-                          style: const TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: 16),
                         ),
                         value: selectedCropType,
                         items: crops?.map((crop) {

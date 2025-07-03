@@ -649,8 +649,8 @@ class SensorView extends StatelessWidget {
                                   children: [
                                     Image.asset(
                                       'assets/images/Hum.png',
-                                      // height: 24,
-                                      // width: 24,
+                                      height: 24,
+                                      width: 24,
                                     ),
                                     const SizedBox(height: 5),
                                     Text(

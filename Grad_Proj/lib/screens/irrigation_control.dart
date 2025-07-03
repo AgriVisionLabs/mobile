@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
+import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/screens/add_auomation_rules.dart';
 import 'package:grd_proj/screens/add_irrigation_unit.dart';
@@ -202,6 +204,16 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                         selectedFarmId = newValue;
                                         selectedFarmName =
                                             selectedFarm.first.name;
+                                        context
+                                            .read<FieldBloc>()
+                                            .add(OpenFarmIrrigationUnitsEvent(
+                                              farmId: selectedFarmId!,
+                                            ));
+                                        context
+                                            .read<ControlBloc>()
+                                            .add(OpenFarmAutomationRulesEvent(
+                                              farmId: selectedFarmId!,
+                                            ));
                                       });
                                     }
                                   },
@@ -362,7 +374,8 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                 farmId: selectedFarmId!,
                                 fieldId: selectedFieldId,
                                 type: selectedtype,
-                                statue: selectedstatus,)),
+                                statue: selectedstatus,
+                              )),
                     SizedBox(height: 50),
                   ],
                 ),

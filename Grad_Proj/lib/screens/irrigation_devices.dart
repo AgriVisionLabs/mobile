@@ -102,6 +102,7 @@ class IrrigationDevicesState extends State<IrrigationDevices> {
           } else {
             myDevices = state.devices;
           }
+          print("=====================================================${widget.statue}===========================${widget.fieldId}");
           return SizedBox(
             height: myDevices!.length == 1
                 ? 250

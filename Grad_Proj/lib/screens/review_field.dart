@@ -48,9 +48,9 @@ class _ReviewFieldState extends State<ReviewField> {
       },
       builder: (context, state) {
         if (state is FieldFailure) {
-          return Center(
+          return const Center(
             child: Text('Sonething went wrong',
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Manrope',
                   color: primaryColor,
                   fontSize: 20,
@@ -64,9 +64,9 @@ class _ReviewFieldState extends State<ReviewField> {
             height: 680,
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(
+              const Row(
                 children: [
-                  const Text('Field Details',
+                  Text('Field Details',
                       style: TextStyle(
                           fontFamily: 'Manrope',
                           color: Colors.black,
@@ -137,12 +137,12 @@ class _ReviewFieldState extends State<ReviewField> {
               ),
               context.read<FieldBloc>().irrigationSerialNum.text.isNotEmpty
                   ? _buildDevicesList(false)
-                  : SizedBox(
+                  : const SizedBox(
                       height: 0,
                     ),
               context.read<FieldBloc>().sensorSerialNum.text.isNotEmpty
                   ? _buildDevicesList(true)
-                  : SizedBox(
+                  : const SizedBox(
                       height: 0,
                     ),
               const Spacer(),
@@ -164,7 +164,7 @@ class _ReviewFieldState extends State<ReviewField> {
                         child: Text(
                           widget.edit! ? "Edit Field":
                           'Create Feild',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
@@ -174,7 +174,7 @@ class _ReviewFieldState extends State<ReviewField> {
             ]),
           );
         }
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(
             color: primaryColor,
           ),
@@ -191,7 +191,7 @@ class _ReviewFieldState extends State<ReviewField> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(!isSensor ? 'Irrigation Units' : 'Sensor Units',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 18,
                   fontWeight: FontWeight.w400,
@@ -220,7 +220,7 @@ class _ReviewFieldState extends State<ReviewField> {
                         // decoration: TextDecoration.lineThrough
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 7,
                     ),
 
