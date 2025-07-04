@@ -22,7 +22,7 @@ class _AddItemState extends State<AddItem> {
   String? selectedFarmId;
   String? selectedFieldId;
   int? selectedCategory;
-  int? selectedUnit;
+  String? selectedUnit;
   FieldBloc? _fieldBloc;
   ControlBloc? _controlBloc;
   List<FieldModel>? fields;
@@ -69,6 +69,7 @@ class _AddItemState extends State<AddItem> {
             );
           });
         }
+        _controlBloc!.itemFormKey.currentState!.validate();
       }, builder: (context, snapshot) {
         return Container(
           margin: const EdgeInsets.only(top: 80, left: 20, right: 20),
@@ -211,7 +212,7 @@ class _AddItemState extends State<AddItem> {
                                 fontWeight: FontWeight.w600,
                                 color: borderColor),
                             value: selectedFieldId,
-                            items: fields!.map((field) {
+                            items: fields?.map((field) {
                               return DropdownMenuItem<String>(
                                 value: field.id,
                                 child: Text(
@@ -305,8 +306,6 @@ class _AddItemState extends State<AddItem> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Farm Name";
-                        } else if (description!.isNotEmpty) {
-                          return description;
                         }
                         return null;
                       },
@@ -324,59 +323,72 @@ class _AddItemState extends State<AddItem> {
                     SizedBox(
                       width: 380,
                       height: 52,
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton2<int>(
-                          isExpanded: true,
-                          hint: text(
-                              fontSize: 18,
-                              label: "select category",
-                              fontWeight: FontWeight.w600,
-                              color: borderColor),
-                          value: selectedCategory,
-                          items: category.entries.map((cat) {
-                            return DropdownMenuItem<int>(
-                              value: cat.value,
-                              child: Text(
-                                cat.key!,
-                                style: const TextStyle(
-                                  fontFamily: 'Manrope',
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                      child: DropdownButtonFormField2<int>(
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 10, bottom: 10),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide:
+                                BorderSide(color: borderColor, width: 3),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide:
+                                BorderSide(color: borderColor, width: 3),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(color: Colors.red, width: 3),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(color: Colors.red, width: 3),
+                          ),
+                        ),
+                        isExpanded: true,
+                        hint: text(
+                            fontSize: 18,
+                            label: "select category",
+                            fontWeight: FontWeight.w600,
+                            color: borderColor),
+                        value: selectedCategory,
+                        items: category.entries.map((cat) {
+                          return DropdownMenuItem<int>(
+                            value: cat.value,
+                            child: Text(
+                              cat.key!,
+                              style: const TextStyle(
+                                fontFamily: 'Manrope',
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
                               ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedCategory = value;
-                              _controlBloc!.itemCategory.text =
-                                  selectedCategory.toString();
-                            });
-                          },
-                          buttonStyleData: ButtonStyleData(
-                            height: 55,
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(color: borderColor, width: 2),
-                              color: Colors.white,
                             ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedCategory = value;
+                            _controlBloc!.itemCategory.text =
+                                selectedCategory.toString();
+                          });
+                        },
+                        dropdownStyleData: DropdownStyleData(
+                          maxHeight: 250,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white,
+                            border: Border.all(color: borderColor),
                           ),
-                          dropdownStyleData: DropdownStyleData(
-                            maxHeight: 250,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white,
-                              border: Border.all(color: borderColor),
-                            ),
-                            elevation: 2,
-                            offset: const Offset(0, -5),
-                          ),
-                          iconStyleData: const IconStyleData(
-                            icon: Icon(Icons.keyboard_arrow_down_rounded),
-                            iconSize: 40,
-                            iconEnabledColor: Colors.black,
-                          ),
+                          elevation: 2,
+                          offset: const Offset(0, -5),
+                        ),
+                        iconStyleData: const IconStyleData(
+                          icon: Icon(Icons.keyboard_arrow_down_rounded),
+                          iconSize: 40,
+                          iconEnabledColor: Colors.black,
                         ),
                       ),
                     ),
@@ -422,7 +434,8 @@ class _AddItemState extends State<AddItem> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Farm Name";
-                        } else if (description!.isNotEmpty) {
+                        } else if (description != null &&
+                            description!.isNotEmpty) {
                           return description;
                         }
                         return null;
@@ -441,59 +454,72 @@ class _AddItemState extends State<AddItem> {
                     SizedBox(
                       width: 380,
                       height: 52,
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton2<int>(
-                          isExpanded: true,
-                          hint: text(
-                              fontSize: 18,
-                              label: "select unit",
-                              fontWeight: FontWeight.w600,
-                              color: borderColor),
-                          value: selectedUnit,
-                          items: measurementUnit.entries.map((cat) {
-                            return DropdownMenuItem<int>(
-                              value: cat.value,
-                              child: Text(
-                                cat.key!,
-                                style: const TextStyle(
-                                  fontFamily: 'Manrope',
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                      child: DropdownButtonFormField2<String>(
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 10, bottom: 10),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide:
+                                BorderSide(color: borderColor, width: 3),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide:
+                                BorderSide(color: borderColor, width: 3),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(color: Colors.red, width: 3),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(color: Colors.red, width: 3),
+                          ),
+                        ),
+                        isExpanded: true,
+                        hint: text(
+                            fontSize: 18,
+                            label: "select unit",
+                            fontWeight: FontWeight.w600,
+                            color: borderColor),
+                        value: selectedUnit,
+                        items: measurementUnit.entries.map((cat) {
+                          return DropdownMenuItem<String>(
+                            value: cat.key,
+                            child: Text(
+                              cat.key!,
+                              style: const TextStyle(
+                                fontFamily: 'Manrope',
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
                               ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedUnit = value;
-                              _controlBloc!.measurementUnit.text =
-                                  selectedUnit.toString();
-                            });
-                          },
-                          buttonStyleData: ButtonStyleData(
-                            height: 55,
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(color: borderColor, width: 2),
-                              color: Colors.white,
                             ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedUnit = value;
+                            _controlBloc!.measurementUnit.text =
+                                selectedUnit!;
+                          });
+                        },
+                        dropdownStyleData: DropdownStyleData(
+                          maxHeight: 250,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white,
+                            border: Border.all(color: borderColor),
                           ),
-                          dropdownStyleData: DropdownStyleData(
-                            maxHeight: 250,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white,
-                              border: Border.all(color: borderColor),
-                            ),
-                            elevation: 2,
-                            offset: const Offset(0, -5),
-                          ),
-                          iconStyleData: const IconStyleData(
-                            icon: Icon(Icons.keyboard_arrow_down_rounded),
-                            iconSize: 40,
-                            iconEnabledColor: Colors.black,
-                          ),
+                          elevation: 2,
+                          offset: const Offset(0, -5),
+                        ),
+                        iconStyleData: const IconStyleData(
+                          icon: Icon(Icons.keyboard_arrow_down_rounded),
+                          iconSize: 40,
+                          iconEnabledColor: Colors.black,
                         ),
                       ),
                     ),
@@ -539,8 +565,6 @@ class _AddItemState extends State<AddItem> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Threshold Quentity";
-                        } else if (description!.isNotEmpty) {
-                          return description;
                         }
                         return null;
                       },
@@ -587,8 +611,6 @@ class _AddItemState extends State<AddItem> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Unit Cost";
-                        } else if (description!.isNotEmpty) {
-                          return description;
                         }
                         return null;
                       },
@@ -612,7 +634,7 @@ class _AddItemState extends State<AddItem> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 17),
-                        hintText: "DD/MM/YYYY",
+                        hintText: "YYYY-MM-DD",
                         hintStyle: const TextStyle(color: borderColor),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
@@ -638,20 +660,24 @@ class _AddItemState extends State<AddItem> {
                       autocorrect: false,
                       textCapitalization: TextCapitalization.none,
                     ),
-                    const SizedBox(height: 24,),
+                    const SizedBox(
+                      height: 24,
+                    ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         GestureDetector(
                             onTap: () {
+                              Navigator.pop(context);
                             },
                             child: Container(
-                              width: 170,
+                              width: 100,
                               height: 45,
                               decoration: BoxDecoration(
                                 color: const Color.fromARGB(0, 255, 255, 255),
                                 borderRadius: BorderRadius.circular(15),
                                 border: Border.all(
-                                  color: const Color.fromARGB(255, 255, 0, 0),
+                                  color: testColor,
                                   width: 1,
                                 ),
                               ),
@@ -662,22 +688,73 @@ class _AddItemState extends State<AddItem> {
                                     fontSize: 19,
                                     fontFamily: "Manrope",
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.red,
+                                    color: testColor,
                                   ),
                                 ),
                               ),
                             )),
-                        const SizedBox(width: 10,),
+                        const SizedBox(
+                          width: 10,
+                        ),
                         GestureDetector(
                           onTap: () {
-
+                            if (selectedFarmId == null ||
+                                selectedFarmId!.isEmpty) {
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: const Text("ِAlert",
+                                      style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: "manrope",
+                                        color: primaryColor,
+                                      )),
+                                  backgroundColor: Colors.white,
+                                  content: const Text("Please Select Farm",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: "manrope",
+                                        color: Colors.black,
+                                      )),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Cancle",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: "manrope",
+                                            color: Colors.black,
+                                          )),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text("Ok",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: "manrope",
+                                            color: primaryColor,
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              _controlBloc!
+                                  .add(AddItemEvent(farmId: selectedFarmId!));
+                            }
                           },
                           child: Container(
-                            width: 99,
+                            width: 120,
                             height: 45,
                             decoration: BoxDecoration(
                               color: primaryColor,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(15),
                               border: Border.all(
                                 color: const Color(0xFF616161),
                                 width: 1,
@@ -685,7 +762,7 @@ class _AddItemState extends State<AddItem> {
                             ),
                             child: const Center(
                               child: Text(
-                                "Edit",
+                                "Add Item",
                                 style: TextStyle(
                                   fontSize: 19,
                                   fontFamily: "Manrope",
@@ -698,6 +775,9 @@ class _AddItemState extends State<AddItem> {
                         ),
                       ],
                     ),
+                    const SizedBox(
+                      height: 50,
+                    )
                   ],
                 ),
               )),

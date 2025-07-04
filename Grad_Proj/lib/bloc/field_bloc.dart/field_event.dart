@@ -157,3 +157,22 @@ class DeleteSensorUnitEvent extends FieldEvent {
   
 }
 
+class UseDiseaseDetectionEvent extends FieldEvent {
+  final String fieldId;
+  final String farmId;
+  UseDiseaseDetectionEvent({
+    required this.fieldId,
+    required this.farmId,
+  });
+  
+}
+
+class OpenDiseaseDetectionEvent extends FieldEvent {
+  final String fieldId;
+  final String farmId;
+  OpenDiseaseDetectionEvent({
+    required this.fieldId,
+    required this.farmId,
+  });
+}
+

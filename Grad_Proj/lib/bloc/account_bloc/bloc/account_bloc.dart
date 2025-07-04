@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:grd_proj/models/user_model.dart';
 import 'package:grd_proj/service/api/api_consumer.dart';
 import 'package:grd_proj/service/api/end_points.dart';
 import 'package:grd_proj/service/errors/exception.dart';
-import 'package:grd_proj/models/user_bloc.dart';
+
 
 part 'account_event.dart';
 part 'account_state.dart';

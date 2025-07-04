@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/account_bloc/bloc/account_bloc.dart';
 import 'package:grd_proj/components/color.dart';
-import 'package:grd_proj/models/user_bloc.dart';
+import 'package:grd_proj/models/user_model.dart';
 
 class PersonalSetting extends StatefulWidget {
   const PersonalSetting({super.key});

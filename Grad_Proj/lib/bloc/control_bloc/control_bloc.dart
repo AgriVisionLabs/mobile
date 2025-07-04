@@ -227,15 +227,15 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
       }
     });
 
-    on<AddItem>((event, emit) async {
+    on<AddItemEvent>((event, emit) async {
       // bloc takes stream of event and give stream of states
       try {
         final response = await api.post(
             "${EndPoints.task}/${event.farmId}/InventoryItems",
             data: {
-              ApiKey.farmId : fieldId.text.isEmpty ? null : fieldId.text,
+              ApiKey.fieldId : fieldId.text.isEmpty ? null : fieldId.text,
               ApiKey.name : itemName.text,
-              ApiKey.category : itemCategory.text,
+              ApiKey.category : int.tryParse(itemCategory.text),
               ApiKey.quantity : quantity.text,
               ApiKey.thresholdQuantity : thresholdQuantity.text,
               ApiKey.unitCost : unitCost.text,
@@ -250,6 +250,44 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });
+on<OpenFarmItemsEvent>((event, emit) async {
+      try {
+        final response = await api
+            .get("${EndPoints.task}/${event.farmId}/InventoryItems");
+        if (response is List && response.isNotEmpty) {
+          final items = response
+              .map<InvItemModel>((json) => InvItemModel.fromJson(json))
+              .toList();
+        emit(ViewItemsSuccess(items: items));}else{
+          emit(ItemEmpty());
+        }
+      } on ServerException catch (e) {
+        emit(ViewItemsFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
 
+    on<OpenFarmItemsEvent>((event, emit) async {
+      try {
+        final response = await api
+            .get("${EndPoints.task}/${event.farmId}/InventoryItems");
+        final item = InvItemModel.fromJson(response);
+        emit(ViewItemSuccess(item: item));
+      } on ServerException catch (e) {
+        emit(ViewItemFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<DeleteItemEvent>((event, emit) async {
+      try {
+        final response = await api
+            .delete("${EndPoints.task}/${event.farmId}/InventoryItems/${event.itemId}");
+        emit(DeleteTaskSuccess());
+      } on ServerException catch (e) {
+        emit(DeleteTaskFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
   }
 }

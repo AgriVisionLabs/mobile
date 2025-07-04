@@ -7,6 +7,7 @@ import 'package:grd_proj/bloc/user_state.dart';
 import 'package:grd_proj/screens/forget_password_screen.dart';
 import 'package:grd_proj/screens/home_screen.dart';
 import 'package:grd_proj/screens/register.dart';
+import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/unauthorize_model.dart';
@@ -295,7 +296,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Login Button
                     state is SignInLoading
-                        ? const CircularProgressIndicator()
+                        ?  circularProgressIndicator()
                         : Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 24),
                             child: SizedBox(

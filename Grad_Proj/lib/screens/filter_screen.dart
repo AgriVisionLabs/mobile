@@ -402,7 +402,6 @@ class _FilterScreenState extends State<FilterScreen> {
                                               ),
                                               ElevatedButton(
                                                 onPressed: () {
-                                                  // تنفيذ الإجراء
                                                   Navigator.pop(context);
                                                 },
                                                 child: const Text("Ok",

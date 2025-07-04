@@ -12,3 +12,7 @@ const borederColor2 = Color.fromARGB(70, 13, 18, 28);
 const whiteColor = Color(0xffF5F5F5);
 const testColor = Color(0xff0D121C);
 const imgColor = Color(0xff9CA3AF);
+const textColor2 = Color(0xff9F9F9F);
+const green = Color(0xff25C462);
+const orange = Color(0xffF4731C);
+const red = Color(0xffF04444);

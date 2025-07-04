@@ -20,6 +20,7 @@ import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/screens/edit_field.dart';
 import 'package:grd_proj/screens/widget/border.dart';
+import 'package:grd_proj/screens/widget/calculate_days.dart';
 import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:grd_proj/screens/widget/text.dart';
 import 'package:intl/intl.dart';
@@ -33,15 +34,7 @@ class FieldView extends StatefulWidget {
   State<FieldView> createState() => _FieldViewState();
 }
 
-int calculateDaysDifference(DateTime apiDateString) {
-  DateTime today = DateTime.now();
 
-  DateTime targetOnly =
-      DateTime(apiDateString.year, apiDateString.month, apiDateString.day);
-  DateTime todayOnly = DateTime(today.year, today.month, today.day);
-
-  return targetOnly.difference(todayOnly).inDays;
-}
 
 class _FieldViewState extends State<FieldView> {
   FieldBloc? _fieldBloc;

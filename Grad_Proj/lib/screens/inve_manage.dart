@@ -5,6 +5,8 @@ import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/screens/add_item.dart';
+import 'package:grd_proj/screens/build_items.dart';
+import 'package:grd_proj/screens/widget/text.dart';
 
 class InventoryManagementScreen extends StatefulWidget {
   const InventoryManagementScreen({super.key});
@@ -21,6 +23,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
     "Fertilizers",
     "Chemicals",
     "Treatments",
+    "Produce"
   ];
   String? selectedFarmId;
   List<FarmModel>? farms;
@@ -61,8 +64,9 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
       },
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: Colors.white,
             body: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 150, 16, 50),
+                padding: const EdgeInsets.fromLTRB(16, 150, 16 , 1),
                 child: SingleChildScrollView(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,45 +180,76 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                             color: const Color(0x4dD9D9D9),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Row(
-                            children: List.generate(tabs.length, (index) {
-                              final isSelected = selectedTab == index;
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 4.4),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedTab = index;
-                                    });
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12),
-                                    height: 46,
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? Colors.white
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      tabs[index],
-                                      style: TextStyle(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: List.generate(tabs.length, (index) {
+                                final isSelected = selectedTab == index;
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 4.4),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedTab = index;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12),
+                                      height: 46,
+                                      decoration: BoxDecoration(
                                         color: isSelected
-                                            ? primaryColor
-                                            : Colors.grey,
-                                        fontSize: 16,
-                                        fontFamily: "manrope-semi-bold",
+                                            ? Colors.white
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        tabs[index],
+                                        style: TextStyle(
+                                          color: isSelected
+                                              ? primaryColor
+                                              : Colors.grey,
+                                          fontSize: 16,
+                                          fontFamily: "manrope-semi-bold",
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            }),
+                                );
+                              }),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20),
+                        if (selectedFarmId == null)
+                          Center(
+                            child: text(
+                                fontSize: 24,
+                                label: "Please Select Farm",
+                                color: primaryColor),
+                          )
+                        else if (selectedTab == 0)
+                          BuildItems(
+                            farmId: selectedFarmId!,
+                          )
+                        else if (selectedTab == 1)
+                          BuildItems(
+                            farmId: selectedFarmId!,statue: 0,
+                          )
+                          else if (selectedTab == 2)
+                          BuildItems(
+                            farmId: selectedFarmId!,statue: 1,
+                          )else if (selectedTab == 3)
+                          BuildItems(
+                            farmId: selectedFarmId!,statue: 2,
+                          )else if (selectedTab == 4)
+                          BuildItems(
+                            farmId: selectedFarmId!,statue: 3,
+                          )else if (selectedTab == 5)
+                          BuildItems(
+                            farmId: selectedFarmId!,statue: 4,
+                          )
                       ]),
                 )));
       },

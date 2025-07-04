@@ -8,6 +8,7 @@ import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/edit_farm.dart';
 import 'package:grd_proj/screens/field_view.dart';
 import 'package:grd_proj/screens/new_field.dart';
+import 'package:grd_proj/screens/widget/soil.dart';
 
 import '../components/color.dart';
 
@@ -30,15 +31,6 @@ class _FieldsScreenState extends State<FieldsScreen> {
   }
 
   String? soilName;
-  Map soil = {'Sandy': 0, 'Clay': 1, 'Loamy': 2};
-  String? getSoilName(int soiltype) {
-    return soil.entries
-        .firstWhere(
-          (entry) => entry.value == soiltype,
-          orElse: () => const MapEntry('Unknown', null),
-        )
-        .key;
-  }
 
   @override
   Widget build(BuildContext context) {

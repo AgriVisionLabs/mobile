@@ -115,7 +115,7 @@ class _MyAppState extends State<MyApp> {
       // SplashScreen()
       // LoginScreen(),
       // HomeScreen()
-      HomeScreen(initialIndex: 7,)
+      HomeScreen(initialIndex: 9,)
     );
   }
 }

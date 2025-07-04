@@ -120,9 +120,9 @@ class CompleteTaskEvent extends ControlEvent {
 }
 
 
-class AddItem extends ControlEvent {
+class AddItemEvent extends ControlEvent {
   final String farmId;
-  AddItem({
+  AddItemEvent({
     required this.farmId,
   });
   
@@ -144,10 +144,10 @@ class OpenItemEvent extends ControlEvent {
   });
 }
 
-class DeteteItemEvent extends ControlEvent {
+class DeleteItemEvent extends ControlEvent {
  final String farmId;
   final String itemId;
-  DeteteItemEvent({
+  DeleteItemEvent({
     required this.farmId,
     required this.itemId,
   });

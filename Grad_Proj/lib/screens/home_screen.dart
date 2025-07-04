@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,23 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Timer? _timer;
 
-  void _startTimer() {
-    // Start a timer that will call function to refresh token after 30 minutes
-    _timer = Timer.periodic(const Duration(minutes: 29), (timer) {
-      setState(() {
-        context.read<UserCubit>().refreshToken();
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    print("===========stop===========");
-    super.dispose();
-  }
 
   // Future<void> _login() async {
   //   final prefs = await SharedPreferences.getInstance();
@@ -96,7 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    _startTimer();
     return BlocListener<UserCubit, UserState>(
       listener: (context, state) {
         if (state is SignOut) {

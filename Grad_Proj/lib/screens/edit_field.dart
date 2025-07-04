@@ -171,7 +171,7 @@ class _EditFieldState extends State<EditField> {
                   size: 24,
                 )),
             const Spacer(),
-            const Text('Add New Feild',
+            const Text('Edit Feild',
                 style: TextStyle(
                   fontFamily: 'Manrope',
                   color: primaryColor,
