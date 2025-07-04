@@ -249,35 +249,35 @@ final class DeleteSensorUnitFailure extends FieldState {
 //=====================================================================
 //========================= Disease Detection =========================
 //=====================================================================
-// class AddDiseaseScanSuccess extends FieldState {
-//   final SensorDevice device;
-//   AddDiseaseScan({
-//     required this.device,
-//   });
-// }
+class DiseaseScanSuccess extends FieldState {
+  final SensorDevice device;
+  DiseaseScanSuccess({
+    required this.device,
+  });
+}
 
-// class AddSensorUnitFailure extends FieldState {
-//   final String errMessage;
-//   final dynamic errors;
-//   AddSensorUnitFailure({
-//     required this.errMessage,
-//     required this.errors,
-//   });
+class DiseaseScanFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+  DiseaseScanFailure({
+    required this.errMessage,
+    required this.errors,
+  });
 
-// }
+}
 
-// class ViewSensorUnitsSuccess extends FieldState{
-//   final List<SensorDevice> devices;
-//   ViewSensorUnitsSuccess({
-//     required this.devices});
-// }
-// class ViewSensorUnitsFailure extends FieldState {
-//   final String errMessage;
-//   final dynamic errors;
-//   ViewSensorUnitsFailure({
-//     required this.errMessage,
-//     required this.errors,
-//   });
+class ViewDetectionSuccess extends FieldState{
+  final List<SensorDevice> devices;
+  ViewDetectionSuccess({
+    required this.devices});
+}
+class ViewDiseaseDetectionFailure extends FieldState {
+  final String errMessage;
+  final dynamic errors;
+  ViewDiseaseDetectionFailure({
+    required this.errMessage,
+    required this.errors,
+  });
 
-// }
-// class SensorUnitsEmpty extends FieldState{}
+}
+class DiseaseDetectioEmpty extends FieldState{}

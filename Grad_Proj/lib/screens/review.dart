@@ -19,8 +19,8 @@ class Review extends StatefulWidget {
 class _ReviewState extends State<Review> {
   @override
   void initState() {
-    super.initState();
     context.read<FarmBloc>().add(ViewFarmMembers(farmId: widget.farmId));
+    super.initState();
     context.read<FarmBloc>().add(ViewFarmDetails(farmId: widget.farmId));
   }
 
@@ -164,7 +164,11 @@ class _ReviewState extends State<Review> {
               const SizedBox(
                 height: 24,
               ),
-              invites == null || invites!.isEmpty ? SizedBox(height: 0,) : _buildRolesList(),
+              invites == null || invites!.isEmpty
+                  ? SizedBox(
+                      height: 0,
+                    )
+                  : _buildRolesList(),
               const Spacer(),
               Align(
                 alignment: Alignment.bottomRight,

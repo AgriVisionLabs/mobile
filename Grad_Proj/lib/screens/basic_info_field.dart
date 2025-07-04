@@ -94,7 +94,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
         } else if (state is ViewCropTypesSuccess) {
           if (widget.soilType != null) {
             crops = state.crops
-                .where((crop) => crop.soilType == widget.soilType)
+                .where((crop) => crop.soilType == widget.soilType || crop.soilType==0)
                 .toList();
           } else {
             crops = state.crops.toList();
@@ -109,12 +109,7 @@ class _BasicInfoFieldState extends State<BasicInfoField> {
             );
           });
         }
-        if (state is ViewCropTypesSuccess && crops != null && !widget.edit) {
-          final cropSoilType =
-              crops!.firstWhere((crop) => crop.name == cropName).soilType;
-          crops =
-              crops!.where((crop) => crop.soilType == cropSoilType).toList();
-        }
+       
       },
       builder: (context, state) {
         return Container(
