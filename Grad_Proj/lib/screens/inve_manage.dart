@@ -2,8 +2,10 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
+import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/farm_model.dart';
+import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/add_item.dart';
 import 'package:grd_proj/screens/build_items.dart';
 import 'package:grd_proj/screens/widget/text.dart';
@@ -25,6 +27,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
     "Treatments",
     "Produce"
   ];
+  List<FieldModel>? fields;
   String? selectedFarmId;
   List<FarmModel>? farms;
   FarmBloc? _farmBloc;
@@ -64,9 +67,9 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: Colors.white,
+            backgroundColor: Colors.white,
             body: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 150, 16 , 1),
+                padding: const EdgeInsets.fromLTRB(16, 150, 16, 1),
                 child: SingleChildScrollView(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,6 +194,9 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                                     onTap: () {
                                       setState(() {
                                         selectedTab = index;
+                                        context.read<FieldBloc>().add(
+                                            OpenFieldEvent(
+                                                farmId: selectedFarmId!));
                                       });
                                     },
                                     child: Container(
@@ -222,34 +228,60 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        if (selectedFarmId == null)
-                          Center(
-                            child: text(
-                                fontSize: 24,
-                                label: "Please Select Farm",
-                                color: primaryColor),
-                          )
-                        else if (selectedTab == 0)
-                          BuildItems(
-                            farmId: selectedFarmId!,
-                          )
-                        else if (selectedTab == 1)
-                          BuildItems(
-                            farmId: selectedFarmId!,statue: 0,
-                          )
-                          else if (selectedTab == 2)
-                          BuildItems(
-                            farmId: selectedFarmId!,statue: 1,
-                          )else if (selectedTab == 3)
-                          BuildItems(
-                            farmId: selectedFarmId!,statue: 2,
-                          )else if (selectedTab == 4)
-                          BuildItems(
-                            farmId: selectedFarmId!,statue: 3,
-                          )else if (selectedTab == 5)
-                          BuildItems(
-                            farmId: selectedFarmId!,statue: 4,
-                          )
+                        BlocListener<FieldBloc, FieldState>(
+                            listener: (context, state) {
+                              if (state is FieldLoaded) {
+                                fields = state.fields;
+                              }
+                              if (state is FieldEmpty) {
+                                fields = [];
+                              } else if (state is FieldFailure) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(state.errMessage),
+                                    ),
+                                  );
+                                });
+                              }
+                            },
+                            child: (selectedFarmId == null)
+                                ? Center(
+                                    child: text(
+                                        fontSize: 24,
+                                        label: "Please Select Farm",
+                                        color: primaryColor),
+                                  )
+                                : (selectedTab == 0)
+                                    ? BuildItems(
+                                        farmId: selectedFarmId!,
+                                      )
+                                    : (selectedTab == 1)
+                                        ? BuildItems(
+                                            farmId: selectedFarmId!,
+                                            statue: 0,
+                                          )
+                                        : (selectedTab == 2)
+                                            ? BuildItems(
+                                                farmId: selectedFarmId!,
+                                                statue: 1,
+                                              )
+                                            : (selectedTab == 3)
+                                                ? BuildItems(
+                                                    farmId: selectedFarmId!,
+                                                    statue: 2,
+                                                  )
+                                                : (selectedTab == 4)
+                                                    ? BuildItems(
+                                                        farmId: selectedFarmId!,
+                                                        statue: 3,
+                                                      )
+                                                    : BuildItems(
+                                                        farmId: selectedFarmId!,
+                                                        statue: 4,
+                                                      ))
                       ]),
                 )));
       },

@@ -267,7 +267,7 @@ on<OpenFarmItemsEvent>((event, emit) async {
       }
     });
 
-    on<OpenFarmItemsEvent>((event, emit) async {
+    on<OpenItemEvent>((event, emit) async {
       try {
         final response = await api
             .get("${EndPoints.task}/${event.farmId}/InventoryItems");
