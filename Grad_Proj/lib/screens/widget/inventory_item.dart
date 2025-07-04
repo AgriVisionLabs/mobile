@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/field_model.dart';
+import 'package:grd_proj/models/inv_item_model.dart';
 
 Map category = {"Fertilizer": 0, "Chemicals": 1, "Treatments": 2, "Produce": 3};
 
@@ -41,5 +42,39 @@ Color? getColor( int? time) {
     return green;
   }else{
     return red;
+  }
+}
+
+
+String? getLabel( int index) {
+  if (index == 0) {
+    return "Total";
+  } else if (index == 1) {
+    return "Low Stock";
+  }else{
+    return "Expiring Soon";
+  }
+}
+
+
+String? getImage( int index) {
+  if (index == 0) {
+    return "assets/images/solar_box-linear.png";
+  } else if (index == 1) {
+    return "assets/images/bx_dollar.png";
+  }else{
+    return "assets/images/pajamas_expire.png";
+  }
+}
+
+int? getNum( List<InvItemModel> items,int index) {
+  if (index == 0) {
+    return items.length;
+  } else if (index == 1) {
+    return items.where((item) => item.stockLevel == "Low")
+                .toList().length;
+  }else{
+    return items.where((item) => item.dayTillExpiry != null &&item.dayTillExpiry! <= 3)
+                .toList().length;
   }
 }

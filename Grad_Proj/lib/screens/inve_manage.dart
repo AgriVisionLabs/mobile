@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
@@ -8,6 +9,7 @@ import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/add_item.dart';
 import 'package:grd_proj/screens/build_items.dart';
+import 'package:grd_proj/screens/widget/inventory_item.dart';
 import 'package:grd_proj/screens/widget/text.dart';
 
 class InventoryManagementScreen extends StatefulWidget {
@@ -100,11 +102,14 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                                     size: 24,
                                   ),
                                   onPressed: () {
+                                    context.read<ControlBloc>().add(
+                                        OpenFarmItemsEvent(
+                                            farmId: selectedFarmId!));
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => AddItem(
-                                                  farms: farms!,
+                                                  farmId: selectedFarmId!,
                                                 )));
                                   }),
                             ),
@@ -143,6 +148,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                                   : (value) {
                                       setState(() {
                                         selectedFarmId = value;
+                                        context.read<ControlBloc>().add(OpenFarmItemsEvent(farmId: selectedFarmId!));
                                       });
                                     },
                               buttonStyleData: ButtonStyleData(
@@ -173,6 +179,115 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                               ),
                             ),
                           ),
+                        ),
+                        const SizedBox(height: 30),
+                        BlocBuilder<ControlBloc, ControlState>(
+                          builder: (context, state) {
+                            if (state is ViewItemsFailure) {
+                              return const Center(
+                                  child: Text('Failed to load items'));
+                            }
+                            if (state is ViewItemsSuccess) {
+                              return SizedBox(
+                                  height: 95,
+                                  child: CustomScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      slivers: [
+                                        SliverList(
+                                            delegate:
+                                                SliverChildBuilderDelegate(
+                                                    childCount: 3,
+                                                    (context, index) {
+                                          return Container(
+                                            width: 210,
+                                            height: 92,
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 3.5),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 24, vertical: 16),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: borderColor,
+                                                  width: 1.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      text(
+                                                          fontSize: 18,
+                                                          label:getLabel(index)!),
+                                                      const Spacer(),
+                                                      Image.asset(
+                                                        getImage(index)!,
+                                                        height: 24,
+                                                        width: 24,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const Spacer(),
+                                                  text(
+                                                      fontSize: 20,
+                                                      label: getNum(state.items, index).toString(),fontWeight: FontWeight.bold)
+                                                ]),
+                                          );
+                                        }))
+                                      ]));
+                            } else {
+                              return SizedBox(
+                                  height: 95,
+                                  child: CustomScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      slivers: [
+                                        SliverList(
+                                            delegate:
+                                                SliverChildBuilderDelegate(
+                                                    childCount: 3,
+                                                    (context, index) {
+                                          return Container(
+                                            width: 230,
+                                            height: 92,
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 3.5),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 24, vertical: 16),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: borderColor,
+                                                  width: 1.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      text(
+                                                        fontSize: 18,
+                                                        label: getLabel(index)!,
+                                                      ),
+                                                      const Spacer(),
+                                                      Image.asset(
+                                                        getImage(index)!,
+                                                        height: 24,
+                                                        width: 24,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const Spacer(),
+                                                  text(fontSize: 20, label: "0")
+                                                ]),
+                                          );
+                                        }))
+                                      ]));
+                            }
+                          },
                         ),
                         const SizedBox(height: 30),
                         Container(
@@ -227,7 +342,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         BlocListener<FieldBloc, FieldState>(
                             listener: (context, state) {
                               if (state is FieldLoaded) {

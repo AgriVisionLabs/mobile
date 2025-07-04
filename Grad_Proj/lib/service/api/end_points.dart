@@ -76,4 +76,5 @@ class ApiKey{
   static String unitCost = 'unitCost';
   static String measurementUnit = 'measurementUnit';
   static String expirationDate = 'expirationDate';
+  static String reason = 'reason';
 }

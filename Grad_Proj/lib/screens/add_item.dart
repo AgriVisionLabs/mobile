@@ -3,16 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
+import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/components/date_input_formatter.dart';
 import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/models/field_model.dart';
+import 'package:grd_proj/models/inv_item_model.dart';
 import 'package:grd_proj/screens/widget/text.dart';
+import 'package:intl/intl.dart';
 
 class AddItem extends StatefulWidget {
-  final List<FarmModel> farms;
-  const AddItem({super.key, required this.farms});
+  final String farmId;
+  final bool isEdit;
+  final InvItemModel? item;
+  const AddItem(
+      {super.key, this.isEdit = false, this.item, required this.farmId});
 
   @override
   State<AddItem> createState() => _AddItemState();
@@ -26,6 +32,7 @@ class _AddItemState extends State<AddItem> {
   FieldBloc? _fieldBloc;
   ControlBloc? _controlBloc;
   List<FieldModel>? fields;
+  List<FarmModel>? farms;
   String? description;
   Map category = {
     "Fertilizer": 0,
@@ -36,9 +43,43 @@ class _AddItemState extends State<AddItem> {
   Map measurementUnit = {"Kg": 0, "L": 1, "g": 2, "mL": 3, "Ibs": 4, "oz": 5};
   @override
   void initState() {
+    context.read<FarmBloc>().add(OpenFarmEvent());
     _fieldBloc = context.read<FieldBloc>();
     _controlBloc = context.read<ControlBloc>();
+    if (widget.isEdit == true && widget.item != null) {
+      selectedFarmId = widget.item!.farmId;
+      _fieldBloc!.add(OpenFieldEvent(farmId: selectedFarmId!));
+      selectedFieldId = widget.item!.fieldId ?? '';
+      selectedCategory = widget.item!.category;
+      selectedUnit = widget.item!.measurementUnit;
+      _controlBloc!.fieldId.text = selectedFieldId!;
+      _controlBloc!.itemCategory.text = selectedCategory!.toString();
+      _controlBloc!.measurementUnit.text = selectedUnit!;
+      _controlBloc!.itemName.text = widget.item!.name;
+      _controlBloc!.quantity.text = widget.item!.quantity.toString();
+      _controlBloc!.thresholdQuantity.text =
+          widget.item!.thresholdQuantity.toString();
+      _controlBloc!.unitCost.text = widget.item!.unitCost.toString();
+      _controlBloc!.expirationDate.text = widget.item!.expirationDate != null
+          ? DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(widget.item!.expirationDate!))
+          : "Not Exist";
+    }
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controlBloc!.fieldId.clear();
+    _controlBloc!.itemCategory.clear();
+    _controlBloc!.measurementUnit.clear();
+    _controlBloc!.itemName.clear();
+    _controlBloc!.quantity.clear();
+    _controlBloc!.thresholdQuantity.clear();
+    _controlBloc!.unitCost.clear();
+    _controlBloc!.expirationDate.clear();
+    _controlBloc!.add(OpenFarmItemsEvent(farmId: widget.farmId));
+    super.dispose();
   }
 
   @override
@@ -57,6 +98,32 @@ class _AddItemState extends State<AddItem> {
           });
           Navigator.pop(context);
         } else if (state is AddItemFailure) {
+          _controlBloc!.itemFormKey.currentState!.validate();
+
+          if (state.errMessage == "Conflict") {
+            description = state.errors[0]['descrption'];
+          }
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
+        } else if (state is ItemEditSuccess) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Item Edited Successfuly'),
+              ),
+            );
+          });
+          Navigator.pop(context);
+        } else if (state is ItemEditFailure) {
+          _controlBloc!.itemFormKey.currentState!.validate();
+
           if (state.errMessage == "Conflict") {
             description = state.errors[0]['descrption'];
           }
@@ -69,7 +136,6 @@ class _AddItemState extends State<AddItem> {
             );
           });
         }
-        _controlBloc!.itemFormKey.currentState!.validate();
       }, builder: (context, snapshot) {
         return Container(
           margin: const EdgeInsets.only(top: 80, left: 20, right: 20),
@@ -81,11 +147,35 @@ class _AddItemState extends State<AddItem> {
                   children: [
                     Row(
                       children: [
-                        text(
-                            fontSize: 24,
-                            label: "Add New Inventory Item",
-                            fontWeight: FontWeight.w600,
-                            color: primaryColor),
+                        widget.isEdit
+                            ? RichText(
+                                text: TextSpan(
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontFamily: 'Manrope',
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  children: [
+                                    const TextSpan(
+                                      text: 'Update Item: ',
+                                      style: TextStyle(
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: widget.item!.name,
+                                      style: const TextStyle(
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : text(
+                                fontSize: 24,
+                                label: "Add New Inventory Item",
+                                fontWeight: FontWeight.w600,
+                                color: primaryColor),
                         const Spacer(),
                         IconButton(
                           onPressed: () {
@@ -106,64 +196,85 @@ class _AddItemState extends State<AddItem> {
                     const SizedBox(
                       height: 5,
                     ),
-                    SizedBox(
-                      width: 380,
-                      height: 52,
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton2<String>(
-                          isExpanded: true,
-                          hint: text(
-                              fontSize: 18,
-                              label: "select farm",
-                              fontWeight: FontWeight.w600,
-                              color: borderColor),
-                          value: selectedFarmId,
-                          items: widget.farms.map((farm) {
-                            return DropdownMenuItem<String>(
-                              value: farm.farmId,
-                              child: Text(
-                                farm.name!,
-                                style: const TextStyle(
-                                  fontFamily: 'Manrope',
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                    BlocConsumer<FarmBloc, FarmState>(
+                      listener: (context, state) {
+                        if (state is FarmsLoaded) {
+                          farms = state.farms;
+                        } else if (state is FarmFailure) {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(state.errMessage),
                               ),
                             );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedFarmId = value;
-                              _fieldBloc!
-                                  .add(OpenFieldEvent(farmId: selectedFarmId!));
-                            });
-                          },
-                          buttonStyleData: ButtonStyleData(
-                            height: 55,
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(color: borderColor, width: 2),
-                              color: Colors.white,
+                          });
+                          Navigator.pop(context);
+                        }
+                      },
+                      builder: (context, state) {
+                        return SizedBox(
+                          width: 380,
+                          height: 52,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                              isExpanded: true,
+                              hint: text(
+                                  fontSize: 18,
+                                  label: "select farm",
+                                  fontWeight: FontWeight.w600,
+                                  color: borderColor),
+                              value: selectedFarmId,
+                              items: farms?.map((farm) {
+                                return DropdownMenuItem<String>(
+                                  value: farm.farmId,
+                                  child: Text(
+                                    farm.name!,
+                                    style: const TextStyle(
+                                      fontFamily: 'Manrope',
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedFarmId = value;
+                                  _fieldBloc!.add(
+                                      OpenFieldEvent(farmId: selectedFarmId!));
+                                });
+                              },
+                              buttonStyleData: ButtonStyleData(
+                                height: 55,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                  border:
+                                      Border.all(color: borderColor, width: 2),
+                                  color: Colors.white,
+                                ),
+                              ),
+                              dropdownStyleData: DropdownStyleData(
+                                maxHeight: 250,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white,
+                                  border: Border.all(color: borderColor),
+                                ),
+                                elevation: 2,
+                                offset: const Offset(0, -5),
+                              ),
+                              iconStyleData: const IconStyleData(
+                                icon: Icon(Icons.keyboard_arrow_down_rounded),
+                                iconSize: 40,
+                                iconEnabledColor: Colors.black,
+                              ),
                             ),
                           ),
-                          dropdownStyleData: DropdownStyleData(
-                            maxHeight: 250,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white,
-                              border: Border.all(color: borderColor),
-                            ),
-                            elevation: 2,
-                            offset: const Offset(0, -5),
-                          ),
-                          iconStyleData: const IconStyleData(
-                            icon: Icon(Icons.keyboard_arrow_down_rounded),
-                            iconSize: 40,
-                            iconEnabledColor: Colors.black,
-                          ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                     const SizedBox(
                       height: 24,
@@ -185,7 +296,7 @@ class _AddItemState extends State<AddItem> {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('No Fields Found'),
+                              content: Text('No Fields Were Found'),
                             ),
                           );
                         });
@@ -330,22 +441,24 @@ class _AddItemState extends State<AddItem> {
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
                             borderSide:
-                                BorderSide(color: borderColor, width: 3),
+                                const BorderSide(color: borderColor, width: 3),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
                             borderSide:
-                                BorderSide(color: borderColor, width: 3),
+                                const BorderSide(color: borderColor, width: 3),
                           ),
                           filled: true,
                           fillColor: Colors.white,
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(color: Colors.red, width: 3),
+                            borderSide:
+                                const BorderSide(color: Colors.red, width: 3),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(color: Colors.red, width: 3),
+                            borderSide:
+                                const BorderSide(color: Colors.red, width: 3),
                           ),
                         ),
                         isExpanded: true,
@@ -461,22 +574,24 @@ class _AddItemState extends State<AddItem> {
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
                             borderSide:
-                                BorderSide(color: borderColor, width: 3),
+                                const BorderSide(color: borderColor, width: 3),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
                             borderSide:
-                                BorderSide(color: borderColor, width: 3),
+                                const BorderSide(color: borderColor, width: 3),
                           ),
                           filled: true,
                           fillColor: Colors.white,
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(color: Colors.red, width: 3),
+                            borderSide:
+                                const BorderSide(color: Colors.red, width: 3),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(color: Colors.red, width: 3),
+                            borderSide:
+                                const BorderSide(color: Colors.red, width: 3),
                           ),
                         ),
                         isExpanded: true,
@@ -502,8 +617,7 @@ class _AddItemState extends State<AddItem> {
                         onChanged: (value) {
                           setState(() {
                             selectedUnit = value;
-                            _controlBloc!.measurementUnit.text =
-                                selectedUnit!;
+                            _controlBloc!.measurementUnit.text = selectedUnit!;
                           });
                         },
                         dropdownStyleData: DropdownStyleData(
@@ -745,12 +859,18 @@ class _AddItemState extends State<AddItem> {
                                 ),
                               );
                             } else {
-                              _controlBloc!
-                                  .add(AddItemEvent(farmId: selectedFarmId!));
+                              if (widget.isEdit) {
+                                _controlBloc!.add(EditItemEvent(
+                                    farmId: selectedFarmId!,
+                                    itemId: widget.item!.id));
+                              } else {
+                                _controlBloc!
+                                    .add(AddItemEvent(farmId: selectedFarmId!));
+                              }
                             }
                           },
                           child: Container(
-                            width: 120,
+                            width: widget.isEdit ? 160 : 120,
                             height: 45,
                             decoration: BoxDecoration(
                               color: primaryColor,
@@ -760,10 +880,10 @@ class _AddItemState extends State<AddItem> {
                                 width: 1,
                               ),
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Text(
-                                "Add Item",
-                                style: TextStyle(
+                                widget.isEdit ? "Update Farm" : "Add Item",
+                                style: const TextStyle(
                                   fontSize: 19,
                                   fontFamily: "Manrope",
                                   fontWeight: FontWeight.w600,

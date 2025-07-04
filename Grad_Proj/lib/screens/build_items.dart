@@ -5,7 +5,9 @@ import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/models/inv_item_model.dart';
+import 'package:grd_proj/screens/add_item.dart';
 import 'package:grd_proj/screens/item_details.dart';
+import 'package:grd_proj/screens/item_log.dart';
 import 'package:grd_proj/screens/widget/inventory_item.dart';
 import 'package:grd_proj/screens/widget/text.dart';
 
@@ -92,6 +94,7 @@ class _BuildItemsState extends State<BuildItems> {
                   )
                 : CustomScrollView(
                     scrollDirection: Axis.vertical,
+                    physics: NeverScrollableScrollPhysics(),
                     slivers: [
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
@@ -166,7 +169,13 @@ class _BuildItemsState extends State<BuildItems> {
                                                         ],
                                                       ),
                                                       onTap: () {
-                                                        // handle update
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        AddItem(isEdit: true, item: item,farmId: widget.farmId
+                                                                        ,)));
                                                       },
                                                     ),
                                                     PopupMenuItem(
@@ -185,7 +194,13 @@ class _BuildItemsState extends State<BuildItems> {
                                                         ],
                                                       ),
                                                       onTap: () {
-                                                        // handle log
+                                                       Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        ItemLog(
+                                                                        farmId: item.farmId,itemId: item.id,itemName: item.name,)));
                                                       },
                                                     ),
                                                     PopupMenuItem(
@@ -332,7 +347,8 @@ class _BuildItemsState extends State<BuildItems> {
                                                               null
                                                           ? "Not Specified"
                                                           : "${item.dayTillExpiry.toString()} days",
-                                                          fontWeight: FontWeight.w600,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                       color: getColor(
                                                           item.dayTillExpiry)),
                                                 ],

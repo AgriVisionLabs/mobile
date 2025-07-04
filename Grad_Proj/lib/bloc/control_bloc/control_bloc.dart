@@ -40,7 +40,8 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
   TextEditingController unitCost = TextEditingController();
   TextEditingController measurementUnit = TextEditingController();
   TextEditingController expirationDate = TextEditingController();
-
+  GlobalKey<FormState> logFormKey = GlobalKey();
+  TextEditingController reason = TextEditingController();
 
   ControlBloc(this.api) : super(ControlInitial()) {
     on<AddAutomationRulesEvent>((event, emit) async {
@@ -62,8 +63,9 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
                   int.tryParse(type.text) == 0 ? null : startTime.text,
               ApiKey.endTime:
                   int.tryParse(type.text) == 0 ? null : endTime.text,
-              ApiKey.activeDays:
-                  int.tryParse(type.text) == 0 ? null : int.tryParse(activeDays.text),
+              ApiKey.activeDays: int.tryParse(type.text) == 0
+                  ? null
+                  : int.tryParse(activeDays.text),
             });
         final rules = AutomationRuleModel.fromJson(response);
         emit(AddAutomationRulesSuccess(rules: rules));
@@ -98,7 +100,7 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
       try {
         final response = await api.get(
             "${EndPoints.automationRules}/${event.farmId}/fields/${event.fieldId}/AutomationRules/${event.ruleId}");
-        final rule =  AutomationRuleModel.fromJson(response);
+        final rule = AutomationRuleModel.fromJson(response);
         emit(ViewAutomationRuleSuccess(rule: rule));
       } on ServerException catch (e) {
         emit(ViewAutomationRuleFailure(
@@ -136,7 +138,6 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
       try {
         final response = await api.delete(
             '${EndPoints.automationRules}/${event.farmId}/fields/${event.fieldId}/AutomationRules/${event.ruleId}');
-
       } on ServerException catch (e) {
         emit(DeleteAutomationRulesFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
@@ -171,12 +172,10 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
       }
     });
 
-    
-
     on<OpenFarmTasksEvent>((event, emit) async {
       try {
-        final response = await api
-            .get("${EndPoints.task}/${event.farmId}/Tasks");
+        final response =
+            await api.get("${EndPoints.task}/${event.farmId}/Tasks");
         if (response is List && response.isNotEmpty) {
           final tasks = response
               .map<TaskModel>((json) => TaskModel.fromJson(json))
@@ -218,8 +217,8 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
 
     on<CompleteTaskEvent>((event, emit) async {
       try {
-        final response = await api
-            .post("${EndPoints.task}/${event.farmId}/Tasks/${event.taskId}/complete");
+        final response = await api.post(
+            "${EndPoints.task}/${event.farmId}/Tasks/${event.taskId}/complete");
         emit(DeleteTaskSuccess());
       } on ServerException catch (e) {
         emit(DeleteTaskFailure(
@@ -230,18 +229,18 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
     on<AddItemEvent>((event, emit) async {
       // bloc takes stream of event and give stream of states
       try {
-        final response = await api.post(
-            "${EndPoints.task}/${event.farmId}/InventoryItems",
-            data: {
-              ApiKey.fieldId : fieldId.text.isEmpty ? null : fieldId.text,
-              ApiKey.name : itemName.text,
-              ApiKey.category : int.tryParse(itemCategory.text),
-              ApiKey.quantity : quantity.text,
-              ApiKey.thresholdQuantity : thresholdQuantity.text,
-              ApiKey.unitCost : unitCost.text,
-              ApiKey.measurementUnit : measurementUnit.text,
-              ApiKey.expirationDate : expirationDate.text.isEmpty ? null : expirationDate.text
-            });
+        final response = await api
+            .post("${EndPoints.task}/${event.farmId}/InventoryItems", data: {
+          ApiKey.fieldId: fieldId.text.isEmpty ? null : fieldId.text,
+          ApiKey.name: itemName.text,
+          ApiKey.category: int.tryParse(itemCategory.text),
+          ApiKey.quantity: quantity.text,
+          ApiKey.thresholdQuantity: thresholdQuantity.text,
+          ApiKey.unitCost: unitCost.text,
+          ApiKey.measurementUnit: measurementUnit.text,
+          ApiKey.expirationDate:
+              expirationDate.text.isEmpty ? null : expirationDate.text
+        });
         final item = InvItemModel.fromJson(response);
 
         emit(AddItemSuccess(item: item));
@@ -250,15 +249,16 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });
-on<OpenFarmItemsEvent>((event, emit) async {
+    on<OpenFarmItemsEvent>((event, emit) async {
       try {
-        final response = await api
-            .get("${EndPoints.task}/${event.farmId}/InventoryItems");
+        final response =
+            await api.get("${EndPoints.task}/${event.farmId}/InventoryItems");
         if (response is List && response.isNotEmpty) {
           final items = response
               .map<InvItemModel>((json) => InvItemModel.fromJson(json))
               .toList();
-        emit(ViewItemsSuccess(items: items));}else{
+          emit(ViewItemsSuccess(items: items));
+        } else {
           emit(ItemEmpty());
         }
       } on ServerException catch (e) {
@@ -269,8 +269,8 @@ on<OpenFarmItemsEvent>((event, emit) async {
 
     on<OpenItemEvent>((event, emit) async {
       try {
-        final response = await api
-            .get("${EndPoints.task}/${event.farmId}/InventoryItems");
+        final response =
+            await api.get("${EndPoints.task}/${event.farmId}/InventoryItems");
         final item = InvItemModel.fromJson(response);
         emit(ViewItemSuccess(item: item));
       } on ServerException catch (e) {
@@ -281,11 +281,52 @@ on<OpenFarmItemsEvent>((event, emit) async {
 
     on<DeleteItemEvent>((event, emit) async {
       try {
-        final response = await api
-            .delete("${EndPoints.task}/${event.farmId}/InventoryItems/${event.itemId}");
+        final response = await api.delete(
+            "${EndPoints.task}/${event.farmId}/InventoryItems/${event.itemId}");
         emit(DeleteTaskSuccess());
       } on ServerException catch (e) {
         emit(DeleteTaskFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<EditItemEvent>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response = await api.put(
+            "${EndPoints.task}/${event.farmId}/InventoryItems/${event.itemId}",
+            data: {
+              ApiKey.fieldId: fieldId.text.isEmpty ? null : fieldId.text,
+              ApiKey.name: itemName.text,
+              ApiKey.category: int.tryParse(itemCategory.text),
+              ApiKey.quantity: quantity.text,
+              ApiKey.thresholdQuantity: thresholdQuantity.text,
+              ApiKey.unitCost: unitCost.text,
+              ApiKey.measurementUnit: measurementUnit.text,
+              ApiKey.expirationDate:
+                  expirationDate.text.isEmpty ? null : expirationDate.text
+            });
+
+        emit(ItemEditSuccess());
+      } on ServerException catch (e) {
+        emit(ItemEditFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<AddLogEvent>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response = await api.post(
+            "${EndPoints.task}/${event.farmId}/InventoryItems/${event.itemId}/log",
+            data: {
+              ApiKey.quantity: quantity.text,
+              ApiKey.reason: int.tryParse(reason.text),
+            });
+
+        emit(ChangeLogSuccess());
+      } on ServerException catch (e) {
+        emit(ChangeLogFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });

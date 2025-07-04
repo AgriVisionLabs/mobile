@@ -224,3 +224,26 @@ class DeleteItemFailure extends ControlState {
   });
 }
 
+class ItemEditSuccess extends ControlState{}
+
+class ItemEditFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+ ItemEditFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+  
+}
+
+class ChangeLogSuccess extends ControlState{}
+
+class ChangeLogFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+ ChangeLogFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+  
+}
