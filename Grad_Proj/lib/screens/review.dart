@@ -3,25 +3,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
+import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/models/invation_model.dart';
+import 'package:grd_proj/screens/widget/soil.dart';
 
 import '../Components/color.dart';
 
 class Review extends StatefulWidget {
   final String farmId;
+  final FarmModel farm;
   final bool editFarm;
-  const Review({super.key, this.editFarm = false, required this.farmId});
+  const Review({super.key, this.editFarm = false, required this.farmId, required this.farm});
 
   @override
   State<Review> createState() => _ReviewState();
 }
 
 class _ReviewState extends State<Review> {
+  String? soilName;
   @override
   void initState() {
     context.read<FarmBloc>().add(ViewFarmMembers(farmId: widget.farmId));
+    soilName = getSoilName(widget.farm.soilType);
     super.initState();
-    context.read<FarmBloc>().add(ViewFarmDetails(farmId: widget.farmId));
   }
 
   List<InvitationModel>? invites;
@@ -29,25 +33,7 @@ class _ReviewState extends State<Review> {
   Widget build(BuildContext context) {
     return BlocConsumer<FarmBloc, FarmState>(
       listener: (context, state) {
-        if (state is FarmSuccess) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(widget.editFarm ? "Edit Done" : "Farm Created"),
-              ),
-            );
-          });
-        } else if (state is FarmFailure) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errMessage),
-              ),
-            );
-          });
-        } else if (state is LoadingMember) {
+       if (state is LoadingMember) {
           invites = state.invites;
         } else if (state is NoMember) {
           invites = [];
@@ -63,12 +49,6 @@ class _ReviewState extends State<Review> {
         }
       },
       builder: (context, state) {
-        if (state is FarmSuccess) {
-          String soil = state.farm.soilType == 1
-              ? "Sandy"
-              : state.farm.soilType == 2
-                  ? "Clay"
-                  : "Loamy";
           return SizedBox(
             width: 380,
             height: 680,
@@ -99,7 +79,7 @@ class _ReviewState extends State<Review> {
                             color: primaryColor,
                             fontSize: 20,
                             fontWeight: FontWeight.w500)),
-                    Text(state.farm.name!,
+                    Text(widget.farm.name,
                         style: const TextStyle(
                             fontFamily: 'Manrope',
                             color: Colors.black,
@@ -114,7 +94,7 @@ class _ReviewState extends State<Review> {
                             color: primaryColor,
                             fontSize: 20,
                             fontWeight: FontWeight.w500)),
-                    Text('${state.farm.area} acres',
+                    Text('${widget.farm.area} acres',
                         style: const TextStyle(
                             fontFamily: 'Manrope',
                             color: Colors.black,
@@ -137,7 +117,7 @@ class _ReviewState extends State<Review> {
                             color: primaryColor,
                             fontSize: 20,
                             fontWeight: FontWeight.w500)),
-                    Text(state.farm.location!,
+                    Text(widget.farm.location,
                         style: const TextStyle(
                             fontFamily: 'Manrope',
                             color: Colors.black,
@@ -152,7 +132,7 @@ class _ReviewState extends State<Review> {
                             color: primaryColor,
                             fontSize: 20,
                             fontWeight: FontWeight.w500)),
-                    Text('$soil Soil',
+                    Text('$soilName Soil',
                         style: const TextStyle(
                             fontFamily: 'Manrope',
                             color: Colors.black,
@@ -197,13 +177,11 @@ class _ReviewState extends State<Review> {
               )
             ]),
           );
-        }
-        return Center(
-          child: CircularProgressIndicator(),
+      } 
         );
-      },
-    );
-  }
+      }
+    
+  
 
   Widget _buildRolesList() {
     return SizedBox(

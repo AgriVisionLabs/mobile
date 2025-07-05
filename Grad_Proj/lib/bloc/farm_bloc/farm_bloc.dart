@@ -67,7 +67,7 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
       try {
         final response = await api.post(EndPoints.farmsInfo, data: {
           ApiKey.name: name.text,
-          ApiKey.area: area.text,
+          ApiKey.area: double.tryParse(area.text),
           ApiKey.location: location.text,
           ApiKey.soilType: int.tryParse(soilType.text),
         });

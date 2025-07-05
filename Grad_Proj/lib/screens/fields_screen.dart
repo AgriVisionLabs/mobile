@@ -9,6 +9,7 @@ import 'package:grd_proj/screens/edit_farm.dart';
 import 'package:grd_proj/screens/field_view.dart';
 import 'package:grd_proj/screens/new_field.dart';
 import 'package:grd_proj/screens/widget/soil.dart';
+import 'package:grd_proj/screens/widget/text.dart';
 
 import '../components/color.dart';
 
@@ -49,7 +50,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
         );
       }
       if (state is FarmSuccess) {
-        soilName = getSoilName(state.farm.soilType!);
+        soilName = getSoilName(state.farm.soilType);
         farm = state.farm;
 
         return Scaffold(
@@ -66,7 +67,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            farm!.name!,
+                            farm!.name,
                             style: const TextStyle(
                               fontFamily: 'Manrope',
                               color: primaryColor,
@@ -84,7 +85,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(30)),
                             ),
-                            child: Text(farm!.roleName!,
+                            child: Text(farm!.roleName,
                                 style: const TextStyle(
                                   fontFamily: 'Manrope',
                                   color: Colors.black,
@@ -103,7 +104,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
                             Icons.location_on_outlined,
                             color: borderColor,
                           ),
-                          Text(farm!.location!,
+                          Text(farm!.location,
                               style: const TextStyle(
                                 fontFamily: 'Manrope',
                                 color: grayColor,
@@ -137,7 +138,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            EditFarm(farmId: farm!.farmId!)));
+                                            EditFarm(farmId: farm!.farmId)));
                               },
                               icon: Image.asset(
                                 'assets/images/edit.png',
@@ -147,7 +148,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
                           IconButton(
                               onPressed: () {
                                 context.read<FarmBloc>().add(
-                                    DeleteFarmEvent(farmId: farm!.farmId!));
+                                    DeleteFarmEvent(farmId: farm!.farmId));
                               },
                               icon: Image.asset(
                                 'assets/images/delete.png',
@@ -168,8 +169,8 @@ class _FieldsScreenState extends State<FieldsScreen> {
                       const SizedBox(
                         width: 8,
                       ),
-                      const Text(' acres',
-                          style: TextStyle(
+                       Text('${farm!.area} acres',
+                          style: const TextStyle(
                             fontFamily: 'Manrope',
                             color: grayColor,
                             fontSize: 18,
@@ -196,7 +197,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
                       Container(
                         margin: const EdgeInsets.symmetric(vertical: 24),
                         height: 38,
-                        width: 119,
+                        width: 110,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25),
                           color: primaryColor,
@@ -210,15 +211,14 @@ class _FieldsScreenState extends State<FieldsScreen> {
                                     // ignore: prefer_const_constructors
                                     MaterialPageRoute(
                                         builder: (context) => NewFeild(
-                                              farmId: farm!.farmId!,
-                                              soilType: farm!.soilType!,
+                                              farmId: farm!.farmId,
+                                              soilType: farm!.soilType,
                                             )));
                               });
                             },
                             child: const Row(
                               children: [
-                                Icon(Icons.add, color: Colors.white, size: 20),
-                                SizedBox(width: 3),
+                                Icon(Icons.add, color: Colors.white, size: 15),
                                 Text(
                                   'Add Field',
                                   style: TextStyle(
@@ -227,7 +227,6 @@ class _FieldsScreenState extends State<FieldsScreen> {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(width: 3),
                               ],
                             )),
                       )
@@ -357,10 +356,7 @@ Widget _buildFeilds(BuildContext content, List<FieldModel> fields) {
                     ],
                   ),
 
-                  subtitle: field.cropName == null
-                      ? const SizedBox(
-                          height: 1,
-                        )
+                  subtitle: field.cropName == null ? text(fontSize: 20 , label: "No Crop")
                       : Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: Column(

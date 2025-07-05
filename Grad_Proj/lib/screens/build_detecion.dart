@@ -6,7 +6,6 @@ import 'package:grd_proj/models/diseaseDetections.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:grd_proj/screens/widget/disease_detection.dart';
-import 'package:grd_proj/screens/widget/inventory_item.dart';
 import 'package:grd_proj/screens/widget/text.dart';
 
 class BuildDetecions extends StatefulWidget {

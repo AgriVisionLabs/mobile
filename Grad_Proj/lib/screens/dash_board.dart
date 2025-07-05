@@ -10,6 +10,7 @@ import 'package:grd_proj/screens/alerts_bar.dart';
 import 'package:grd_proj/screens/todo_bar.dart';
 import 'package:grd_proj/screens/activity_bar.dart';
 import 'package:grd_proj/screens/widget/card.dart';
+import 'package:grd_proj/screens/widget/text.dart';
 import '../Components/color.dart';
 import 'weather_bar.dart';
 
@@ -100,7 +101,7 @@ class _DashBoardState extends State<DashBoard> {
                                                 MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                farm.name!,
+                                                farm.name,
                                                 style: const TextStyle(
                                                   fontFamily: 'Manrope',
                                                   fontSize: 20,
@@ -121,7 +122,7 @@ class _DashBoardState extends State<DashBoard> {
                                                         width: 2)),
                                                 child: Center(
                                                   child: Text(
-                                                    farm.roleName!,
+                                                    farm.roleName,
                                                     style: const TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 16,
@@ -159,7 +160,7 @@ class _DashBoardState extends State<DashBoard> {
                                                       alignment:
                                                           Alignment.centerLeft,
                                                       child: Text(
-                                                        farm.name!,
+                                                        farm.name,
                                                         style: const TextStyle(
                                                           fontFamily: 'Manrope',
                                                           fontSize: 20,
@@ -636,7 +637,7 @@ class _DashBoardState extends State<DashBoard> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            field.cropName == null ? SizedBox(height: 1,):
+                            field.cropName == null ? text(fontSize: 20 , label: "No Crop"):
                             Text(field.cropName!,
                                 style: const TextStyle(
                                   fontFamily: 'Manrope',

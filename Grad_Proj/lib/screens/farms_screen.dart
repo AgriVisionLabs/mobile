@@ -145,11 +145,11 @@ class _FarmsScreen extends State<FarmsScreen> {
           );
         } else {
           final farm = farms[index - 1];
-          soil = getSoilName(farm.soilType!);
+          soil = getSoilName(farm.soilType);
           return GestureDetector(
             onTap: () {
               context.read<FieldBloc>().add(OpenFieldEvent(
-                  farmId: farm.farmId!,
+                  farmId: farm.farmId,
                   ));
 
               Navigator.push(
@@ -180,7 +180,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    farm.name!,
+                    farm.name,
                     style: const TextStyle(
                       color: Color(0xff1E6930),
                       fontSize: 20,
@@ -194,7 +194,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                       Icon(Icons.location_on_outlined,
                           color: Color(0xff616161)),
                       SizedBox(width: 8),
-                      Text(farm.location!, style: TextStyle(fontSize: 18)),
+                      Text(farm.location, style: TextStyle(fontSize: 18)),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -227,7 +227,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                             border: Border.all(color: borderColor, width: 1)),
                         child: Center(
                           child: Text(
-                            farm.roleName!,
+                            farm.roleName,
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
@@ -242,7 +242,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      EditFarm(farmId: farm.farmId!)));
+                                      EditFarm(farmId: farm.farmId)));
                         },
                         child: Image.asset('assets/images/edit.png',
                             width: 30, height: 30),
@@ -252,7 +252,7 @@ class _FarmsScreen extends State<FarmsScreen> {
                         onTap: () {
                           context
                               .read<FarmBloc>()
-                              .add(DeleteFarmEvent(farmId: farm.farmId!));
+                              .add(DeleteFarmEvent(farmId: farm.farmId));
                         },
                         child: Image.asset('assets/images/delete.png',
                             width: 30, height: 30),

@@ -101,12 +101,13 @@ class _NewFarmState extends State<NewFarm> {
                         )
                     else if (currentIndex == 1)
                       Team(
-                          farmId: farm!.farmId!,
+                          farmId: farm!.farmId,
                           onInputChanged: _onInputChanged,
                           currentIndex: currentIndex)
                     else
                       Review(
-                        farmId: farm!.farmId!,
+                        farmId: farm!.farmId,
+                        farm: farm!,
                       ),
                     const SizedBox(height: 20),
                   ],
@@ -126,10 +127,10 @@ class _NewFarmState extends State<NewFarm> {
           onPressed: () {
             setState(() {
               if (currentIndex == 2) {
-                context.read<FarmBloc>().add(ViewFarmMembers(farmId: farm!.farmId!));
+                context.read<FarmBloc>().add(ViewFarmMembers(farmId: farm!.farmId));
               } else if (currentIndex == 1) {
                 edit = true;
-                context.read<FarmBloc>().add(ViewFarmDetails(farmId: farm!.farmId!));
+                context.read<FarmBloc>().add(ViewFarmDetails(farmId: farm!.farmId));
               } else {
                 Navigator.pop(context);
               }

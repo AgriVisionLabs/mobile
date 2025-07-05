@@ -44,12 +44,12 @@ class _BasicInfoState extends State<BasicInfo> {
     super.initState();
     if (widget.editFarm && widget.farm != null) {
       final farm = widget.farm!;
-      context.read<FarmBloc>().name.text = farm.name!;
-      context.read<FarmBloc>().area.text = farm.area!.toString();
-      context.read<FarmBloc>().location.text = farm.location!;
-      context.read<FarmBloc>().soilType.text = farm.soilType!.toString();
+      context.read<FarmBloc>().name.text = farm.name;
+      context.read<FarmBloc>().area.text = farm.area.toString();
+      context.read<FarmBloc>().location.text = farm.location;
+      context.read<FarmBloc>().soilType.text = farm.soilType.toString();
       selectedValue = farm.soilType;
-      soilName = getSoilName(farm.soilType!);
+      soilName = getSoilName(farm.soilType);
     }
   }
 
@@ -63,7 +63,7 @@ class _BasicInfoState extends State<BasicInfo> {
           widget.onInputChanged(index, widget.farm!);
           context
               .read<FarmBloc>()
-              .add(ViewFarmMembers(farmId: widget.farm!.farmId!));
+              .add(ViewFarmMembers(farmId: widget.farm!.farmId));
         } else if (state is FarmEditFailure) {
           if (state.errMessage == 'Conflict') {
             description = state.errors[0]['description'];
@@ -338,7 +338,7 @@ class _BasicInfoState extends State<BasicInfo> {
                                   // Edit event
                                   context.read<FarmBloc>().add(
                                         EditFarmEvent(
-                                          farmId: widget.farm!.farmId!,
+                                          farmId: widget.farm!.farmId,
                                         ),
                                       );
                                 } else {

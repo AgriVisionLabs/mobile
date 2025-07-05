@@ -115,6 +115,7 @@ class _EditFarmState extends State<EditFarm> {
                         else
                           Review(
                             farmId: widget.farmId,
+                            farm: farm!,
                             editFarm: true,
                           ),
                       ],

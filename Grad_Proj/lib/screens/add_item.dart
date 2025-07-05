@@ -229,7 +229,7 @@ class _AddItemState extends State<AddItem> {
                                 return DropdownMenuItem<String>(
                                   value: farm.farmId,
                                   child: Text(
-                                    farm.name!,
+                                    farm.name,
                                     style: const TextStyle(
                                       fontFamily: 'Manrope',
                                       fontSize: 20,

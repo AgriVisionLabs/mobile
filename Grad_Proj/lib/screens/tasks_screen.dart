@@ -182,7 +182,7 @@ class _TaskScreen extends State<TaskScreen> {
                                   farms?.map<DropdownMenuItem<String>>((farm) {
                                 return DropdownMenuItem<String>(
                                   value: farm.farmId,
-                                  child: Text(farm.name!),
+                                  child: Text(farm.name),
                                 );
                               }).toList(),
                             ),
