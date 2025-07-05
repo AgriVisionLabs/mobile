@@ -3,7 +3,7 @@ import 'package:grd_proj/service/api/end_points.dart';
 class FieldModel {
   final String id;
   final String name;
-  final int area;
+  final double area;
   final bool isActive;
   final String farmId;
   final int? cropType;
