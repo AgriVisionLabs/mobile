@@ -1,32 +1,41 @@
-import 'dart:ffi';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 
 import 'package:grd_proj/service/api/end_points.dart';
 
 class FarmModel {
-   String ? farmId;
-   String ? name;
-   double ? area;
-   String ? location;
-   int ? soilType;
-   int ? fieldsNo;
-   String ? roleName;
-   String ? ownerId;
-   bool ? isOwner;
+  final String farmId;
+  final String name;
+  final double area;
+  final String location;
+  final int soilType;
+  final int fieldsNo;
+  final String roleName;
+  final String ownerId;
+  final bool isOwner;
 
-  FarmModel({this.farmId, this.name, this.area, this.location, this.soilType, this.fieldsNo, this.roleName, this.ownerId, this.isOwner});
+  FarmModel({
+    required this.farmId,
+    required this.name,
+    required this.area,
+    required this.location,
+    required this.soilType,
+    required this.fieldsNo,
+    required this.roleName,
+    required this.ownerId,
+    required this.isOwner,
+  });
 
-  factory FarmModel.fromJson(Map<String,dynamic> jsonData){
+  factory FarmModel.fromJson(Map<String, dynamic> jsonData) {
     return FarmModel(
-      farmId: jsonData[ApiKey.farmId],
-      name: jsonData[ApiKey.name],
-      area: jsonData[ApiKey.area],
-      location: jsonData[ApiKey.location],
-      soilType: jsonData[ApiKey.soilType],
-      fieldsNo: jsonData[ApiKey.fieldsNo],
-      roleName: jsonData[ApiKey.roleName],
-      ownerId: jsonData[ApiKey.ownerId],
-      isOwner: jsonData[ApiKey.isOwner]
-    );
+        farmId: jsonData[ApiKey.farmId],
+        name: jsonData[ApiKey.name],
+        area: (jsonData[ApiKey.area] as num).toDouble(),
+        location: jsonData[ApiKey.location],
+        soilType: jsonData[ApiKey.soilType],
+        fieldsNo: jsonData[ApiKey.fieldsNo],
+        roleName: jsonData[ApiKey.roleName],
+        ownerId: jsonData[ApiKey.ownerId],
+        isOwner: jsonData[ApiKey.isOwner]);
   }
-
 }

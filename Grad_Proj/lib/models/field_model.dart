@@ -33,7 +33,7 @@ class FieldModel {
     return FieldModel(
       id: json[ApiKey.id],
       name: json[ApiKey.name],
-      area: json[ApiKey.area],
+      area: (json['area'] as num).toDouble(),
       isActive: json[ApiKey.isActive],
       farmId: json[ApiKey.farmId],
       cropType: json[ApiKey.cropType],
