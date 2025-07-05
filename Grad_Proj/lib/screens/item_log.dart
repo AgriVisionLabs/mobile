@@ -53,7 +53,7 @@ class _ItemLogState extends State<ItemLog> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: const Text("Log Changed Successfuly"),
+                content: Text("Log Changed Successfuly"),
               ),
             );
           });
@@ -121,7 +121,7 @@ class _ItemLogState extends State<ItemLog> {
                     ),
                     Form(
                       key: _controlBloc!.logFormKey,
-                      child: Container(
+                      child: SizedBox(
                         height: 720,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

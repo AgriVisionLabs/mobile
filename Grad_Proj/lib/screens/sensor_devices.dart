@@ -23,6 +23,9 @@ class SensorDevices extends StatefulWidget {
 
 class _SensorDevicesState extends State<SensorDevices> {
   SensorBloc? _sensorBloc;
+  String? mos;
+  String? temp;
+  String? hum;
   @override
   void initState() {
     _sensorBloc = context.read<SensorBloc>();
@@ -66,6 +69,9 @@ class _SensorDevicesState extends State<SensorDevices> {
                     childCount: state.devices.length,
                     (context, index) {
                       final item = state.devices[index];
+                      mos = item.moisture!.toStringAsFixed(2).toString();
+                      temp = item.temperature!.toStringAsFixed(2).toString();
+                      hum = item.humidity!.toStringAsFixed(2).toString();
                       return Container(
                         margin: const EdgeInsets.only(bottom: 20),
                         decoration: BoxDecoration(
@@ -85,8 +91,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 24),
+                              margin: const EdgeInsets.all(24),
                               child: Column(
                                 children: [
                                   Row(
@@ -213,6 +218,9 @@ class _SensorDevicesState extends State<SensorDevices> {
                                         print("=============${state.farmId}============");
                                       }else if(state is SensorDataReceived){
                                         print("==============${state.data}============}");
+                                        mos = state.data;
+                                        temp = state.data;
+                                        hum = state.data;
                                       }
                                     },
                                     builder: (context, state) {
@@ -238,7 +246,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   Text(
-                                                      "${item.moisture!.toStringAsFixed(2)}%",
+                                                      "$mos%",
                                                       style: const TextStyle(
                                                         color:
                                                             Color(0xFF000000),
@@ -283,7 +291,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   Text(
-                                                      "${item.temperature!.toStringAsFixed(2)}°C",
+                                                      "$temp°C",
                                                       style: const TextStyle(
                                                         color:
                                                             Color(0xFF000000),
@@ -328,7 +336,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   Text(
-                                                      "${item.humidity!.toStringAsFixed(2)}°C",
+                                                      "${hum!}%",
                                                       style: const TextStyle(
                                                         color:
                                                             Color(0xFF000000),

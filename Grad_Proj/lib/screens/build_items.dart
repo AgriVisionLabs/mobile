@@ -90,7 +90,7 @@ class _BuildItemsState extends State<BuildItems> {
                   )
                 : CustomScrollView(
                     scrollDirection: Axis.vertical,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     slivers: [
                       SliverList(
                         delegate: SliverChildBuilderDelegate(

@@ -174,7 +174,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       try {
         final response = await api.get(
             "${EndPoints.irrigation}/${event.farmId}/fields/${event.fieldId}/IrrigationUnits");
-        if (response is! String && response.isNotEmpty) {
+        if (response is! String && response.isNotEmpty && response != null) {
           final irrigationUnit = IrrigationDevice.fromJson(response);
           emit(ViewFieldIrrigationUnitSuccess(
             device: irrigationUnit,
@@ -271,7 +271,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       try {
         final response = await api.get(
             "${EndPoints.sensor}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}");
-        if (response is! String && response.isNotEmpty) {
+        if (response is! String && response.isNotEmpty  && response != null) {
           final sensorUnit = SensorDevice.fromJson(response);
           emit(ViewFieldSensorUnitSuccess(
             device: sensorUnit,

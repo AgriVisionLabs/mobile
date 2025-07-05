@@ -44,7 +44,7 @@ class _BuildDetecionsState extends State<BuildDetecions> {
           });
         } else if (state is ViewDetectionSuccess) {
           info = getList(state.info, widget.status);
-          return Container(
+          return SizedBox(
             height: 500,
             width: 400,
             child: info!.isEmpty
@@ -114,7 +114,7 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                                           // ),
                                         ],
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 24,
                                       ),
                                       Row(
@@ -122,7 +122,7 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                                           Image.asset(
                                             'assets/images/lucide_leaf.png',
                                           ),
-                                          SizedBox(width: 5,),
+                                          const SizedBox(width: 5,),
                                           text(fontSize: 20, label: "label", color: textColor2)
                                         ],
                                       ),
@@ -134,7 +134,7 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                                                 Row(
                                                   children: [
                                                     text(fontSize: 20 , label: "Crop Health"),
-                                                    Spacer(),
+                                                    const Spacer(),
                                                     text(fontSize: 20, label: "66"),
                                                   ],
                                                 ),
@@ -145,7 +145,7 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                                               child: Row(
                                                 children: [
                                                   text(fontSize: 20, label: "Crop Health"),
-                                                  Spacer(),
+                                                  const Spacer(),
                                                   text(fontSize: 20, label: info![index].createdOn.toString()),
                                                 ]
                                               )

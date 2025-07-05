@@ -19,7 +19,7 @@ class SensorBloc extends Bloc<SensorEvent, SensorState> {
 
       //build connection
       _connection = HubConnectionBuilder()
-          .withUrl('https://agrivision.tryasp.net/hubs/sensors',
+          .withUrl('https://api.agrivisionlabs.tech/hubs/sensors',
               options: HttpConnectionOptions(
                 accessTokenFactory: () async => event.token,
               ))

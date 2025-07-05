@@ -3,17 +3,16 @@ import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
 import 'package:signalr_netcore/itransport.dart';
 
-
-class ChatSignalRService {
+class SignalRServices {
   late final HubConnection _connection;
 
-  ChatSignalRService({required String baseUrl, required String token}) {
+  signalRServices({required String baseUrl, required String token}) {
     _connection = HubConnectionBuilder()
         .withUrl(
           "$baseUrl/chatHub",
           options: HttpConnectionOptions(
             accessTokenFactory: () async => token,
-            transport: HttpTransportType.WebSockets, 
+            transport: HttpTransportType.WebSockets,
           ),
         )
         .withAutomaticReconnect()
@@ -21,11 +20,20 @@ class ChatSignalRService {
   }
 
   Future<void> startConnection() async {
-    await _connection.start();
+    try {
+      if (_connection.state != HubConnectionState.Connected) {
+        await _connection.start();
+        print("============== SignalR Connected ==============");
+      }
+    } catch (e) {
+      print("============== Failed to connect: $e ==============");
+    }
   }
 
-  void sendMessage(String user, String message) {
-    _connection.invoke('SendMessage', args: [user, message]);
+  Future<void> stopConnection() async {
+    if (_connection.state == HubConnectionState.Connected) {
+      await _connection.stop();
+    }
   }
 
   void onMessageReceived(Function(String user, String message) callback) {
@@ -34,9 +42,5 @@ class ChatSignalRService {
       final message = args?[1] as String;
       callback(user, message);
     });
-  }
-
-  Future<void> stopConnection() async {
-    await _connection.stop();
   }
 }
