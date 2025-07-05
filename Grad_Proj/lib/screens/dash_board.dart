@@ -18,6 +18,7 @@ class DashBoard extends StatefulWidget {
   const DashBoard({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _DashBoardState createState() => _DashBoardState();
 }
 
@@ -62,6 +63,10 @@ class _DashBoardState extends State<DashBoard> {
                           });
                         } else if (state is FarmsLoaded) {
                           farms = state.farms;
+                          selectedFarmId = farms![0].farmId;
+                          roleName = farms![0].roleName;
+                          _fieldBloc!
+                              .add(OpenFieldEvent(farmId: selectedFarmId!));
                         } else if (state is FarmFailure) {
                           ScaffoldMessenger.of(context).clearSnackBars();
                           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -86,7 +91,7 @@ class _DashBoardState extends State<DashBoard> {
                                     child: DropdownButton2<String>(
                                       isExpanded: true,
                                       hint: Text(
-                                        'Choose Farm',
+                                        'Select Farm',
                                         style: const TextStyle(
                                             fontSize: 16,
                                             fontFamily: 'Manrope',
@@ -248,10 +253,15 @@ class _DashBoardState extends State<DashBoard> {
                                       }
                                       if (state is FieldLoaded) {
                                         return Container(
-                                          height: state.fields.length>3 ? 530 : null,
+                                          height: state.fields.length > 3
+                                              ? 530
+                                              : null,
                                           padding: EdgeInsets.all(8),
                                           margin: EdgeInsets.only(
-                                              bottom: 20, top: 30 , left: 5 ,right: 5),
+                                              bottom: 20,
+                                              top: 30,
+                                              left: 5,
+                                              right: 5),
                                           child: _buildFeilds(
                                               context, state.fields),
                                         );
@@ -574,8 +584,8 @@ class _DashBoardState extends State<DashBoard> {
             final field = fields?[index];
             //container of each task
             return Container(
-              margin:
-                  const EdgeInsets.only(bottom: 10, left: 15, right: 15, top: 10),
+              margin: const EdgeInsets.only(
+                  bottom: 10, left: 15, right: 15, top: 10),
               child: Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 22),
@@ -589,7 +599,7 @@ class _DashBoardState extends State<DashBoard> {
                             spreadRadius: 0.7,
                             offset: Offset(0, 2.25))
                       ]),
-      
+
                   //listTile used for constant layout of each item
                   child: ListTile(
                     //task content
@@ -610,7 +620,7 @@ class _DashBoardState extends State<DashBoard> {
                           ),
                         ),
                         const Spacer(),
-      
+
                         Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 5, horizontal: 10),
@@ -620,37 +630,39 @@ class _DashBoardState extends State<DashBoard> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(30)),
                           ),
-                          child:
-                              Text(field.isActive == true ? "Active" : "Inactive",
-                                  style: const TextStyle(
-                                    fontFamily: 'Manrope',
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  )),
+                          child: Text(
+                              field.isActive == true ? "Active" : "Inactive",
+                              style: const TextStyle(
+                                fontFamily: 'Manrope',
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              )),
                         )
                       ],
                     ),
-      
+
                     subtitle: Container(
                       margin: const EdgeInsets.symmetric(vertical: 10),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            field.cropName == null ? text(fontSize: 20 , label: "No Crop"):
-                            Text(field.cropName!,
-                                style: const TextStyle(
-                                  fontFamily: 'Manrope',
-                                  color: Colors.black,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                )),
+                            field.cropName == null
+                                ? text(fontSize: 20, label: "No Crop")
+                                : Text(field.cropName!,
+                                    style: const TextStyle(
+                                      fontFamily: 'Manrope',
+                                      color: Colors.black,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    )),
                             field.progress == null
                                 ? SizedBox(
                                     height: 1,
                                   )
                                 : Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       LinearProgressIndicator(
                                         value: (field.progress! / 100),
@@ -662,7 +674,8 @@ class _DashBoardState extends State<DashBoard> {
                                       Text(
                                         "Progress: ${field.progress}%",
                                         style: TextStyle(
-                                            fontSize: 14, color: Colors.black87),
+                                            fontSize: 14,
+                                            color: Colors.black87),
                                       ),
                                     ],
                                   ),

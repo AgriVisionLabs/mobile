@@ -43,8 +43,9 @@ class _IrrigationState extends State<Irrigation> {
   @override
   void initState() {
     _fieldBloc = context.read<FieldBloc>();
+    widget.form ?
     _fieldBloc!.add(OpenFieldIrrigationUnitsEvent(
-        farmId: widget.farmId, fieldId: widget.fieldId));
+      farmId: widget.farmId, fieldId: widget.fieldId)):
     super.initState();
   }
 

@@ -42,7 +42,7 @@ class _SelectFieldState extends State<SelectField> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('There is no farms to show'),
+                content: Text('This farm has no fields.'),
               ),
             );
           });
@@ -119,7 +119,7 @@ class _SelectFieldState extends State<SelectField> {
                               selectedFieldName = selectedField.first.name;
                             });
                           }
-                          CacheHelper.saveData(key: "FieldId", value: newValue);
+                          CacheHelper.saveData(key: "fieldId", value: newValue);
                         });
                       },
               ),

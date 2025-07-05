@@ -268,6 +268,24 @@ class _FieldsScreenState extends State<FieldsScreen> {
                 ]),
               ),
             ));
+      }else if (state is DeleteFarmSuccess){
+        ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content:  Text("Farm Deleted Successfuly"),
+              ),
+            );
+          });
+      }else if(state is DeleteFarmFailure){
+        ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
       }
       return const Scaffold(
         body: Center(
