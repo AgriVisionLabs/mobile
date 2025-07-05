@@ -43,10 +43,10 @@ class _IrrigationState extends State<Irrigation> {
   @override
   void initState() {
     _fieldBloc = context.read<FieldBloc>();
-    widget.form ?
-    _fieldBloc!.add(OpenFieldIrrigationUnitsEvent(
-      farmId: widget.farmId, fieldId: widget.fieldId)):
-    super.initState();
+    widget.form
+        ? _fieldBloc!.add(OpenFieldIrrigationUnitsEvent(
+            farmId: widget.farmId, fieldId: widget.fieldId))
+        : super.initState();
   }
 
   @override
@@ -110,14 +110,16 @@ class _IrrigationState extends State<Irrigation> {
             'number': context.read<FieldBloc>().irrigationSerialNum.text,
           });
         } else if (state is ViewFieldIrrigationUnitFailure) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errMessage),
-              ),
-            );
-          });
+          if (state.errMessage != "Not Found") {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errMessage),
+                ),
+              );
+            });
+          }
         }
       },
       builder: (context, state) {

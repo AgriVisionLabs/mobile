@@ -36,13 +36,13 @@ class FieldModel {
       area: (json['area'] as num).toDouble(),
       isActive: json[ApiKey.isActive],
       farmId: json[ApiKey.farmId],
-      cropType: json[ApiKey.cropType],
+      cropType: json[ApiKey.cropType]== null ? null : int.parse(json[ApiKey.cropType]),
       cropName: json[ApiKey.cropName],
       description: json[ApiKey.description],
       supportsDiseaseDetection: json[ApiKey.supportsDiseaseDetection],
       plantingDate: json[ApiKey.plantingDate] == null ? null :DateTime.parse(json[ApiKey.plantingDate]),
       expectedHarvestDate: json[ApiKey.expectedHarvestDate] == null ? null :DateTime.parse(json[ApiKey.expectedHarvestDate]),
-      progress: json[ApiKey.progress],
+      progress: json[ApiKey.progress]== null ? null : int.parse(json[ApiKey.progress]),
     );
   }
 
