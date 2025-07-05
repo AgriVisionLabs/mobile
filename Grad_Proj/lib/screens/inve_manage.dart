@@ -9,6 +9,7 @@ import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/add_item.dart';
 import 'package:grd_proj/screens/build_items.dart';
+import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:grd_proj/screens/widget/inventory_item.dart';
 import 'package:grd_proj/screens/widget/text.dart';
 
@@ -33,7 +34,6 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
   String? selectedFarmId;
   List<FarmModel>? farms;
   FarmBloc? _farmBloc;
-
   @override
   void initState() {
     _farmBloc = context.read<FarmBloc>();
@@ -148,7 +148,12 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                                   : (value) {
                                       setState(() {
                                         selectedFarmId = value;
-                                        context.read<ControlBloc>().add(OpenFarmItemsEvent(farmId: selectedFarmId!));
+                                        context.read<FieldBloc>().add(
+                                            OpenFieldEvent(
+                                                farmId: selectedFarmId!));
+                                        context.read<ControlBloc>().add(
+                                            OpenFarmItemsEvent(
+                                                farmId: selectedFarmId!));
                                       });
                                     },
                               buttonStyleData: ButtonStyleData(
@@ -220,7 +225,8 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                                                     children: [
                                                       text(
                                                           fontSize: 18,
-                                                          label:getLabel(index)!),
+                                                          label:
+                                                              getLabel(index)!),
                                                       const Spacer(),
                                                       Image.asset(
                                                         getImage(index)!,
@@ -232,7 +238,11 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                                                   const Spacer(),
                                                   text(
                                                       fontSize: 20,
-                                                      label: getNum(state.items, index).toString(),fontWeight: FontWeight.bold)
+                                                      label: getNum(state.items,
+                                                              index)
+                                                          .toString(),
+                                                      fontWeight:
+                                                          FontWeight.bold)
                                                 ]),
                                           );
                                         }))
@@ -309,9 +319,6 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                                     onTap: () {
                                       setState(() {
                                         selectedTab = index;
-                                        context.read<FieldBloc>().add(
-                                            OpenFieldEvent(
-                                                farmId: selectedFarmId!));
                                       });
                                     },
                                     child: Container(
@@ -343,60 +350,38 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        BlocListener<FieldBloc, FieldState>(
-                            listener: (context, state) {
-                              if (state is FieldLoaded) {
-                                fields = state.fields;
-                              }
-                              if (state is FieldEmpty) {
-                                fields = [];
-                              } else if (state is FieldFailure) {
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(state.errMessage),
-                                    ),
-                                  );
-                                });
-                              }
-                            },
-                            child: (selectedFarmId == null)
-                                ? Center(
-                                    child: text(
-                                        fontSize: 24,
-                                        label: "Please Select Farm",
-                                        color: primaryColor),
-                                  )
-                                : (selectedTab == 0)
-                                    ? BuildItems(
-                                        farmId: selectedFarmId!,
-                                      )
-                                    : (selectedTab == 1)
-                                        ? BuildItems(
-                                            farmId: selectedFarmId!,
-                                            statue: 0,
-                                          )
-                                        : (selectedTab == 2)
-                                            ? BuildItems(
-                                                farmId: selectedFarmId!,
-                                                statue: 1,
-                                              )
-                                            : (selectedTab == 3)
-                                                ? BuildItems(
-                                                    farmId: selectedFarmId!,
-                                                    statue: 2,
-                                                  )
-                                                : (selectedTab == 4)
-                                                    ? BuildItems(
-                                                        farmId: selectedFarmId!,
-                                                        statue: 3,
-                                                      )
-                                                    : BuildItems(
-                                                        farmId: selectedFarmId!,
-                                                        statue: 4,
-                                                      ))
+                        (selectedFarmId == null)
+                            ? Center(
+                                child: text(
+                                    fontSize: 24,
+                                    label: "Please Select Farm",
+                                    color: primaryColor),
+                              )
+                            : BlocBuilder<FieldBloc, FieldState>(
+                                builder: (context, state) {
+                                  if (state is FieldLoadingFailure) {
+                                    return text(fontSize: 50, label: "label");
+                                  }
+                                  if (state is FieldLoaded) {
+                                    return BuildItems(
+                                      farmId: selectedFarmId!,
+                                      status: selectedTab == 0
+                                          ? null
+                                          : selectedTab - 1,
+                                      fields: state.fields,
+                                    );
+                                  } else if (state is FieldEmpty) {
+                                    return BuildItems(
+                                      farmId: selectedFarmId!,
+                                      status: selectedTab == 0
+                                          ? null
+                                          : selectedTab - 1,
+                                      fields: const [],
+                                    );
+                                  }
+                                  return  circularProgressIndicator();
+                                },
+                              )
                       ]),
                 )));
       },

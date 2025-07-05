@@ -9,6 +9,7 @@ import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/bloc/sensor_bloc/sensor_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/screens/chat_screen.dart';
 import 'package:grd_proj/screens/field_view.dart';
 import 'package:grd_proj/service/api/dio_consumer.dart';
 import 'package:grd_proj/service/api/end_points.dart';
@@ -113,9 +114,10 @@ class _MyAppState extends State<MyApp> {
       // ScheduleMaintenance()
       // SensorView()
       // SplashScreen()
-      // LoginScreen(),
+      LoginScreen(),
       // HomeScreen()
-      HomeScreen(initialIndex: 9,)
+      // HomeScreen(initialIndex: 7,) 
+      // ChatScreen()
     );
   }
 }

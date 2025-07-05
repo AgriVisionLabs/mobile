@@ -13,9 +13,9 @@ import 'package:grd_proj/screens/widget/text.dart';
 
 class BuildItems extends StatefulWidget {
   final String farmId;
-  final int? statue;
-
-  const BuildItems({super.key, required this.farmId, this.statue});
+  final int? status;
+  final List<FieldModel>? fields;
+  const BuildItems({super.key, required this.farmId, this.status , this.fields});
 
   @override
   State<BuildItems> createState() => _BuildItemsState();
@@ -24,9 +24,9 @@ class BuildItems extends StatefulWidget {
 class _BuildItemsState extends State<BuildItems> {
   List<InvItemModel>? items;
   ControlBloc? _controlBloc;
+  List<FieldModel>? fields;
   @override
   void initState() {
-    context.read<FieldBloc>().add(OpenFieldEvent(farmId: widget.farmId));
     _controlBloc = context.read<ControlBloc>();
     _controlBloc!.add(OpenFarmItemsEvent(farmId: widget.farmId));
     super.initState();
@@ -34,7 +34,6 @@ class _BuildItemsState extends State<BuildItems> {
 
   @override
   Widget build(BuildContext context) {
-    List<FieldModel>? fields;
     return BlocConsumer<ControlBloc, ControlState>(
       listener: (context, state) {
         if (state is DeleteItemSuccess) {
@@ -70,16 +69,14 @@ class _BuildItemsState extends State<BuildItems> {
             );
           });
         } else if (state is ViewItemsSuccess) {
-          if (widget.statue != null) {
+          if (widget.status != null) {
             items = state.items
-                .where((item) => item.category == widget.statue)
+                .where((item) => item.category == widget.status)
                 .toList();
           } else {
             items = state.items;
           }
-          return Container(
-            // color: red,
-            // padding: EdgeInsets.symmetric(horizontal: 10 ,vertical: 10),
+          return SizedBox(
             height: 500,
             width: 400,
             child: items!.isEmpty
@@ -174,8 +171,14 @@ class _BuildItemsState extends State<BuildItems> {
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        AddItem(isEdit: true, item: item,farmId: widget.farmId
-                                                                        ,)));
+                                                                        AddItem(
+                                                                          isEdit:
+                                                                              true,
+                                                                          item:
+                                                                              item,
+                                                                          farmId:
+                                                                              widget.farmId,
+                                                                        )));
                                                       },
                                                     ),
                                                     PopupMenuItem(
@@ -194,13 +197,19 @@ class _BuildItemsState extends State<BuildItems> {
                                                         ],
                                                       ),
                                                       onTap: () {
-                                                       Navigator.push(
+                                                        Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
                                                                         ItemLog(
-                                                                        farmId: item.farmId,itemId: item.id,itemName: item.name,)));
+                                                                          farmId:
+                                                                              item.farmId,
+                                                                          itemId:
+                                                                              item.id,
+                                                                          itemName:
+                                                                              item.name,
+                                                                        )));
                                                       },
                                                     ),
                                                     PopupMenuItem(

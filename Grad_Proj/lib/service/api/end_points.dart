@@ -3,7 +3,7 @@ class EndPoints {
   static const String login = 'Auth';
   static const String register = 'Auth/register';
   static const String confirmEmailResand = '/Auth/resend-confirmation-email';
-  static const String refreshToken = '/Auth/refresh' ;
+  static const String refreshToken = '/Auth/refresh';
   static const String forgetPassword = '/Auth/request-password-reset';
   static const String otp = '/Auth/verify-password-reset-otp';
   static const String resetPassword = '/Auth/password-reset';
@@ -19,10 +19,11 @@ class EndPoints {
   static const String account = 'Accounts';
   static const String changePassword = 'Accounts/change-password';
   static const String cropType = '/Crops';
-
+  static const String invitem = '/farms';
+  static const String diseaseDetections = '/farms';
 }
 
-class ApiKey{
+class ApiKey {
   static String status = 'status';
   static String id = 'id';
   static String userName = 'userName';
@@ -50,7 +51,13 @@ class ApiKey{
   static String roleName = 'roleName';
   static String ownerId = 'ownerId';
   static String isOwner = 'isOwner';
-  static String crop = 'cropType';
+  static String cropType = 'cropType';
+  static String cropName = 'cropName';
+  static String description = 'description';
+  static String supportsDiseaseDetection = 'supportsDiseaseDetection';
+  static String plantingDate = 'plantingDate';
+  static String expectedHarvestDate = 'expectedHarvestDate';
+  static String progress = 'progress';
   static String recipient = 'recipient';
   static String serialNumber = 'serialNumber';
   static String sensorId = 'sensorId';
@@ -67,14 +74,14 @@ class ApiKey{
   static String isEnabled = 'isEnabled';
   static String assignedToId = 'assignedToId';
   static String title = 'title';
-  static String description = 'description';
   static String dueDate = 'dueDate';
   static String itemPriority = 'itemPriority';
   static String category = 'category';
-   static String quantity = 'quantity';
+  static String quantity = 'quantity';
   static String thresholdQuantity = 'thresholdQuantity';
   static String unitCost = 'unitCost';
   static String measurementUnit = 'measurementUnit';
   static String expirationDate = 'expirationDate';
   static String reason = 'reason';
+  static String isActive = 'isActive';
 }

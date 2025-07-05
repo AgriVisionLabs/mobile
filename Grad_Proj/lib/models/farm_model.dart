@@ -1,9 +1,11 @@
+import 'dart:ffi';
+
 import 'package:grd_proj/service/api/end_points.dart';
 
 class FarmModel {
    String ? farmId;
    String ? name;
-   int ? area;
+   double ? area;
    String ? location;
    int ? soilType;
    int ? fieldsNo;

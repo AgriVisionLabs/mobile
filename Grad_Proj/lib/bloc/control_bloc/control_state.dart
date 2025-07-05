@@ -247,3 +247,40 @@ class ChangeLogFailure extends ControlState {
   });
   
 }
+
+
+//=====================================================================
+//========================= Disease Detection =========================
+//=====================================================================
+class DiseaseScanSuccess extends ControlState {
+  final DiseaseDetectionModel info;
+  DiseaseScanSuccess({
+    required this.info,
+  });
+}
+
+class DiseaseScanFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+  DiseaseScanFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
+
+class ViewDetectionSuccess extends ControlState{
+  final List<DiseaseDetectionModel> info;
+  ViewDetectionSuccess({
+    required this.info});
+}
+class ViewDiseaseDetectionFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+  ViewDiseaseDetectionFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}
+class DiseaseDetectionEmpty extends ControlState{}

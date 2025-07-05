@@ -1,4 +1,4 @@
-Map soil = {'Sandy': 0, 'Clay': 1, 'Loamy': 2};
+Map soil = {'Sandy': 1, 'Clay': 2, 'Loamy': 3};
 
 String? getSoilName(int soiltype) {
 

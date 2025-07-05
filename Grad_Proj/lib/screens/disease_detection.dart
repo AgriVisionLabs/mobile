@@ -1,9 +1,15 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
+import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/farm_model.dart';
+import 'package:grd_proj/models/field_model.dart';
+import 'package:grd_proj/screens/build_detecion.dart';
+import 'package:grd_proj/screens/widget/circule_indector.dart';
+import 'package:grd_proj/screens/widget/text.dart';
 
 class DiseaseDetection extends StatefulWidget {
   const DiseaseDetection({super.key});
@@ -21,16 +27,22 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
       isRisk = false,
       isInfeacted = false;
   final List<String> tabs = [
-    "All",
-    "Fertilizers",
-    "Chemicals",
-    "Treatments",
-    "Produce"
+    "All Fields",
+    "Healthy",
+    "Risk",
+    "Infeacted",
   ];
   List<FarmModel>? farms;
+  List<FieldModel>? fields;
+
+  @override
+  void initState() {
+    context.read<FarmBloc>().add(OpenFarmEvent());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    context.read<FarmBloc>().add(OpenFarmEvent());
     return BlocConsumer<FarmBloc, FarmState>(
       listener: (context, state) {
         if (state is FarmEmpty) {
@@ -65,7 +77,7 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          "Inventory Management ",
+                          "Disease Detection ",
                           style: TextStyle(
                             fontSize: 25,
                             color: Colors.black,
@@ -106,6 +118,12 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                                   : (value) {
                                       setState(() {
                                         selectedFarmId = value;
+                                        context.read<FieldBloc>().add(
+                                            OpenFieldEvent(
+                                                farmId: selectedFarmId!));
+                                        context.read<ControlBloc>().add(
+                                            OpenDiseaseDetectionEvent(
+                                                farmId: selectedFarmId!));
                                       });
                                     },
                               buttonStyleData: ButtonStyleData(
@@ -154,7 +172,11 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 4.4),
                                   child: GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      setState(() {
+                                        selectedTab = index;
+                                      });
+                                    },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 12),
@@ -184,6 +206,38 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                           ),
                         ),
                         const SizedBox(height: 20),
+                        (selectedFarmId == null)
+                            ? Center(
+                                child: text(
+                                    fontSize: 24,
+                                    label: "Please Select Farm",
+                                    color: primaryColor),
+                              )
+                            : BlocBuilder<FieldBloc, FieldState>(
+                                builder: (context, state) {
+                                  if (state is FieldLoadingFailure) {
+                                    return text(fontSize: 50, label: "label");
+                                  }
+                                  if (state is FieldLoaded) {
+                                    return BuildDetecions(
+                                      farmId: selectedFarmId!,
+                                      status: selectedTab == 0
+                                          ? null
+                                          : selectedTab - 1,
+                                          fields: state.fields,
+                                    );
+                                  }else if(state is FieldEmpty){
+                                    return BuildDetecions(
+                                      farmId: selectedFarmId!,
+                                      status: selectedTab == 0
+                                          ? null
+                                          : selectedTab - 1,
+                                          fields: const [],
+                                    );
+                                  }
+                                  return circularProgressIndicator();
+                                },
+                              )
                       ]),
                 )));
       },

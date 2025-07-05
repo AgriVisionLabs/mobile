@@ -245,39 +245,3 @@ final class DeleteSensorUnitFailure extends FieldState {
 
   DeleteSensorUnitFailure({required this.errMessage, required this.errors});
 }
-
-//=====================================================================
-//========================= Disease Detection =========================
-//=====================================================================
-class DiseaseScanSuccess extends FieldState {
-  final SensorDevice device;
-  DiseaseScanSuccess({
-    required this.device,
-  });
-}
-
-class DiseaseScanFailure extends FieldState {
-  final String errMessage;
-  final dynamic errors;
-  DiseaseScanFailure({
-    required this.errMessage,
-    required this.errors,
-  });
-
-}
-
-class ViewDetectionSuccess extends FieldState{
-  final List<SensorDevice> devices;
-  ViewDetectionSuccess({
-    required this.devices});
-}
-class ViewDiseaseDetectionFailure extends FieldState {
-  final String errMessage;
-  final dynamic errors;
-  ViewDiseaseDetectionFailure({
-    required this.errMessage,
-    required this.errors,
-  });
-
-}
-class DiseaseDetectioEmpty extends FieldState{}

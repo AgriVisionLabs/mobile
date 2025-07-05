@@ -3,6 +3,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/models/diseaseDetections.dart';
 import 'package:grd_proj/models/inv_item_model.dart';
 import 'package:grd_proj/service/api/api_consumer.dart';
 import 'package:grd_proj/service/api/end_points.dart';
@@ -327,6 +328,46 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
         emit(ChangeLogSuccess());
       } on ServerException catch (e) {
         emit(ChangeLogFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+    //=====================================================================
+//========================= DiseaseDetection =========================
+//=====================================================================
+
+    // on<UseDiseaseDetectionEvent>((event, emit) async {
+    //   // bloc takes stream of event and give stream of states
+    //   try {
+    //     final response = await api.post(
+    //         "${EndPoints.diseaseDetections}/${event.farmId}/fields/${event.fieldId}/DiseaseDetections",
+    //       );
+    //     final sensorUnits = SensorDevice.fromJson(response);
+    //     emit(DiseaseScanSuccess(info: sensorUnits));
+    //   } on ServerException catch (e) {
+    //     emit(AddSensorUnitFailure(
+    //         errMessage: e.errorModel.message, errors: e.errorModel.error));
+    //   }
+    // });
+
+    on<OpenDiseaseDetectionEvent>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response = await api.get(
+            "${EndPoints.diseaseDetections}/${event.farmId}/DiseaseDetections",
+          );
+        
+       if (response is List && response.isNotEmpty) {
+          final fieldInfo = response
+              .map<DiseaseDetectionModel>((json) => DiseaseDetectionModel.fromJson(json))
+              .toList();
+          emit(ViewDetectionSuccess(
+            info: fieldInfo,
+          ));
+        } else {
+          emit(DiseaseDetectionEmpty());
+        }
+      } on ServerException catch (e) {
+        emit(ViewDiseaseDetectionFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });

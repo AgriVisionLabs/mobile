@@ -67,7 +67,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
             await api.post("${EndPoints.feild}/${event.farmId}/Fields", data: {
           ApiKey.name: name.text,
           ApiKey.area: area.text,
-          ApiKey.crop: int.tryParse(cropType.text),
+          ApiKey.cropType: int.tryParse(cropType.text),
         });
         final field = FieldModel.fromJson(response);
 
@@ -96,7 +96,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
             data: {
               ApiKey.name: name.text,
               ApiKey.area: int.tryParse(area.text),
-              ApiKey.crop: int.tryParse(cropType.text)
+              ApiKey.cropType: int.tryParse(cropType.text)
             });
         emit(FieldEditSuccess());
       } on ServerException catch (e) {
@@ -271,7 +271,7 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       try {
         final response = await api.get(
             "${EndPoints.sensor}/${event.farmId}/fields/${event.fieldId}/SensorUnits/${event.sensorId}");
-        if (response is! String &&response.isNotEmpty) {
+        if (response is! String && response.isNotEmpty) {
           final sensorUnit = SensorDevice.fromJson(response);
           emit(ViewFieldSensorUnitSuccess(
             device: sensorUnit,
@@ -312,7 +312,5 @@ class FieldBloc extends Bloc<FieldEvent, FieldState> {
       }
     });
 
-    ///=================================================================
-    ///
   }
 }

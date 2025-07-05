@@ -170,3 +170,21 @@ class AddLogEvent extends ControlEvent {
     required this.itemId,
   });
 }
+
+
+class UseDiseaseDetectionEvent extends ControlEvent {
+  final String fieldId;
+  final String farmId;
+  UseDiseaseDetectionEvent({
+    required this.fieldId,
+    required this.farmId,
+  });
+  
+}
+
+class OpenDiseaseDetectionEvent extends ControlEvent {
+  final String farmId;
+  OpenDiseaseDetectionEvent({
+    required this.farmId,
+  });
+}

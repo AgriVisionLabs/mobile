@@ -34,15 +34,15 @@ class FieldModel {
       id: json[ApiKey.id],
       name: json[ApiKey.name],
       area: json[ApiKey.area],
-      isActive: json['isActive'],
+      isActive: json[ApiKey.isActive],
       farmId: json[ApiKey.farmId],
-      cropType: json[ApiKey.crop],
-      cropName: json['cropName'],
-      description: json['description'],
-      supportsDiseaseDetection: json['supportsDiseaseDetection'],
-      plantingDate: json['plantingDate'] == null ? null :DateTime.parse(json['plantingDate']),
-      expectedHarvestDate: json['expectedHarvestDate'] == null ? null :DateTime.parse(json['expectedHarvestDate']),
-      progress: json['progress'],
+      cropType: json[ApiKey.cropType],
+      cropName: json[ApiKey.cropName],
+      description: json[ApiKey.description],
+      supportsDiseaseDetection: json[ApiKey.supportsDiseaseDetection],
+      plantingDate: json[ApiKey.plantingDate] == null ? null :DateTime.parse(json[ApiKey.plantingDate]),
+      expectedHarvestDate: json[ApiKey.expectedHarvestDate] == null ? null :DateTime.parse(json[ApiKey.expectedHarvestDate]),
+      progress: json[ApiKey.progress],
     );
   }
 

@@ -17,12 +17,8 @@ String? getCategoryName(int cat) {
 }
 
 String? getFieldName(List<FieldModel>? fields, String fieldId) {
-  if (fields == null || fields == []) {
-    return "Not Assigned";
-  } else {
-    fields.where((item) => item.id == fieldId).toString();
-  }
-  return null;
+  final field = fields!.firstWhere((item) => item.id == fieldId);
+  return field.name ;
 }
 
 Color? getLevelColor( String level) {
