@@ -50,7 +50,7 @@ class _ReviewFieldState extends State<ReviewField> {
       builder: (context, state) {
         if (state is FieldFailure) {
           return Center(
-            child: Text('Sonething went wrong',
+            child: Text('Something went wrong',
                 style: const TextStyle(
                   fontFamily: 'Manrope',
                   color: primaryColor,

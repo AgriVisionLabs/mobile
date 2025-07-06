@@ -9,6 +9,7 @@ import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/bloc/sensor_bloc/sensor_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/screens/chat.dart';
 import 'package:grd_proj/screens/field_view.dart';
 import 'package:grd_proj/screens/settings.dart';
 import 'package:grd_proj/screens/subscription_plan.dart';
@@ -114,8 +115,9 @@ class _MyAppState extends State<MyApp> {
       home: 
       // ScheduleMaintenance()
       // SensorView()
-      SplashScreen()
-      // LoginScreen(),
+      // SplashScreen()
+      // ChatListScreen()
+      LoginScreen(),
       // HomeScreen()
       // HomeScreen(initialIndex: 7,)
       // Settings() // Replace with your desired screen

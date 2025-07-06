@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/screens/chat.dart';
 import 'package:grd_proj/screens/home_screen.dart';
 
 class MoreScreen extends StatefulWidget {
@@ -228,6 +229,49 @@ class _MoreScreen extends State<MoreScreen> {
                 ),
               ],
             ),
+            GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChatListScreen()));
+                  },
+                  child: Container(
+                    width: 180,
+                    height: 125,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(
+                          color: const Color.fromARGB(135, 159, 159, 159),
+                          width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0x3E9E9E9E),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 18),
+                        Image.asset('assets/images/Irrigation.png',
+                            width: 35, height: 35),
+                        SizedBox(height: 12),
+                        Text(
+                          'Irrigation',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
           ],
         ),
       ),
