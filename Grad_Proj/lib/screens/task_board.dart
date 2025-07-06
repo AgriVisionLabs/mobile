@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
-import 'package:grd_proj/screens/view_task.dart';
 import 'package:intl/intl.dart';
 
 class TaskBoard extends StatefulWidget {
@@ -18,7 +17,28 @@ class TaskBoard extends StatefulWidget {
 class _TaskBoardState extends State<TaskBoard> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ControlBloc, ControlState>(
+    return BlocConsumer<ControlBloc, ControlState>(
+      listener: (context, state) {
+        if (state is DeleteTaskSuccess) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Task Deleted Successfuly"),
+              ),
+            );
+          });
+        } else if (state is DeleteTaskFailure) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
+        }
+      },
       builder: (context, state) {
         if (state is ViewTasksFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -33,6 +53,7 @@ class _TaskBoardState extends State<TaskBoard> {
           final myTasks =
               state.tasks.where((task) => task.completedAt == null).toList();
           return Container(
+            margin: const EdgeInsets.all(10),
             padding: const EdgeInsets.only(bottom: 20),
             height: 530,
             child: CustomScrollView(
@@ -82,7 +103,7 @@ class _TaskBoardState extends State<TaskBoard> {
                                       const Spacer(),
                                       Container(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 5),
+                                            horizontal: 10, vertical: 2),
                                         height: 30,
                                         decoration: BoxDecoration(
                                             color: item.itemPriority == 0
@@ -103,7 +124,7 @@ class _TaskBoardState extends State<TaskBoard> {
                                                     : "High",
                                             style: const TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 14,
+                                                fontSize: 16,
                                                 fontWeight: FontWeight.w400),
                                           ),
                                         ),
@@ -141,7 +162,7 @@ class _TaskBoardState extends State<TaskBoard> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 16),
+                                  const SizedBox(height: 24),
                                   Container(
                                     constraints: const BoxConstraints(
                                       minHeight: 100,
@@ -179,10 +200,10 @@ class _TaskBoardState extends State<TaskBoard> {
                                         DateFormat('MMM dd, yyyy')
                                             .format(item.assignedAt!),
                                         style: const TextStyle(
-                                          fontSize: 17,
-                                          color: Colors.black,
-                                          fontFamily: 'manrope-bold',
-                                        ),
+                                            fontSize: 17,
+                                            color: Colors.black,
+                                            fontFamily: 'manrope-bold',
+                                            fontWeight: FontWeight.w600),
                                       ),
                                       const Spacer(),
                                       Image.asset(
@@ -194,10 +215,10 @@ class _TaskBoardState extends State<TaskBoard> {
                                       Text(
                                         item.assignedTo ?? 'Not Assigned',
                                         style: const TextStyle(
-                                          fontSize: 17,
-                                          color: Colors.black,
-                                          fontFamily: 'manrope-bold',
-                                        ),
+                                            fontSize: 17,
+                                            color: Colors.black,
+                                            fontFamily: 'manrope-bold',
+                                            fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),
@@ -205,7 +226,7 @@ class _TaskBoardState extends State<TaskBoard> {
                               ),
                             ),
                             const Divider(
-                              color: Color.fromARGB(63, 13, 18, 28),
+                              color: Color.fromARGB(255, 13, 18, 28),
                               thickness: 1,
                             ),
                             const SizedBox(height: 10),
@@ -214,57 +235,6 @@ class _TaskBoardState extends State<TaskBoard> {
                                   const EdgeInsets.symmetric(horizontal: 24),
                               child: Row(
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      context.read<ControlBloc>().add(
-                                          DeteteTaskEvent(
-                                              farmId: item.farmId,
-                                              taskId: item.id));
-                                      context.read<ControlBloc>().add(
-                                          OpenFarmTasksEvent(
-                                              farmId: item.farmId));
-                                    },
-                                    child: Image.asset(
-                                      'assets/images/delete.png',
-                                      width: 30,
-                                      height: 30,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  GestureDetector(
-                                    onTap: () {
-                                      context.read<ControlBloc>().add(
-                                          OpenTaskEvent(
-                                              farmId: item.farmId,
-                                              taskId: item.id));
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ViewTask(
-                                                farmName: widget.farmName)),
-                                      );
-                                    },
-                                    child: Image.asset(
-                                      'assets/images/eye.png',
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 200),
-                                  item.assignedTo == null
-                                      ? GestureDetector(
-                                          onTap: () {},
-                                          child: const Icon(
-                                            Icons.add,
-                                            color: primaryColor,
-                                          ))
-                                      : const SizedBox(
-                                          width: 30,
-                                        ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
                                   GestureDetector(
                                       onTap: () {
                                         context.read<ControlBloc>().add(
@@ -281,6 +251,109 @@ class _TaskBoardState extends State<TaskBoard> {
                                         height: 34,
                                       )),
                                   const Spacer(),
+                                  GestureDetector(
+                                    onTapDown: (TapDownDetails details) async {
+                                      final RenderBox overlay =
+                                          Overlay.of(context)
+                                              .context
+                                              .findRenderObject() as RenderBox;
+
+                                      await showMenu(
+                                        context: context,
+                                        position: RelativeRect.fromRect(
+                                          details.globalPosition &
+                                              const Size(35, 35),
+                                          Offset.zero & overlay.size,
+                                        ),
+                                        items: [
+                                          PopupMenuItem(
+                                            height: 45,
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  "assets/images/file.png",
+                                                  height: 24,
+                                                  width: 24,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                const Text('View details'),
+                                              ],
+                                            ),
+                                            onTap: () {
+                                              // Navigator.push(
+                                              //     context,
+                                              //     MaterialPageRoute(
+                                              //         builder: (context) =>
+                                              //             ItemLog(
+                                              //               farmId: item.farmId,
+                                              //               itemId: item.id,
+                                              //               itemName: item.name,
+                                              //             )));
+                                            },
+                                          ),
+                                          PopupMenuItem(
+                                            height: 45,
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  "assets/images/edit.png",
+                                                  height: 24,
+                                                  width: 24,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                const Text('Edit'),
+                                              ],
+                                            ),
+                                            onTap: () {
+                                              // Navigator.push(
+                                              //     context,
+                                              //     MaterialPageRoute(
+                                              //         builder: (context) =>
+                                              //             AddItem(
+                                              //               isEdit: true,
+                                              //               item: item,
+                                              //               farmId:
+                                              //                   widget.farmId,
+                                              //             )));
+                                            },
+                                          ),
+                                          PopupMenuItem(
+                                            height: 45,
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  "assets/images/delete.png",
+                                                  height: 24,
+                                                  width: 24,
+                                                  color: red,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                const Text('Delete',
+                                                    style: TextStyle(
+                                                        color: Colors.red)),
+                                              ],
+                                            ),
+                                            onTap: () {
+                                              context.read<ControlBloc>().add(
+                                                  DeteteTaskEvent(
+                                                      farmId: item.farmId,
+                                                      taskId: item.id));
+                                              context.read<ControlBloc>().add(
+                                                  OpenFarmTasksEvent(
+                                                      farmId: item.farmId));
+                                            },
+                                          ),
+                                        ],
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        color: Colors.white,
+                                      );
+                                    },
+                                    child: Image.asset(
+                                        "assets/images/mage_dots.png"), // زر الثلاث نقاط
+                                  )
                                 ],
                               ),
                             ),

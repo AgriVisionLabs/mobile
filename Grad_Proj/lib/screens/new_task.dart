@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/components/date_input_formatter.dart';
+import 'package:grd_proj/screens/widget/text.dart';
 
 // ignore: must_be_immutable
 
@@ -28,13 +30,13 @@ class _NewTaskState extends State<NewTask> {
     "PestAndHealthControl": 5
   };
   int? selectedtype;
+  int? selectedcat;
   String? selectedFieldId;
   @override
   void initState() {
     context.read<FieldBloc>().add(OpenFieldEvent(farmId: widget.farmId));
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -155,75 +157,70 @@ class _NewTaskState extends State<NewTask> {
                                           SizedBox(
                                             height: 8,
                                           ),
-                                          SizedBox(
-                                            width: MediaQuery.sizeOf(context)
-                                                .width,
-                                            height: 50,
-                                            child: TextFormField(
-                                              controller: context
-                                                  .read<ControlBloc>()
-                                                  .title,
-                                              keyboardType: TextInputType.text,
-                                              decoration: InputDecoration(
-                                                hintText:
-                                                    'Enter a descriptive title',
-                                                hintStyle: TextStyle(
-                                                  color: borderColor,
-                                                  fontFamily: "Manrope",
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 16,
-                                                        vertical: 14),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30.0),
-                                                  borderSide: const BorderSide(
-                                                      color: borderColor,
-                                                      width: 3.0),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30.0),
-                                                  borderSide: const BorderSide(
-                                                      color: primaryColor,
-                                                      width: 3.0),
-                                                ),
-                                                errorBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30.0),
-                                                  borderSide: const BorderSide(
-                                                      color: errorColor,
-                                                      width: 3.0),
-                                                ),
-                                                focusedErrorBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30.0),
-                                                  borderSide: const BorderSide(
-                                                      color: errorColor,
-                                                      width: 3.0),
-                                                ),
+                                          TextFormField(
+                                            controller: context
+                                                .read<ControlBloc>()
+                                                .title,
+                                            keyboardType: TextInputType.text,
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  'Enter a descriptive title',
+                                              hintStyle: TextStyle(
+                                                color: borderColor,
+                                                fontFamily: "Manrope",
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
                                               ),
-                                              autocorrect: false,
-                                              validator: (value) {
-                                                if (value!.isEmpty) {
-                                                  return "Please Enter Irrigation Unit Name";
-                                                } else if (value.length < 3 ||
-                                                    value.length > 100) {
-                                                  return "must be between 30 and 100 characters. You entered 2 characters.";
-                                                }
-                                                return null;
-                                              },
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 14),
+                                              enabledBorder:
+                                                  OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        30.0),
+                                                borderSide: const BorderSide(
+                                                    color: borderColor,
+                                                    width: 3.0),
+                                              ),
+                                              focusedBorder:
+                                                  OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        30.0),
+                                                borderSide: const BorderSide(
+                                                    color: primaryColor,
+                                                    width: 3.0),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        30.0),
+                                                borderSide: const BorderSide(
+                                                    color: errorColor,
+                                                    width: 3.0),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        30.0),
+                                                borderSide: const BorderSide(
+                                                    color: errorColor,
+                                                    width: 3.0),
+                                              ),
                                             ),
+                                            autocorrect: false,
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return "Please Enter Task Title";
+                                              } else if (value.length < 3 ||
+                                                  value.length > 100) {
+                                                return "must be between 30 and 100 characters. You entered 2 characters.";
+                                              }
+                                              return null;
+                                            },
                                           ),
                                           SizedBox(
                                             height: 16,
@@ -327,57 +324,107 @@ class _NewTaskState extends State<NewTask> {
                                           SizedBox(
                                             height: 16,
                                           ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 2, horizontal: 20),
-                                            width: 320,
-                                            height: 53,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(25),
-                                                border: Border.all(
-                                                    color: borderColor,
-                                                    width: 2.5)),
-                                            child: DropdownButtonFormField<int>(
-                                              hint: const Text("All Types",
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontFamily: "manrope",
-                                                  )),
-                                              dropdownColor: Colors.white,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
+                                          SizedBox(
+                                            width: 410,
+                                            height: 52,
+                                            child:
+                                                DropdownButtonFormField2<int>(
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        left: 15,
+                                                        right: 15,
+                                                        top: 10,
+                                                        bottom: 10),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: borderColor,
+                                                      width: 3),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: borderColor,
+                                                      width: 3),
+                                                ),
+                                                filled: true,
+                                                fillColor: Colors.white,
+                                                errorBorder: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.red,
+                                                      width: 3),
+                                                ),
+                                                focusedErrorBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.red,
+                                                      width: 3),
+                                                ),
                                               ),
-                                              value: selectedtype,
                                               isExpanded: true,
-                                              icon: Image.asset(
-                                                'assets/images/arrow.png',
-                                                color: borderColor,
-                                              ),
-                                              onChanged: (newValue) {
+                                              hint: text(
+                                                  fontSize: 18,
+                                                  label: "select priority",
+                                                  fontWeight: FontWeight.w600,
+                                                  color: borderColor),
+                                              value: selectedtype,
+                                              items:
+                                                  priority.entries.map((cat) {
+                                                return DropdownMenuItem<int>(
+                                                  value: cat.value,
+                                                  child: Text(
+                                                    cat.key!,
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Manrope',
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                              onChanged: (value) {
                                                 setState(() {
-                                                  selectedtype = newValue;
+                                                  selectedtype = value;
                                                   context
                                                           .read<ControlBloc>()
-                                                          .category
+                                                          .itemPriority
                                                           .text =
                                                       selectedtype!.toString();
                                                 });
                                               },
-                                              items: priority.entries
-                                                  .map<DropdownMenuItem<int>>(
-                                                      (type) {
-                                                return DropdownMenuItem(
-                                                  value: type.value,
-                                                  child: Text(type.key),
-                                                );
-                                              }).toList(),
+                                              dropdownStyleData:
+                                                  DropdownStyleData(
+                                                maxHeight: 250,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  color: Colors.white,
+                                                  border: Border.all(
+                                                      color: borderColor),
+                                                ),
+                                                elevation: 2,
+                                                offset: const Offset(0, -5),
+                                              ),
+                                              iconStyleData:
+                                                  const IconStyleData(
+                                                icon: Icon(Icons
+                                                    .keyboard_arrow_down_rounded),
+                                                iconSize: 40,
+                                                iconEnabledColor: Colors.black,
+                                              ),
                                             ),
                                           ),
+
                                           SizedBox(
                                             height: 16,
                                           ),
@@ -395,51 +442,98 @@ class _NewTaskState extends State<NewTask> {
                                           SizedBox(
                                             height: 16,
                                           ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 2, horizontal: 20),
-                                            width: 320,
-                                            height: 53,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(25),
-                                                border: Border.all(
-                                                    color: borderColor,
-                                                    width: 2.5)),
-                                            child:
-                                                DropdownButtonFormField<String>(
-                                              hint: const Text("All Fields",
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontFamily: "manrope",
-                                                  )),
-                                              dropdownColor: Colors.white,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
+                                          SizedBox(
+                                            width: 410,
+                                            height: 52,
+                                            child: DropdownButtonFormField2<
+                                                String>(
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        left: 15,
+                                                        right: 15,
+                                                        top: 10,
+                                                        bottom: 10),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: borderColor,
+                                                      width: 3),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: borderColor,
+                                                      width: 3),
+                                                ),
+                                                filled: true,
+                                                fillColor: Colors.white,
+                                                errorBorder: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.red,
+                                                      width: 3),
+                                                ),
+                                                focusedErrorBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.red,
+                                                      width: 3),
+                                                ),
                                               ),
-                                              value: selectedFieldId,
                                               isExpanded: true,
-                                              icon: Image.asset(
-                                                'assets/images/arrow.png',
-                                                color: borderColor,
-                                              ),
-                                              onChanged: (newValue) {
-                                                setState(() {
-                                                  selectedFieldId = newValue;
-                                                });
-                                              },
-                                              items: state.fields.map<
-                                                      DropdownMenuItem<String>>(
-                                                  (field) {
+                                              hint: text(
+                                                  fontSize: 18,
+                                                  label: "select field",
+                                                  fontWeight: FontWeight.w600,
+                                                  color: borderColor),
+                                              value: selectedFieldId,
+                                              items: state.fields.map((field) {
                                                 return DropdownMenuItem<String>(
                                                   value: field.id,
-                                                  child: Text(field.name),
+                                                  child: Text(
+                                                    field.name,
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Manrope',
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
                                                 );
                                               }).toList(),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedFieldId = value;
+                                                });
+                                              },
+                                              dropdownStyleData:
+                                                  DropdownStyleData(
+                                                maxHeight: 250,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  color: Colors.white,
+                                                  border: Border.all(
+                                                      color: borderColor),
+                                                ),
+                                                elevation: 2,
+                                                offset: const Offset(0, -5),
+                                              ),
+                                              iconStyleData:
+                                                  const IconStyleData(
+                                                icon: Icon(Icons
+                                                    .keyboard_arrow_down_rounded),
+                                                iconSize: 40,
+                                                iconEnabledColor: Colors.black,
+                                              ),
                                             ),
                                           ),
                                           SizedBox(
@@ -458,59 +552,104 @@ class _NewTaskState extends State<NewTask> {
                                           SizedBox(
                                             height: 16,
                                           ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 2, horizontal: 20),
-                                            width: 320,
-                                            height: 53,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(25),
-                                                border: Border.all(
-                                                    color: borderColor,
-                                                    width: 2.5)),
-                                            child: DropdownButtonFormField<int>(
-                                              hint: const Text("All Types",
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontFamily: "manrope",
-                                                  )),
-                                              dropdownColor: Colors.white,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
+                                          SizedBox(
+                                            width: 410,
+                                            height: 52,
+                                            child:
+                                                DropdownButtonFormField2<int>(
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        left: 15,
+                                                        right: 15,
+                                                        top: 10,
+                                                        bottom: 10),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: borderColor,
+                                                      width: 3),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: borderColor,
+                                                      width: 3),
+                                                ),
+                                                filled: true,
+                                                fillColor: Colors.white,
+                                                errorBorder: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.red,
+                                                      width: 3),
+                                                ),
+                                                focusedErrorBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.red,
+                                                      width: 3),
+                                                ),
                                               ),
-                                              value: selectedtype,
                                               isExpanded: true,
-                                              icon: Image.asset(
-                                                'assets/images/arrow.png',
-                                                color: borderColor,
-                                              ),
-                                              onChanged: (newValue) {
-                                                setState(() {
-                                                  selectedtype = newValue;
-                                                  context
-                                                          .read<ControlBloc>()
-                                                          .itemPriority
-                                                          .text =
-                                                      selectedtype!.toString();
-                                                  context
-                                                      .read<ControlBloc>()
-                                                      .category
-                                                      .text = "1";
-                                                });
-                                              },
-                                              items: category.entries
-                                                  .map<DropdownMenuItem<int>>(
-                                                      (type) {
-                                                return DropdownMenuItem(
-                                                  value: type.value,
-                                                  child: Text(type.key),
+                                              hint: text(
+                                                  fontSize: 18,
+                                                  label: "select category",
+                                                  fontWeight: FontWeight.w600,
+                                                  color: borderColor),
+                                              value: selectedcat,
+                                              items:
+                                                  category.entries.map((cat) {
+                                                return DropdownMenuItem<int>(
+                                                  value: cat.value,
+                                                  child: Text(
+                                                    cat.key!,
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Manrope',
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
                                                 );
                                               }).toList(),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  selectedcat = value;
+                                                  context
+                                                          .read<ControlBloc>()
+                                                          .category
+                                                          .text =
+                                                      selectedcat!.toString();
+                                                });
+                                              },
+                                              dropdownStyleData:
+                                                  DropdownStyleData(
+                                                maxHeight: 250,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  color: Colors.white,
+                                                  border: Border.all(
+                                                      color: borderColor),
+                                                ),
+                                                elevation: 2,
+                                                offset: const Offset(0, -5),
+                                              ),
+                                              iconStyleData:
+                                                  const IconStyleData(
+                                                icon: Icon(Icons
+                                                    .keyboard_arrow_down_rounded),
+                                                iconSize: 40,
+                                                iconEnabledColor: Colors.black,
+                                              ),
                                             ),
                                           ),
                                           SizedBox(
@@ -629,22 +768,78 @@ class _NewTaskState extends State<NewTask> {
                                               Spacer(),
                                               GestureDetector(
                                                 onTap: () {
-                                                  if (selectedFieldId == null) {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .clearSnackBars();
-                                                    WidgetsBinding.instance
-                                                        .addPostFrameCallback(
-                                                            (_) {
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                        SnackBar(
-                                                          content: Text(
-                                                              "Please choose field"),
-                                                        ),
-                                                      );
-                                                    });
+                                                  if (selectedFieldId == null || selectedcat == null || selectedtype == null) {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (_) =>
+                                                          AlertDialog(
+                                                        title: const Text(
+                                                            "ِAlert",
+                                                            style: TextStyle(
+                                                              fontSize: 25,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontFamily:
+                                                                  "manrope",
+                                                              color:
+                                                                  primaryColor,
+                                                            )),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        content: const Text(
+                                                            "Please Enter Requested Information",
+                                                            style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontFamily:
+                                                                  "manrope",
+                                                              color:
+                                                                  Colors.black,
+                                                            )),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context),
+                                                            child: const Text(
+                                                                "Cancle",
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontFamily:
+                                                                      "manrope",
+                                                                  color: Colors
+                                                                      .black,
+                                                                )),
+                                                          ),
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: const Text(
+                                                                "Ok",
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontFamily:
+                                                                      "manrope",
+                                                                  color:
+                                                                      primaryColor,
+                                                                )),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
                                                   } else {
                                                     context
                                                         .read<ControlBloc>()

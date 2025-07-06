@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
@@ -43,6 +44,11 @@ class _TaskScreen extends State<TaskScreen> {
           });
         } else if (state is FarmsLoaded) {
           farms = state.farms;
+          selectedFarmId = farms![0].farmId;
+          selectedFarmName = farms![0].name;
+          context
+              .read<ControlBloc>()
+              .add(OpenFarmTasksEvent(farmId: selectedFarmId!));
         } else if (state is FarmFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -125,8 +131,7 @@ class _TaskScreen extends State<TaskScreen> {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
-                                            content: Text(
-                                                "Please choose create field first"),
+                                            content: Text("No Fields Exist"),
                                           ),
                                         );
                                       });
@@ -137,54 +142,78 @@ class _TaskScreen extends State<TaskScreen> {
                             ],
                           ),
                           SizedBox(height: 14),
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(17, 0, 17, 0),
-                            width: 290,
-                            height: 53,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(5),
-                                border:
-                                    Border.all(color: borderColor, width: 1)),
-                            child: DropdownButton<String>(
-                              dropdownColor: Colors.white,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              value: selectedFarmId,
-                              isExpanded: true,
-                              icon: Image.asset(
-                                'assets/images/arrow.png',
-                              ),
-                              onChanged: (farms == null || farms!.isEmpty)
-                                  ? null
-                                  : (newValue) {
-                                      final selectedFarm = farms!
-                                          .where(
-                                              (farm) => farm.farmId == newValue)
-                                          .toList();
-                                      if (selectedFarm.isNotEmpty) {
+                          SizedBox(
+                            width: 280,
+                            height: 60,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton2<String>(
+                                isExpanded: true,
+                                hint: Text(
+                                  'Select Farm',
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Manrope',
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                value: selectedFarmId,
+                                items: farms?.map((farm) {
+                                  return DropdownMenuItem<String>(
+                                    value: farm.farmId,
+                                    child: Text(
+                                      farm.name,
+                                      style: const TextStyle(
+                                        fontFamily: 'Manrope',
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (farms == null || farms!.isEmpty)
+                                    ? null
+                                    : (value) {
                                         setState(() {
-                                          selectedFarmId = newValue;
-                                          selectedFarmFieldNo =
-                                              selectedFarm.first.fieldsNo;
+                                          final selectedFarm = farms!
+                                              .where((farm) =>
+                                                  farm.farmId == value)
+                                              .toList();
+                                          selectedFarmId = value;
                                           selectedFarmName =
                                               selectedFarm.first.name;
+                                          selectedFarmFieldNo =
+                                              selectedFarm.first.fieldsNo;
                                           context.read<ControlBloc>().add(
                                               OpenFarmTasksEvent(
                                                   farmId: selectedFarmId!));
                                         });
-                                      }
-                                    },
-                              items:
-                                  farms?.map<DropdownMenuItem<String>>((farm) {
-                                return DropdownMenuItem<String>(
-                                  value: farm.farmId,
-                                  child: Text(farm.name),
-                                );
-                              }).toList(),
+                                      },
+                                buttonStyleData: ButtonStyleData(
+                                  height: 55,
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                        color: borderColor, width: 1),
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                dropdownStyleData: DropdownStyleData(
+                                  maxHeight: 250,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    border: Border.all(color: borderColor),
+                                  ),
+                                  elevation: 2,
+                                  offset: const Offset(0, -5),
+                                ),
+                                iconStyleData: const IconStyleData(
+                                  icon: Icon(Icons.keyboard_arrow_down_rounded),
+                                  iconSize: 30,
+                                  iconEnabledColor: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
                           SizedBox(height: 30),

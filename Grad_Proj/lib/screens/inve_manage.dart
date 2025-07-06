@@ -56,6 +56,13 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
           });
         } else if (state is FarmsLoaded) {
           farms = state.farms;
+          selectedFarmId = farms![0].farmId;
+          context
+              .read<FieldBloc>()
+              .add(OpenFieldEvent(farmId: selectedFarmId!));
+          context
+              .read<ControlBloc>()
+              .add(OpenFarmItemsEvent(farmId: selectedFarmId!));
         } else if (state is FarmFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -379,7 +386,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                                       fields: const [],
                                     );
                                   }
-                                  return  circularProgressIndicator();
+                                  return circularProgressIndicator();
                                 },
                               )
                       ]),

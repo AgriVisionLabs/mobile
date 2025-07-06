@@ -56,6 +56,13 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
           });
         } else if (state is FarmsLoaded) {
           farms = state.farms;
+          selectedFarmId = farms![0].farmId;
+          context
+              .read<FieldBloc>()
+              .add(OpenFieldEvent(farmId: selectedFarmId!));
+          context
+              .read<ControlBloc>()
+              .add(OpenDiseaseDetectionEvent(farmId: selectedFarmId!));
         } else if (state is FarmFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -224,15 +231,15 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                                       status: selectedTab == 0
                                           ? null
                                           : selectedTab - 1,
-                                          fields: state.fields,
+                                      fields: state.fields,
                                     );
-                                  }else if(state is FieldEmpty){
+                                  } else if (state is FieldEmpty) {
                                     return BuildDetecions(
                                       farmId: selectedFarmId!,
                                       status: selectedTab == 0
                                           ? null
                                           : selectedTab - 1,
-                                          fields: const [],
+                                      fields: const [],
                                     );
                                   }
                                   return circularProgressIndicator();
