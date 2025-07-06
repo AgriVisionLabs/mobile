@@ -175,8 +175,8 @@ class _FieldViewState extends State<FieldView> {
                             children: [
                               Image.asset(
                                 'assets/images/prime_wave-pulse.png',
-                                height: 30,
-                                width: 30,
+                                height: 24,
+                                width: 24,
                               ),
                               const SizedBox(width: 5),
                               text(
@@ -222,11 +222,11 @@ class _FieldViewState extends State<FieldView> {
                               label: "Days Until Harvest"),
                           text(
                               fontSize: 20,
+                              color: primaryColor,
                               fontWeight: FontWeight.bold,
                               label: state.field.expectedHarvestDate == null
                                   ? "No Information"
-                                  : calculateDaysDifference(
-                                          state.field.expectedHarvestDate!)
+                                  :"${calculateDaysDifference(state.field.expectedHarvestDate!)} days"
                                       .toString()),
                         ],
                       ),
@@ -335,20 +335,21 @@ class _FieldViewState extends State<FieldView> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 40),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         GestureDetector(
-                            onTap: () {
-
-                            },
+                            onTap: () {},
                             child: Container(
-                              width: 99,
+                              width: 170,
                               height: 45,
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                               decoration: BoxDecoration(
                                 color: const Color.fromARGB(0, 255, 255, 255),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(15),
                                 border: Border.all(
-                                  color: const Color(0xFF616161),
+                                  color: const Color(0xFFE13939),
                                   width: 1,
                                 ),
                               ),
@@ -358,20 +359,57 @@ class _FieldViewState extends State<FieldView> {
                                   children: [
                                     Image.asset(
                                       'assets/images/delete.png',
-                                      height: 20,
-                                      width: 20,
-                                      color: const Color(0xFF616161),
+                                      height: 24,
+                                      width: 24,
+                                      color: const Color(0xFFE13939),
                                     ),
                                     const SizedBox(
-                                      width: 5,
+                                      width: 4,
+                                    ),
+                                    const Text(
+                                      "Delete Field",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontFamily: "Manrope",
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFFE13939),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )),
+                            const Spacer(),
+                            GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              width: 102,
+                              height: 45,
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: primaryColor,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/edit.png',
+                                      height: 24,
+                                      width: 24,
+                                      color: Colors.white,
+                                    ),
+                                    const SizedBox(
+                                      width: 4,
                                     ),
                                     const Text(
                                       "Edit",
                                       style: TextStyle(
-                                        fontSize: 19,
+                                        fontSize: 18,
                                         fontFamily: "Manrope",
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF616161),
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ],

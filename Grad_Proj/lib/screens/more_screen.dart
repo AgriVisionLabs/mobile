@@ -229,49 +229,55 @@ class _MoreScreen extends State<MoreScreen> {
                 ),
               ],
             ),
-            GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChatListScreen()));
-                  },
-                  child: Container(
-                    width: 180,
-                    height: 125,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                          color: const Color.fromARGB(135, 159, 159, 159),
-                          width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0x3E9E9E9E),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3), // changes position of shadow
+            SizedBox(height: 22),
+            Row(
+              children: [
+                GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatListScreen()));
+                      },
+                      child: Container(
+                        width: 180,
+                        height: 125,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                              color: const Color.fromARGB(135, 159, 159, 159),
+                              width: 2),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0x3E9E9E9E),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 3), // changes position of shadow
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 18),
-                        Image.asset('assets/images/Irrigation.png',
-                            width: 35, height: 35),
-                        SizedBox(height: 12),
-                        Text(
-                          'Irrigation',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                          ),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 18),
+                            // Image.asset('assets/images/chat.png',
+                            // color: Color(0xff9CA3AF),
+                            // width: 24, height: 24),
+                            SizedBox(height: 12),
+                            Text(
+                              'Chat',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
+              ],
+            ),
           ],
         ),
       ),

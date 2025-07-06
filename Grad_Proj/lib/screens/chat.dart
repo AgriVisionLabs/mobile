@@ -259,7 +259,7 @@ List<Map<String, dynamic>> get reorderedMessages => [messages[1], messages[0]];
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Color(0xFFE0E0E0), width: 1),
+                                borderSide: BorderSide(color: borderColor, width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
