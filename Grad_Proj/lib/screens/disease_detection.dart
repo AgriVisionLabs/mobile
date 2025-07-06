@@ -20,7 +20,7 @@ class DiseaseDetection extends StatefulWidget {
 
 class _DiseaseDetectionState extends State<DiseaseDetection> {
   String? selectedFarmId;
-  // String? selectedFarmName;
+  String? selectedFarmName;
   int selectedTab = 0;
   bool isAllFields = true,
       isHealthy = false,
@@ -57,6 +57,7 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
         } else if (state is FarmsLoaded) {
           farms = state.farms;
           selectedFarmId = farms![0].farmId;
+          selectedFarmName = farms![0].name;
           context
               .read<FieldBloc>()
               .add(OpenFieldEvent(farmId: selectedFarmId!));
@@ -124,7 +125,13 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                                   ? null
                                   : (value) {
                                       setState(() {
+                                        final selectedFarm = farms!
+                                            .where(
+                                                (farm) => farm.farmId == value)
+                                            .toList();
                                         selectedFarmId = value;
+                                        selectedFarmName =
+                                            selectedFarm.first.name;
                                         context.read<FieldBloc>().add(
                                             OpenFieldEvent(
                                                 farmId: selectedFarmId!));
@@ -232,6 +239,7 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                                           ? null
                                           : selectedTab - 1,
                                       fields: state.fields,
+                                      farmName: selectedFarmName!,
                                     );
                                   } else if (state is FieldEmpty) {
                                     return BuildDetecions(
@@ -240,6 +248,7 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                                           ? null
                                           : selectedTab - 1,
                                       fields: const [],
+                                      farmName: selectedFarmName!,
                                     );
                                   }
                                   return circularProgressIndicator();

@@ -6,14 +6,16 @@ import 'package:grd_proj/components/color.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class DiseaseDetection extends StatefulWidget {
-  const DiseaseDetection({super.key});
+class DiseaseDetectionScreen extends StatefulWidget {
+  final String farmName;
+  final String cropName;
+  const DiseaseDetectionScreen({super.key, required this.farmName, required this.cropName});
 
   @override
-  State<DiseaseDetection> createState() => _DiseaseDetectionState();
+  State<DiseaseDetectionScreen> createState() => _DiseaseDetectionScreenState();
 }
 
-class _DiseaseDetectionState extends State<DiseaseDetection> {
+class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
   File? _mediaFile;
 
   Future<void> _requestPermissions() async {
@@ -85,7 +87,7 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                   Image.asset('assets/images/green_location.png',
                   height: 24, width: 24,),
                   SizedBox(width: 8),
-                  Text('Green Farm',
+                  Text(widget.farmName,
                   style: TextStyle(
                     fontSize: 20,
                     fontFamily: "Manrope",
@@ -97,7 +99,7 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                   Image.asset('assets/images/leaf.png',
                   height: 24, width: 24,),
                   SizedBox(width: 8),
-                  Text('Corn',
+                  Text(widget.cropName,
                   style: TextStyle(
                     fontSize: 20,
                     fontFamily: "Manrope",

@@ -4,17 +4,19 @@ import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/diseaseDetections.dart';
 import 'package:grd_proj/models/field_model.dart';
+import 'package:grd_proj/screens/disease_detection_screen.dart';
 import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:grd_proj/screens/widget/disease_detection.dart';
 import 'package:grd_proj/screens/widget/text.dart';
 import 'package:intl/intl.dart';
 
 class BuildDetecions extends StatefulWidget {
+  final String farmName;
   final String farmId;
   final int? status;
   final List<FieldModel> fields;
   const BuildDetecions(
-      {super.key, required this.farmId, this.status, required this.fields});
+      {super.key, required this.farmId, this.status, required this.fields, required this.farmName});
 
   @override
   State<BuildDetecions> createState() => _BuildDetecionsState();
@@ -189,7 +191,13 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                                         ),
                                         Center(
                                           child: GestureDetector(
-                                            onTap: () {},
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DiseaseDetectionScreen(farmName: widget.farmName,cropName: item.cropName!,)));
+                                            },
                                             child: Container(
                                               width: 224,
                                               height: 54,
@@ -199,7 +207,8 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                                                 borderRadius:
                                                     BorderRadius.circular(45),
                                                 border: Border.all(
-                                                  color: const Color(0xFF616161),
+                                                  color:
+                                                      const Color(0xFF616161),
                                                   width: 1,
                                                 ),
                                               ),
