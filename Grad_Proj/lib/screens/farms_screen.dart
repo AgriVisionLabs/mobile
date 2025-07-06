@@ -384,17 +384,27 @@ class _FarmsScreen extends State<FarmsScreen> {
         const SizedBox(height: 16),
         fields.isEmpty
             ? text(fontSize: 24, label: "No Fields")
-            : ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: fields.length.clamp(0, 3),
-                itemBuilder: (context, index) {
-                  final field = fields[index];
-                  return buildCropProgressIndicator(
-                    cropName: field.cropName ?? "Not Assigned",
-                    progress: field.progress ?? 0.0,
-                  );
-                },
+            : SizedBox(
+                height: 130,  
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: fields.length.clamp(0, 3),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemBuilder: (context, index) {
+                    final field = fields[index];
+                    return Padding(
+                      padding:
+                          const EdgeInsets.only(right: 5), 
+                      child: SizedBox(
+                        width: 110, 
+                        child: buildCropProgressIndicator(
+                          cropName: field.cropName ?? "Not Assigned",
+                          progress: field.progress ?? 0.0,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
       ],
     );
@@ -407,14 +417,19 @@ class _FarmsScreen extends State<FarmsScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CircularPercentIndicator(
-          radius: 40.0,
-          lineWidth: 8.0,
-          percent: progress,
-          center: Text("${(progress * 100).toInt()}%"),
-          progressColor: Colors.green,
-          backgroundColor: Colors.grey[300]!,
-          circularStrokeCap: CircularStrokeCap.round,
+        Container(
+          color: Colors.white,
+          child: CircularPercentIndicator(
+            radius: 50.0, // Size of the circle
+            lineWidth: 9.0, // Thickness of the progress bar
+            percent: progress, // 30% progress (value between 0.0 and 1.0)
+            center: Text("${(progress * 100).toInt()}%"),
+            progressColor: Color(0xff1E6930), // Progress bar color
+            backgroundColor: Color.fromARGB(
+                255, 202, 227, 206), // Background color of the progress
+            circularStrokeCap:
+                CircularStrokeCap.round, // Rounded edges for smooth look
+          ),
         ),
         SizedBox(height: 8),
         Text(

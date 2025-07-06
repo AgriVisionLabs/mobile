@@ -92,7 +92,7 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                                 [];
                             if (item.cropName == null) {
                               return const SizedBox
-                                  .shrink(); // أو return Container();
+                                  .shrink(); 
                             }
                             return GestureDetector(
                               onTap: () {},
