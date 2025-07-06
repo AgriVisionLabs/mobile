@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/account_bloc/bloc/account_bloc.dart';
+import 'package:grd_proj/bloc/chat_bloc/bloc/chat_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
@@ -27,6 +28,7 @@ import 'package:grd_proj/screens/sensor.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
 import 'package:grd_proj/screens/sensor_view.dart';
 import 'package:grd_proj/screens/verification.dart';
+import 'package:grd_proj/service/signalR/signalr_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'bloc/user_cubit.dart';
@@ -111,13 +113,24 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: 
+      
+  //     BlocProvider(
+  // create: (_) => ChatBloc(
+  //   token: CacheHelper.getData(key: 'token'),
+  //   userId: CacheHelper.getData(key: 'id'),
+  //   baseUrl: "https://api.agrivisionlabs.tech/hubs/conversations",
+  //   signalR: SignalRService(token: CacheHelper.getData(key: 'token')),
+  // )..add(StartConnectionEvent())..add(LoadConversationsEvent()),
+  // child: ChatScreen(),
+  //   )
       // ScheduleMaintenance()
       // SensorView()
       // SplashScreen()
       LoginScreen(),
       // SplashScreen()
       // HomeScreen() 
-      // ChatScreen()
+      // ChatScreen(),
+      
     );
   }
 }

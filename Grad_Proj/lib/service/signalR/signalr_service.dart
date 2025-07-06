@@ -9,12 +9,13 @@ class SignalRService {
   late final HubConnection _connection;
 
   SignalRService({
-    required String baseUrl,
+     String baseUrl = "https://api.agrivisionlabs.tech/",
     required String token,
+    required String end
   }) {
     _connection = HubConnectionBuilder()
         .withUrl(
-          "$baseUrl/hubs/messages",
+          "$baseUrl/hubs/$end",
           options: HttpConnectionOptions(
             accessTokenFactory: () async => token,
             transport: HttpTransportType.WebSockets,

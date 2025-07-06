@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
@@ -106,7 +104,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       await signalR.sendMessage(event.message);
       print("Message sent");
     } catch (e) {
-      print("Failed to send message: $e");
+      print("❌ Failed to send message: $e");
     }
   }
 
