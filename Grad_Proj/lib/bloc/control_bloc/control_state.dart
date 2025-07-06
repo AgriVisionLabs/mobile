@@ -284,3 +284,4 @@ class ViewDiseaseDetectionFailure extends ControlState {
 
 }
 class DiseaseDetectionEmpty extends ControlState{}
+class DiseaseDetectionLoading extends ControlState{}

@@ -25,7 +25,7 @@ class _FarmsScreen extends State<FarmsScreen> {
   String soil = '';
   List<FieldModel>? fields;
   Map<String, List<FieldModel>> farmFieldsCache = {};
-  Set<String> loadingFarmIds = {};
+  List<String> loadingFarmIds = [];
   Map<FieldState, String> pendingFarmIdByState = {};
   double growth = 0;
   @override

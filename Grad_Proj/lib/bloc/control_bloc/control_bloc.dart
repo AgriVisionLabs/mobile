@@ -352,6 +352,7 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
     on<OpenDiseaseDetectionEvent>((event, emit) async {
       // bloc takes stream of event and give stream of states
       try {
+        emit(DiseaseDetectionLoading());
         final response = await api.get(
             "${EndPoints.diseaseDetections}/${event.farmId}/DiseaseDetections",
           );

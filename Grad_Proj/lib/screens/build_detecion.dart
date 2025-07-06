@@ -7,6 +7,7 @@ import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:grd_proj/screens/widget/disease_detection.dart';
 import 'package:grd_proj/screens/widget/text.dart';
+import 'package:intl/intl.dart';
 
 class BuildDetecions extends StatefulWidget {
   final String farmId;
@@ -22,6 +23,10 @@ class BuildDetecions extends StatefulWidget {
 class _BuildDetecionsState extends State<BuildDetecions> {
   List<DiseaseDetectionModel>? info;
   ControlBloc? _controlBloc;
+  List<String> loadingFieldsIds = [];
+  Map<ControlState, String> pendingFieldIdByState = {};
+  DateTime? lastScan;
+
   @override
   void initState() {
     _controlBloc = context.read<ControlBloc>();
@@ -31,7 +36,21 @@ class _BuildDetecionsState extends State<BuildDetecions> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ControlBloc, ControlState>(
+    return BlocConsumer<ControlBloc, ControlState>(
+      listener: (context, state) {
+        if (state is ViewDetectionSuccess) {
+          setState(() {
+            info = state.info;
+          });
+        } else if (state is DiseaseDetectionEmpty) {
+          info = [];
+        } else if (state is ViewDiseaseDetectionFailure) {
+          info = [];
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Failed to load detections")),
+          );
+        }
+      },
       builder: (context, state) {
         if (state is ViewDiseaseDetectionFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -43,11 +62,10 @@ class _BuildDetecionsState extends State<BuildDetecions> {
             );
           });
         } else if (state is ViewDetectionSuccess) {
-          info = getList(state.info, widget.status);
           return SizedBox(
             height: 500,
             width: 400,
-            child: info!.isEmpty
+            child: widget.fields.isEmpty
                 ? const Center(
                     child: Text('Nothing Found',
                         style: TextStyle(
@@ -65,10 +83,15 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                           childCount: widget.fields.length,
                           (context, index) {
                             final item = widget.fields[index];
+
+                            final detections = info
+                                    ?.where((i) => i.fieldId == item.id)
+                                    .toList() ??
+                                [];
+
                             return Container(
                                 margin: const EdgeInsets.only(
                                     bottom: 40, left: 10, right: 10),
-                                padding: const EdgeInsets.all(24),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(15),
@@ -87,72 +110,126 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        children: [
-                                          text(
-                                              fontSize: 22,
-                                              label: item.name,
-                                              fontWeight: FontWeight.w600),
-                                          const Spacer(),
-                                          // Container(
-                                          //   width: 77,
-                                          //   height: 30,
-                                          //   decoration: BoxDecoration(
-                                          //     color: getHealthLevelColor(
-                                          //         item.healthStatus),
-                                          //     borderRadius:
-                                          //         BorderRadius.circular(25),
-                                          //   ),
-                                          //   child: Center(
-                                          //     child: text(
-                                          //         fontSize: 16,
-                                          //         label: getHealthLevelLabel(
-                                          //             item.healthStatus)!,
-                                          //         fontWeight: FontWeight.w600,
-                                          //         color: bottomBarColor),
-                                          //   ),
-                                          // ),
-                                        ],
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 24, vertical: 24),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                text(
+                                                    fontSize: 24,
+                                                    label: item.name,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                                const Spacer(),
+                                                // Container(
+                                                //   width: 77,
+                                                //   height: 30,
+                                                //   decoration: BoxDecoration(
+                                                //     color: getHealthLevelColor(
+                                                //         item.healthStatus),
+                                                //     borderRadius:
+                                                //         BorderRadius.circular(25),
+                                                //   ),
+                                                //   child: Center(
+                                                //     child: text(
+                                                //         fontSize: 16,
+                                                //         label: getHealthLevelLabel(
+                                                //             item.healthStatus)!,
+                                                //         fontWeight: FontWeight.w600,
+                                                //         color: bottomBarColor),
+                                                //   ),
+                                                // ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/lucide_leaf.png',
+                                                  height: 24,
+                                                  width: 24,
+                                                ),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                text(
+                                                    fontSize: 20,
+                                                    label: item.cropName ??
+                                                        "Not Exist",
+                                                    color: textColor2)
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 24,
+                                            ),
+                                            if (detections.isEmpty)
+                                              text(
+                                                  fontSize: 24,
+                                                  label: "No Detections")
+                                            else
+                                              _buildInfo(info: detections),
+                                          ],
+                                        ),
+                                      ),
+                                      const Divider(
+                                        color: grayColor,
+                                        thickness: 1,
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      Center(
+                                        child: GestureDetector(
+                                          onTap: () {},
+                                          child: Container(
+                                            width: 224,
+                                            height: 54,
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              color: primaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(45),
+                                              border: Border.all(
+                                                color: const Color(0xFF616161),
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: Center(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/tabler_camera.png',
+                                                    height: 23,
+                                                    width: 23,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  const Text(
+                                                    "New Detection",
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontFamily: "Manrope",
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 24,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/images/lucide_leaf.png',
-                                          ),
-                                          const SizedBox(width: 5,),
-                                          text(fontSize: 20, label: "label", color: textColor2)
-                                        ],
-                                      ),
-                                      ListView.builder(
-                                        itemBuilder: (context, index) {
-                                          if (index == 0) {
-                                            return Container(
-                                              child: Column(children: [
-                                                Row(
-                                                  children: [
-                                                    text(fontSize: 20 , label: "Crop Health"),
-                                                    const Spacer(),
-                                                    text(fontSize: 20, label: "66"),
-                                                  ],
-                                                ),
-                                              ]),
-                                            );
-                                          } else {
-                                            return Container(
-                                              child: Row(
-                                                children: [
-                                                  text(fontSize: 20, label: "Crop Health"),
-                                                  const Spacer(),
-                                                  text(fontSize: 20, label: info![index].createdOn.toString()),
-                                                ]
-                                              )
-                                            );
-                                          }
-                                        },
-                                      ),
+                                      )
                                     ]));
                           },
                         ),
@@ -173,6 +250,124 @@ class _BuildDetecionsState extends State<BuildDetecions> {
         }
         return circularProgressIndicator();
       },
+    );
+  }
+
+  Widget _buildInfo({required List<DiseaseDetectionModel> info}) {
+    final double totalProgress =
+        info.fold(0, (sum, info) => sum + (info.healthStatus));
+    final double risk =
+        info.isNotEmpty ? ((100 - totalProgress) / info.length) : 0;
+    final DateTime lastScan = info.last.createdOn;
+    final String byWho = info.last.createdBy;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            text(fontSize: 20, label: "Crop Health"),
+            const Spacer(),
+            text(fontSize: 20, label: "${risk.toInt()} %"),
+          ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: 400,
+          height: 10,
+          child: LinearProgressIndicator(
+            value: risk / 100,
+            backgroundColor: const Color.fromARGB(63, 97, 97, 97),
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(25),
+          ),
+        ),
+        const SizedBox(height: 16),
+        text(fontSize: 20, label: "Recent Detections"),
+        const SizedBox(height: 10),
+        info.isEmpty
+            ? text(fontSize: 24, label: "No Detections")
+            : ListView.builder(
+                padding: const EdgeInsets.all(0),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: info.length.clamp(0, 3),
+                itemBuilder: (context, index) {
+                  final disease = info[index];
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(children: [
+                      Image.asset(
+                        'assets/images/mark.png',
+                        height: 24,
+                        width: 24,
+                      ),
+                      const SizedBox(width: 5),
+                      text(
+                          fontSize: 18,
+                          label: DateFormat('dd MMM, yyyy')
+                              .format(disease.createdOn)),
+                      const Spacer(),
+                      Container(
+                        width: 77,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: getHealthLevelColor(disease.healthStatus),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Center(
+                          child: text(
+                              fontSize: 16,
+                              label: getHealthLevelLabel(disease.healthStatus)!,
+                              fontWeight: FontWeight.w600,
+                              color: bottomBarColor),
+                        ),
+                      ),
+                    ]),
+                  );
+                },
+              ),
+        const SizedBox(
+          height: 8,
+        ),
+        const Divider(
+          thickness: 1,
+          color: grayColor,
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Image.asset(
+              'assets/images/calender.png',
+              height: 24,
+              width: 24,
+            ),
+            const SizedBox(width: 5),
+            text(
+                fontSize: 18,
+                label: "Last: ${DateFormat('dd MMM, yyyy').format(lastScan)}",
+                color: grayColor)
+          ],
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Image.asset(
+              'assets/images/person_icon.png',
+              color: grayColor,
+              height: 24,
+              width: 24,
+            ),
+            const SizedBox(width: 5),
+            text(fontSize: 18, label: "By: $byWho", color: grayColor2)
+          ],
+        ),
+      ],
     );
   }
 }
