@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
@@ -65,6 +66,14 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
           });
         } else if (state is FarmsLoaded) {
           farms = state.farms;
+          selectedFarmId = farms![0].farmId;
+          selectedFarmName = farms![0].name;
+          context.read<FieldBloc>().add(OpenFarmIrrigationUnitsEvent(
+                farmId: selectedFarmId!,
+              ));
+          context.read<ControlBloc>().add(OpenFarmAutomationRulesEvent(
+                farmId: selectedFarmId!,
+              ));
         } else if (state is FarmFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -172,38 +181,43 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                     SizedBox(height: 16),
                     Row(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(17, 10, 17, 0),
-                          width: 289,
-                          height: 53,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(color: borderColor, width: 1)),
-                          child: DropdownButton<String>(
-                            dropdownColor: Colors.white,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            value: selectedFarmId,
-                            isExpanded: true,
-                            icon: Image.asset(
-                              'assets/images/arrow.png',
-                            ),
-                            onChanged: (farms == null || farms!.isEmpty)
-                                ? null
-                                : (newValue) {
-                                    final selectedFarm = farms!
-                                        .where(
-                                            (farm) => farm.farmId == newValue)
-                                        .toList();
-                                    if (selectedFarm.isNotEmpty) {
+                        SizedBox(
+                          width: 280,
+                          height: 60,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                              isExpanded: true,
+                              hint: const Text(
+                                'Choose Farm',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'Manrope',
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              value: selectedFarmId,
+                              items: farms?.map((farm) {
+                                return DropdownMenuItem<String>(
+                                  value: farm.farmId,
+                                  child: Text(
+                                    farm.name,
+                                    style: const TextStyle(
+                                      fontFamily: 'Manrope',
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (farms == null || farms!.isEmpty)
+                                  ? null
+                                  : (value) {
                                       setState(() {
-                                        selectedFarmId = newValue;
-                                        selectedFarmName =
-                                            selectedFarm.first.name;
+                                        final selectedFarm = farms!
+                                            .where(
+                                                (farm) => farm.farmId == value)
+                                            .toList();
+                                        selectedFarmId = value;
+                                        selectedFarmName = selectedFarm.first.roleName;
                                         context
                                             .read<FieldBloc>()
                                             .add(OpenFarmIrrigationUnitsEvent(
@@ -215,14 +229,34 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                                               farmId: selectedFarmId!,
                                             ));
                                       });
-                                    }
-                                  },
-                            items: farms?.map<DropdownMenuItem<String>>((farm) {
-                              return DropdownMenuItem<String>(
-                                value: farm.farmId,
-                                child: Text(farm.name),
-                              );
-                            }).toList(),
+                                    },
+                              buttonStyleData: ButtonStyleData(
+                                height: 55,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border:
+                                      Border.all(color: borderColor, width: 1),
+                                  color: Colors.white,
+                                ),
+                              ),
+                              dropdownStyleData: DropdownStyleData(
+                                maxHeight: 250,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white,
+                                  border: Border.all(color: borderColor),
+                                ),
+                                elevation: 2,
+                                offset: const Offset(0, -5),
+                              ),
+                              iconStyleData: const IconStyleData(
+                                icon: Icon(Icons.keyboard_arrow_down_rounded),
+                                iconSize: 40,
+                                iconEnabledColor: Colors.black,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -285,7 +319,7 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                     Container(
                         child: selectedFarmId == null
                             ? Center(
-                                child: Text('Please Choose Farm',
+                                child: Text('No Farms Were Found',
                                     style: TextStyle(
                                       color: Color(0xff1E6930),
                                       fontSize: 20,
@@ -360,7 +394,7 @@ class _IrrigationConrtolState extends State<IrrigationConrtol> {
                     Container(
                         child: selectedFarmId == null
                             ? Center(
-                                child: Text('Please Choose Farm',
+                                child: Text('No Farms Were Found',
                                     style: TextStyle(
                                       color: Color(0xff1E6930),
                                       fontSize: 20,

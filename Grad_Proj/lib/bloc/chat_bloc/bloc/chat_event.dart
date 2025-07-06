@@ -1,18 +1,43 @@
 part of 'chat_bloc.dart';
 
 @immutable
-abstract class ChatEvent {}
-
-class StartConnectionEvent extends ChatEvent {}
-
-class SendMessageEvent extends ChatEvent {
-  final String user;
-  final String message;
-  SendMessageEvent(this.user, this.message);
+abstract class ChatEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
 }
 
+// اتصال SignalR
+class StartConnectionEvent extends ChatEvent {}
+
+// تحميل المحادثات
+class LoadConversationsEvent extends ChatEvent {}
+
+// اختيار محادثة معينة
+class SelectConversationEvent extends ChatEvent {
+  final String conversationId;
+
+  SelectConversationEvent(this.conversationId);
+
+  @override
+  List<Object?> get props => [conversationId];
+}
+
+// إرسال رسالة
+class SendMessageEvent extends ChatEvent {
+  final Map<String, dynamic> message;
+
+  SendMessageEvent(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+// استلام رسالة
 class MessageReceivedEvent extends ChatEvent {
-  final String user;
-  final String message;
-  MessageReceivedEvent(this.user, this.message);
+  final Map<String, dynamic> message;
+
+  MessageReceivedEvent(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

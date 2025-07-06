@@ -25,6 +25,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   String? selectedFarmId;
   List<FarmModel>? farms;
+  List<FieldModel>? fields;
   String? roleName;
   FieldBloc? _fieldBloc;
   @override
@@ -252,6 +253,9 @@ class _DashBoardState extends State<DashBoard> {
                                         );
                                       }
                                       if (state is FieldLoaded) {
+                                        fields = state.fields.where((field) =>
+                                                        field.cropName != null)
+                                                    .toList();
                                         return Container(
                                           height: state.fields.length > 3
                                               ? 530
@@ -263,7 +267,7 @@ class _DashBoardState extends State<DashBoard> {
                                               left: 5,
                                               right: 5),
                                           child: _buildFeilds(
-                                              context, state.fields),
+                                              context, fields),
                                         );
                                       } else if (state is FieldEmpty) {
                                         return Container(

@@ -361,7 +361,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                             ? Center(
                                 child: text(
                                     fontSize: 24,
-                                    label: "Please Select Farm",
+                                    label: "No Farms Were Found",
                                     color: primaryColor),
                               )
                             : BlocBuilder<FieldBloc, FieldState>(

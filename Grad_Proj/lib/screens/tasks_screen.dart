@@ -268,7 +268,7 @@ class _TaskScreen extends State<TaskScreen> {
                             Container(
                                 child: selectedFarmId == null
                                     ? Center(
-                                        child: Text('Please Choose Farm',
+                                        child: Text('No Farms Were Found',
                                             style: TextStyle(
                                               color: Color(0xff1E6930),
                                               fontSize: 20,
