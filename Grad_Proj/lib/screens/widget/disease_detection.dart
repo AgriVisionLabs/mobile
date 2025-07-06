@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/diseaseDetections.dart';
+import 'package:grd_proj/models/field_model.dart';
 
-List<DiseaseDetectionModel>? getList(
-    List<DiseaseDetectionModel> info, int? status) {
-  if (status != null) {
-    return info.where((item) => item.healthStatus == status).toList();
-  } else {
-    return info;
-  }
-}
+// bool? getList(
+//     List<DiseaseDetectionModel> info, int? status) {
+//   if (status != null) {
+//     if(status==0){
+//       return info.where((item) => item.isHealthy == true).toList();
+//     }else{
+//       return info.where((item) => item.isHealthy == false).toList();
+//     }
+//   } else {
+//     return info;
+//   }
+// }
 
 Color? getHealthLevelColor( int healthLevel) {
   if (healthLevel == 1) {

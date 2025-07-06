@@ -24,7 +24,7 @@ class _BuildDetecionsState extends State<BuildDetecions> {
   List<DiseaseDetectionModel>? info;
   ControlBloc? _controlBloc;
   List<String> loadingFieldsIds = [];
-  Map<ControlState, String> pendingFieldIdByState = {};
+  List<FieldModel>? pendingFieldIdByState = [];
   DateTime? lastScan;
 
   @override
@@ -88,149 +88,155 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                                     ?.where((i) => i.fieldId == item.id)
                                     .toList() ??
                                 [];
-
-                            return Container(
-                                margin: const EdgeInsets.only(
-                                    bottom: 40, left: 10, right: 10),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15),
-                                    border: Border.all(
-                                        color: const Color.fromARGB(
-                                            62, 13, 18, 28),
-                                        width: 1),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                          color: Color.fromARGB(50, 0, 0, 0),
-                                          blurRadius: 15,
-                                          spreadRadius: 2,
-                                          offset: Offset(0, 5))
-                                    ]),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 24, vertical: 24),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                text(
-                                                    fontSize: 24,
-                                                    label: item.name,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                                const Spacer(),
-                                                // Container(
-                                                //   width: 77,
-                                                //   height: 30,
-                                                //   decoration: BoxDecoration(
-                                                //     color: getHealthLevelColor(
-                                                //         item.healthStatus),
-                                                //     borderRadius:
-                                                //         BorderRadius.circular(25),
-                                                //   ),
-                                                //   child: Center(
-                                                //     child: text(
-                                                //         fontSize: 16,
-                                                //         label: getHealthLevelLabel(
-                                                //             item.healthStatus)!,
-                                                //         fontWeight: FontWeight.w600,
-                                                //         color: bottomBarColor),
-                                                //   ),
-                                                // ),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Image.asset(
-                                                  'assets/images/lucide_leaf.png',
-                                                  height: 24,
-                                                  width: 24,
-                                                ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                text(
-                                                    fontSize: 20,
-                                                    label: item.cropName ??
-                                                        "Not Exist",
-                                                    color: textColor2)
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 24,
-                                            ),
-                                            if (detections.isEmpty)
-                                              text(
-                                                  fontSize: 24,
-                                                  label: "No Detections")
-                                            else
-                                              _buildInfo(info: detections),
-                                          ],
-                                        ),
-                                      ),
-                                      const Divider(
-                                        color: grayColor,
-                                        thickness: 1,
-                                      ),
-                                      const SizedBox(
-                                        height: 16,
-                                      ),
-                                      Center(
-                                        child: GestureDetector(
-                                          onTap: () {},
-                                          child: Container(
-                                            width: 224,
-                                            height: 54,
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              color: primaryColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(45),
-                                              border: Border.all(
-                                                color: const Color(0xFF616161),
-                                                width: 1,
+                            if (item.cropName == null) {
+                              return const SizedBox
+                                  .shrink(); // أو return Container();
+                            }
+                            return GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                  margin: const EdgeInsets.only(
+                                      bottom: 20, left: 10, right: 10, top: 20),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: const Color.fromARGB(
+                                              62, 13, 18, 28),
+                                          width: 1),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Color.fromARGB(50, 0, 0, 0),
+                                            blurRadius: 15,
+                                            spreadRadius: 2,
+                                            offset: Offset(0, 5))
+                                      ]),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 24, vertical: 24),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  text(
+                                                      fontSize: 24,
+                                                      label: item.name,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                  const Spacer(),
+                                                  // Container(
+                                                  //   width: 77,
+                                                  //   height: 30,
+                                                  //   decoration: BoxDecoration(
+                                                  //     color: getHealthLevelColor(
+                                                  //         item.healthStatus),
+                                                  //     borderRadius:
+                                                  //         BorderRadius.circular(25),
+                                                  //   ),
+                                                  //   child: Center(
+                                                  //     child: text(
+                                                  //         fontSize: 16,
+                                                  //         label: getHealthLevelLabel(
+                                                  //             item.healthStatus)!,
+                                                  //         fontWeight: FontWeight.w600,
+                                                  //         color: bottomBarColor),
+                                                  //   ),
+                                                  // ),
+                                                ],
                                               ),
-                                            ),
-                                            child: Center(
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
                                                 children: [
                                                   Image.asset(
-                                                    'assets/images/tabler_camera.png',
-                                                    height: 23,
-                                                    width: 23,
+                                                    'assets/images/lucide_leaf.png',
+                                                    height: 24,
+                                                    width: 24,
                                                   ),
                                                   const SizedBox(
-                                                    width: 8,
+                                                    width: 5,
                                                   ),
-                                                  const Text(
-                                                    "New Detection",
-                                                    style: TextStyle(
+                                                  text(
                                                       fontSize: 20,
-                                                      fontFamily: "Manrope",
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
+                                                      label: item.cropName ??
+                                                          "Not Exist",
+                                                      color: textColor2)
                                                 ],
+                                              ),
+                                              const SizedBox(
+                                                height: 24,
+                                              ),
+                                              if (detections.isEmpty)
+                                                text(
+                                                    fontSize: 24,
+                                                    label: "No Detections")
+                                              else
+                                                _buildInfo(info: detections),
+                                            ],
+                                          ),
+                                        ),
+                                        const Divider(
+                                          color: grayColor,
+                                          thickness: 1,
+                                        ),
+                                        const SizedBox(
+                                          height: 16,
+                                        ),
+                                        Center(
+                                          child: GestureDetector(
+                                            onTap: () {},
+                                            child: Container(
+                                              width: 224,
+                                              height: 54,
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color: primaryColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(45),
+                                                border: Border.all(
+                                                  color: const Color(0xFF616161),
+                                                  width: 1,
+                                                ),
+                                              ),
+                                              child: Center(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Image.asset(
+                                                      'assets/images/tabler_camera.png',
+                                                      height: 23,
+                                                      width: 23,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    const Text(
+                                                      "New Detection",
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontFamily: "Manrope",
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 24,
-                                      )
-                                    ]));
+                                        const SizedBox(
+                                          height: 24,
+                                        )
+                                      ])),
+                            );
                           },
                         ),
                       ),
