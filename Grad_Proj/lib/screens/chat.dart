@@ -203,7 +203,7 @@ List<Map<String, dynamic>> get reorderedMessages => [messages[1], messages[0]];
               
                 ListView.builder(
                   reverse: true,
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 90),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final msg = reorderedMessages[index];
@@ -236,56 +236,62 @@ List<Map<String, dynamic>> get reorderedMessages => [messages[1], messages[0]];
                     );
                   },
                 ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16, 33, 17, 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Type a message...',
+                              hintStyle: TextStyle(color: Color(0xff616161), fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Monrope'),
+                              filled: true,
+                              fillColor: Colors.white,
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(color: borderColor, width: 1),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(color: Color(0xFFE0E0E0), width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(color: borderColor, width: 1),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        GestureDetector(
+                          onTap: () {
+                          print('Send message');
+                          },
+                          child: CircleAvatar(
+                          radius: 24,
+                          backgroundColor: primaryColor,
+                          child: Image.asset(
+                            'assets/images/send.png',
+                            height: 28,
+                            width: 28,
+                            color: Colors.white,
+                          ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  )
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(16, 33, 17, 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Type a message...',
-                      hintStyle: TextStyle(color: Color(0xff616161), fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Monrope'),
-                      filled: false,
-                      fillColor: Colors.transparent,
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: borderColor, width: 1),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Color(0xFFE0E0E0), width: 1),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: borderColor, width: 1),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 16),
-                GestureDetector(
-                  onTap: () {
-                  print('Send message');
-                  },
-                  child: CircleAvatar(
-                  radius: 24,
-                  backgroundColor: primaryColor,
-                  child: Image.asset(
-                    'assets/images/send.png',
-                    height: 28,
-                    width: 28,
-                    color: Colors.white,
-                  ),
-                  ),
-                )
-              ],
-            ),
-          )
+          
         ],
       ),
     );
