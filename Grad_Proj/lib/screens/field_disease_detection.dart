@@ -11,18 +11,9 @@ import 'package:grd_proj/screens/widget/text.dart';
 import 'package:intl/intl.dart';
 
 class FieldDiseaseDetection extends StatefulWidget {
-  final String farmName;
-  final String farmId;
-  final String fieldName;
-  final String cropName;
-  final String fieldId;
-  const FieldDiseaseDetection(
-      {super.key,
-      required this.farmId,
-      required this.farmName,
-      required this.fieldName,
-      required this.cropName,
-      required this.fieldId});
+  const FieldDiseaseDetection({
+    super.key,
+  });
 
   @override
   State<FieldDiseaseDetection> createState() => _FieldDiseaseDetectionState();
@@ -43,7 +34,7 @@ class _FieldDiseaseDetectionState extends State<FieldDiseaseDetection> {
   void initState() {
     _controlBloc = context.read<ControlBloc>();
     _controlBloc!.add(OpenFieldDiseaseDetectionEvent(
-        farmId: widget.farmId, fieldId: widget.fieldId));
+        farmId: _controlBloc!.farmId.text, fieldId:  _controlBloc!.fieldId.text));
     super.initState();
   }
 
@@ -60,7 +51,7 @@ class _FieldDiseaseDetectionState extends State<FieldDiseaseDetection> {
             lastScan = state.info.last.createdOn;
             byWho = state.info.last.createdBy;
             return Container(
-              margin: const EdgeInsets.fromLTRB(16, 100, 16, 1),
+              margin: const EdgeInsets.fromLTRB(16, 150, 16, 1),
               height: double.infinity,
               child: CustomScrollView(
                 shrinkWrap: true,
@@ -73,7 +64,7 @@ class _FieldDiseaseDetectionState extends State<FieldDiseaseDetection> {
                           children: [
                             text(
                                 fontSize: 24,
-                                label: widget.fieldName,
+                                label:  _controlBloc!.farmName.text,
                                 fontWeight: FontWeight.bold),
                             const Spacer(),
                             IconButton(
@@ -103,7 +94,7 @@ class _FieldDiseaseDetectionState extends State<FieldDiseaseDetection> {
                             ),
                             text(
                                 fontSize: 20,
-                                label: widget.cropName,
+                                label:  _controlBloc!.cropName.text,
                                 color: textColor2)
                           ],
                         ),
@@ -270,10 +261,10 @@ class _FieldDiseaseDetectionState extends State<FieldDiseaseDetection> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   DiseaseDetectionScreen(
-                                                    farmName: widget.farmName,
-                                                    cropName: widget.cropName,
-                                                    farmId: widget.farmId,
-                                                    fieldId: widget.fieldId,
+                                                    farmName:  _controlBloc!.farmName.text,
+                                                    cropName:  _controlBloc!.cropName.text,
+                                                    farmId:  _controlBloc!.farmId.text,
+                                                    fieldId:  _controlBloc!.fieldId.text,
                                                   )));
                                     },
                                     child: Container(

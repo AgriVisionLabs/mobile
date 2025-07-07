@@ -423,8 +423,8 @@ class _FarmsScreen extends State<FarmsScreen> {
           child: CircularPercentIndicator(
             radius: 50.0, // Size of the circle
             lineWidth: 9.0, // Thickness of the progress bar
-            percent: progress, // 30% progress (value between 0.0 and 1.0)
-            center: Text("${(progress * 100).toInt()}%"),
+            percent: progress/100, // 30% progress (value between 0.0 and 1.0)
+            center: Text("${(progress).toInt()}%"),
             progressColor: Color(0xff1E6930), // Progress bar color
             backgroundColor: Color.fromARGB(
                 255, 202, 227, 206), // Background color of the progress

@@ -75,7 +75,7 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
         return Scaffold(
             backgroundColor: Colors.white,
             body: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 150, 16, 1),
+                padding: const EdgeInsets.fromLTRB(16, 150, 16, 0),
                 child: SingleChildScrollView(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

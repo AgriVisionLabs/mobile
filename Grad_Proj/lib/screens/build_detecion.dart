@@ -5,7 +5,7 @@ import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/diseaseDetections.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/disease_detection_screen.dart';
-import 'package:grd_proj/screens/field_disease_detection.dart';
+import 'package:grd_proj/screens/home_screen.dart';
 import 'package:grd_proj/screens/widget/disease_detection.dart';
 import 'package:grd_proj/screens/widget/text.dart';
 import 'package:intl/intl.dart';
@@ -61,7 +61,7 @@ class _BuildDetecionsState extends State<BuildDetecions> {
       },
       builder: (context, state) {
         return SizedBox(
-          height: 500,
+          height: 520,
           width: 400,
           child: widget.fields.isEmpty
               ? const Center(
@@ -93,17 +93,16 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                           risk = getrisk(detections)!;
                           return GestureDetector(
                             onTap: () {
+                              _controlBloc!.farmName.text = widget.farmName;
+                              _controlBloc!.fieldId.text = item.id;
+                              _controlBloc!.fieldName.text = item.name;
+                              _controlBloc!.farmId.text = item.farmId;
+                              _controlBloc!.cropName.text = item.cropName!;
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          FieldDiseaseDetection(
-                                            farmName: widget.farmName,
-                                            farmId: widget.farmId,
-                                            fieldName: item.name,
-                                            cropName: item.cropName!,
-                                            fieldId: item.id,
-                                          )));
+                                           const HomeScreen(initialIndex:10 ,)));
                             },
                             child: Container(
                                 margin: const EdgeInsets.only(

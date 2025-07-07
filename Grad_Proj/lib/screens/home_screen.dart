@@ -7,6 +7,7 @@ import 'package:grd_proj/bloc/user_cubit.dart';
 import 'package:grd_proj/bloc/user_state.dart';
 import 'package:grd_proj/screens/Login_Screen.dart';
 import 'package:grd_proj/screens/disease_detection.dart';
+import 'package:grd_proj/screens/field_disease_detection.dart';
 import 'package:grd_proj/screens/fields_screen.dart';
 import 'package:grd_proj/screens/inve_manage.dart';
 import 'package:grd_proj/screens/irrigation_control.dart';
@@ -60,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const DiseaseDetection(),
     const Settings(),
     const InventoryManagementScreen(),
+    const FieldDiseaseDetection(),
   ];
 
   void _onItemTapped(int index) {

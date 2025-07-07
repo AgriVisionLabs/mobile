@@ -47,6 +47,10 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
   TextEditingController expirationDate = TextEditingController();
   GlobalKey<FormState> logFormKey = GlobalKey();
   TextEditingController reason = TextEditingController();
+  TextEditingController farmName = TextEditingController();
+  TextEditingController fieldName = TextEditingController();
+  TextEditingController cropName = TextEditingController();
+  TextEditingController farmId = TextEditingController();
 
   ControlBloc(this.api) : super(ControlInitial()) {
     on<AddAutomationRulesEvent>((event, emit) async {
