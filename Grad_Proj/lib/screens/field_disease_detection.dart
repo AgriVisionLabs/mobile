@@ -42,7 +42,8 @@ class _FieldDiseaseDetectionState extends State<FieldDiseaseDetection> {
   @override
   void initState() {
     _controlBloc = context.read<ControlBloc>();
-    _controlBloc!.add(OpenDiseaseDetectionEvent(farmId: widget.farmId));
+    _controlBloc!.add(OpenFieldDiseaseDetectionEvent(
+        farmId: widget.farmId, fieldId: widget.fieldId));
     super.initState();
   }
 
@@ -54,7 +55,7 @@ class _FieldDiseaseDetectionState extends State<FieldDiseaseDetection> {
       backgroundColor: Colors.white,
       body: BlocBuilder<ControlBloc, ControlState>(
         builder: (context, state) {
-          if (state is ViewDetectionSuccess) {
+          if (state is ViewDetectionsSuccess) {
             risk = getrisk(state.info)!;
             lastScan = state.info.last.createdOn;
             byWho = state.info.last.createdBy;
@@ -441,7 +442,7 @@ class _FieldDiseaseDetectionState extends State<FieldDiseaseDetection> {
                 ],
               ),
             );
-          } else if (state is ViewDiseaseDetectionFailure) {
+          } else if (state is ViewDiseaseDetectionsFailure) {
             return Center(
               child: text(fontSize: 24, label: "Failed to load data"),
             );
@@ -593,7 +594,9 @@ class _FieldDiseaseDetectionState extends State<FieldDiseaseDetection> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           DiseaseDetectionShowImage(
-                                              info: item)));
+                                            scanId: item.id,
+                                            farmId: item.farmId,
+                                          )));
                             },
                             child: Container(
                               width: 380,

@@ -21,6 +21,7 @@ class EndPoints {
   static const String cropType = '/Crops';
   static const String invitem = '/farms';
   static const String diseaseDetections = '/farms';
+  static const String farmMembers = '/farms';
 }
 
 class ApiKey {

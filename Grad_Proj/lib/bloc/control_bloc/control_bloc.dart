@@ -339,77 +339,116 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
 //========================= DiseaseDetection =========================
 //=====================================================================
 
+    on<UseDiseaseDetectionEvent>((event, emit) async {
+      try {
+        final filePath = event.media.path;
+        final fileName = filePath.split('/').last;
+        final fileExtension = filePath.split('.').last.toLowerCase();
 
-on<UseDiseaseDetectionEvent>((event, emit) async {
-  try {
-    final filePath = event.media.path;
-    final fileName = filePath.split('/').last;
-    final fileExtension = filePath.split('.').last.toLowerCase();
+        MediaType mediaType;
+        if (['jpg', 'jpeg'].contains(fileExtension)) {
+          mediaType = MediaType('image', 'jpeg');
+        } else if (fileExtension == 'png') {
+          mediaType = MediaType('image', 'png');
+        } else if (fileExtension == 'mp4') {
+          mediaType = MediaType('video', 'mp4');
+        } else {
+          emit(DiseaseScanFailure(
+            errMessage: 'Unsupported file type: .$fileExtension',
+            errors: const {},
+          ));
+          return;
+        }
 
-    MediaType mediaType;
-    if (['jpg', 'jpeg'].contains(fileExtension)) {
-      mediaType = MediaType('image', 'jpeg');
-    } else if (fileExtension == 'png') {
-      mediaType = MediaType('image', 'png');
-    } else if (fileExtension == 'mp4') {
-      mediaType = MediaType('video', 'mp4');
-    } else {
-      emit(DiseaseScanFailure(
-        errMessage: 'Unsupported file type: .$fileExtension',
-        errors: const {},
-      ));
-      return;
-    }
+        final formData = FormData.fromMap({
+          'Image': await MultipartFile.fromFile(
+            filePath,
+            filename: fileName,
+            contentType: mediaType,
+          ),
+        });
 
-    final formData = FormData.fromMap({
-      'Image': await MultipartFile.fromFile(
-        filePath,
-        filename: fileName,
-        contentType: mediaType,
-      ),
+        final response = await api.post(
+          "${EndPoints.diseaseDetections}/${event.farmId}/fields/${event.fieldId}/DiseaseDetections",
+          data: formData,
+          options: Options(
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          ),
+        );
+
+        final info = DiseaseDetectionModel.fromJson(response);
+        emit(DiseaseScanSuccess(info: info));
+      } on ServerException catch (e) {
+        emit(DeleteAutomationRulesFailure(
+          errMessage: e.errorModel.message,
+          errors: e.errorModel.error,
+        ));
+      }
     });
 
-    final response = await api.post(
-      "${EndPoints.diseaseDetections}/${event.farmId}/fields/${event.fieldId}/DiseaseDetections",
-      data: formData,
-      options: Options(
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      ),
-    );
-
-    final info = DiseaseDetectionModel.fromJson(response);
-    emit(DiseaseScanSuccess(info: info));
-  } on ServerException catch (e) {
-    emit(DeleteAutomationRulesFailure(
-      errMessage: e.errorModel.message,
-      errors: e.errorModel.error,
-    ));
-  }
-});
-
-
-    on<OpenDiseaseDetectionEvent>((event, emit) async {
+    on<OpenFarmDiseaseDetectionEvent>((event, emit) async {
       // bloc takes stream of event and give stream of states
       try {
-        emit(DiseaseDetectionLoading());
         final response = await api.get(
-            "${EndPoints.diseaseDetections}/${event.farmId}/DiseaseDetections",
-          );
-        
-       if (response is List && response.isNotEmpty) {
+          "${EndPoints.diseaseDetections}/${event.farmId}/DiseaseDetections",
+        );
+
+        if (response is List && response.isNotEmpty) {
           final fieldInfo = response
-              .map<DiseaseDetectionModel>((json) => DiseaseDetectionModel.fromJson(json))
+              .map<DiseaseDetectionModel>(
+                  (json) => DiseaseDetectionModel.fromJson(json))
               .toList();
-          emit(ViewDetectionSuccess(
+          emit(ViewDetectionsSuccess(
             info: fieldInfo,
           ));
         } else {
           emit(DiseaseDetectionEmpty());
         }
       } on ServerException catch (e) {
-        emit(ViewDiseaseDetectionFailure(
+        emit(ViewDiseaseDetectionsFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<OpenFieldDiseaseDetectionEvent>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response = await api.get(
+          "${EndPoints.diseaseDetections}/${event.farmId}/fields/${event.fieldId}/DiseaseDetections",
+        );
+
+        if (response is List && response.isNotEmpty) {
+          final fieldInfo = response
+              .map<DiseaseDetectionModel>(
+                  (json) => DiseaseDetectionModel.fromJson(json))
+              .toList();
+          emit(ViewDetectionsSuccess(
+            info: fieldInfo,
+          ));
+        } else {
+          emit(DiseaseDetectionEmpty());
+        }
+      } on ServerException catch (e) {
+        emit(ViewDiseaseDetectionsFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<OpenDiseaseDetectionEvent>((event, emit) async {
+      // bloc takes stream of event and give stream of states
+      try {
+        final response = await api.get(
+          "${EndPoints.diseaseDetections}/${event.farmId}/DiseaseDetections/${event.scanid}",
+        );
+
+        final fieldInfo = DiseaseDetectionModel.fromJson(response);
+        emit(DiseaseDetectionSuccess(
+          info: fieldInfo,
+        ));
+      } on ServerException catch (e) {
+        emit(DiseaseDetectionFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });

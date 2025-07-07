@@ -269,19 +269,33 @@ class DiseaseScanFailure extends ControlState {
 
 }
 
-class ViewDetectionSuccess extends ControlState{
+class ViewDetectionsSuccess extends ControlState{
   final List<DiseaseDetectionModel> info;
-  ViewDetectionSuccess({
+  ViewDetectionsSuccess({
     required this.info});
 }
-class ViewDiseaseDetectionFailure extends ControlState {
+class ViewDiseaseDetectionsFailure extends ControlState {
   final String errMessage;
   final dynamic errors;
-  ViewDiseaseDetectionFailure({
+  ViewDiseaseDetectionsFailure({
     required this.errMessage,
     required this.errors,
   });
 
 }
 class DiseaseDetectionEmpty extends ControlState{}
-class DiseaseDetectionLoading extends ControlState{}
+class DiseaseDetectionSuccess extends ControlState {
+  final DiseaseDetectionModel info;
+  DiseaseDetectionSuccess({
+    required this.info,
+  });
+  
+}
+class DiseaseDetectionFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+  DiseaseDetectionFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+}

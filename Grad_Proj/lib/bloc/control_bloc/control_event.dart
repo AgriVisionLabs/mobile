@@ -184,9 +184,26 @@ class UseDiseaseDetectionEvent extends ControlEvent {
   });
 }
 
+class OpenFarmDiseaseDetectionEvent extends ControlEvent {
+  final String farmId;
+  OpenFarmDiseaseDetectionEvent({
+    required this.farmId,
+  });
+}
+class OpenFieldDiseaseDetectionEvent extends ControlEvent {
+  final String farmId;
+  final String fieldId;
+  OpenFieldDiseaseDetectionEvent({
+    required this.farmId,
+    required this.fieldId
+  });
+}
+
 class OpenDiseaseDetectionEvent extends ControlEvent {
   final String farmId;
+  final String scanid;
   OpenDiseaseDetectionEvent({
     required this.farmId,
+    required this.scanid,
   });
 }

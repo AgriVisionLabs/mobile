@@ -31,7 +31,7 @@ class _DiseaseDetectedScreenState extends State<DiseaseDetectedScreen> {
 
   @override
   void dispose() {
-    _controlBloc!.add(OpenDiseaseDetectionEvent(farmId: widget.farmId));
+    _controlBloc!.add(OpenFarmDiseaseDetectionEvent(farmId: widget.farmId));
     super.dispose();
   }
 

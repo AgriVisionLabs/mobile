@@ -38,7 +38,7 @@ class _BuildDetecionsState extends State<BuildDetecions> {
   @override
   void initState() {
     _controlBloc = context.read<ControlBloc>();
-    _controlBloc!.add(OpenDiseaseDetectionEvent(farmId: widget.farmId));
+    _controlBloc!.add(OpenFarmDiseaseDetectionEvent(farmId: widget.farmId));
     super.initState();
   }
 
@@ -46,13 +46,13 @@ class _BuildDetecionsState extends State<BuildDetecions> {
   Widget build(BuildContext context) {
     return BlocConsumer<ControlBloc, ControlState>(
       listener: (context, state) {
-        if (state is ViewDetectionSuccess) {
+        if (state is ViewDetectionsSuccess) {
           setState(() {
             info = state.info;
           });
         } else if (state is DiseaseDetectionEmpty) {
           info = [];
-        } else if (state is ViewDiseaseDetectionFailure) {
+        } else if (state is ViewDiseaseDetectionsFailure) {
           info = [];
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Failed to load detections")),

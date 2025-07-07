@@ -59,7 +59,7 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
               .add(OpenFieldEvent(farmId: selectedFarmId!));
           context
               .read<ControlBloc>()
-              .add(OpenDiseaseDetectionEvent(farmId: selectedFarmId!));
+              .add(OpenFarmDiseaseDetectionEvent(farmId: selectedFarmId!));
         } else if (state is FarmFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -132,7 +132,7 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                                             OpenFieldEvent(
                                                 farmId: selectedFarmId!));
                                         context.read<ControlBloc>().add(
-                                            OpenDiseaseDetectionEvent(
+                                            OpenFarmDiseaseDetectionEvent(
                                                 farmId: selectedFarmId!));
                                       });
                                     },
