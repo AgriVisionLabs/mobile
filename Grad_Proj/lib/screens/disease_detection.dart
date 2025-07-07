@@ -22,10 +22,6 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
   String? selectedFarmId;
   String? selectedFarmName;
   int selectedTab = 0;
-  bool isAllFields = true,
-      isHealthy = false,
-      isRisk = false,
-      isInfeacted = false;
   final List<String> tabs = [
     "All Fields",
     "Healthy",
@@ -170,52 +166,54 @@ class _DiseaseDetectionState extends State<DiseaseDetection> {
                           ),
                         ),
                         const SizedBox(height: 30),
-                        Container(
-                          height: 62,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: const Color(0x4dD9D9D9),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: List.generate(tabs.length, (index) {
-                                final isSelected = selectedTab == index;
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 4.4),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        selectedTab = index;
-                                      });
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12),
-                                      height: 46,
-                                      decoration: BoxDecoration(
-                                        color: isSelected
-                                            ? Colors.white
-                                            : Colors.transparent,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        tabs[index],
-                                        style: TextStyle(
+                        Center(
+                          child: Container(
+                            height: 62,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: const Color(0x4dD9D9D9),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: List.generate(tabs.length, (index) {
+                                  final isSelected = selectedTab == index;
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 4.4),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          selectedTab = index;
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12),
+                                        height: 46,
+                                        decoration: BoxDecoration(
                                           color: isSelected
-                                              ? primaryColor
-                                              : Colors.grey,
-                                          fontSize: 16,
-                                          fontFamily: "manrope-semi-bold",
+                                              ? Colors.white
+                                              : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          tabs[index],
+                                          style: TextStyle(
+                                            color: isSelected
+                                                ? primaryColor
+                                                : Colors.grey,
+                                            fontSize: 16,
+                                            fontFamily: "manrope-semi-bold",
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }),
+                                  );
+                                }),
+                              ),
                             ),
                           ),
                         ),

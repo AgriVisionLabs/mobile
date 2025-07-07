@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const SensorAndDevices(),
     const DiseaseDetection(),
     const Settings(),
-    const InventoryManagementScreen()
+    const InventoryManagementScreen(),
   ];
 
   void _onItemTapped(int index) {

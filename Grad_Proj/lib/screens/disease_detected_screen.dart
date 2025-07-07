@@ -52,7 +52,7 @@ class _DiseaseDetectedScreenState extends State<DiseaseDetectedScreen> {
                     Row(
                       children: [
                         Text(
-                          "Detection From ${DateFormat('dd MMM, yyyy').format(state.info.createdOn)}",
+                          "Detection From ${DateFormat('d MMM, yyyy').format(state.info.createdOn)}",
                           style: TextStyle(
                             fontSize: 25,
                             fontFamily: "Manrope",
@@ -81,9 +81,10 @@ class _DiseaseDetectedScreenState extends State<DiseaseDetectedScreen> {
                     SizedBox(height: 24),
                     Row(children: [
                       Image.asset(
-                        state.info.isHealthy
-                            ? 'assets/images/mark.png'
+                        state.info.healthStatus == 0?
+                             'assets/images/mark.png' :state.info.healthStatus == 1?'assets/images/alert.png'
                             : 'assets/images/iconoir_delete-circle.png',
+                        color: getHealthLevelColor(state.info.healthStatus),
                         height: 24,
                         width: 24,
                       ),
@@ -118,14 +119,14 @@ class _DiseaseDetectedScreenState extends State<DiseaseDetectedScreen> {
                         width: 77,
                         height: 30,
                         decoration: BoxDecoration(
-                          color: getHealthColor(state.info.isHealthy)!,
+                          color: getHealthLevelColor(state.info.healthStatus)!,
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Center(
                           child: text(
                               fontSize: 16,
                               label:
-                                  getHealthLabel(state.info.isHealthy)!,
+                                  getHealthLevelLabel(state.info.healthStatus)!,
                               fontWeight: FontWeight.w600,
                               color: bottomBarColor),
                         ),

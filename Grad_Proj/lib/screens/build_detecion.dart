@@ -5,6 +5,7 @@ import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/diseaseDetections.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/disease_detection_screen.dart';
+import 'package:grd_proj/screens/field_disease_detection.dart';
 import 'package:grd_proj/screens/widget/disease_detection.dart';
 import 'package:grd_proj/screens/widget/text.dart';
 import 'package:intl/intl.dart';
@@ -88,10 +89,22 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                           if (item.cropName == null) {
                             return const SizedBox.shrink();
                           }
-                          
+
                           risk = getrisk(detections)!;
                           return GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          FieldDiseaseDetection(
+                                            farmName: widget.farmName,
+                                            farmId: widget.farmId,
+                                            fieldName: item.name,
+                                            cropName: item.cropName!,
+                                            fieldId: item.id,
+                                          )));
+                            },
                             child: Container(
                                 margin: const EdgeInsets.only(
                                     bottom: 20, left: 5, right: 5, top: 20),
@@ -130,17 +143,24 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                                                   width: 77,
                                                   height: 30,
                                                   decoration: BoxDecoration(
-                                                    color: getHealthLevelColor(
-                                                        getlevl(risk)),
+                                                    color: detections.isEmpty
+                                                        ? borderColor
+                                                        : getHealthLevelColor(
+                                                            getlevl(risk)),
                                                     borderRadius:
-                                                        BorderRadius.circular(25),
+                                                        BorderRadius.circular(
+                                                            25),
                                                   ),
                                                   child: Center(
                                                     child: text(
                                                         fontSize: 16,
-                                                        label: getHealthLevelLabel(
-                                                           getlevl(risk))!,
-                                                        fontWeight: FontWeight.w600,
+                                                        label: detections
+                                                                .isEmpty
+                                                            ? "No Info"
+                                                            : getHealthLevelLabel(
+                                                                getlevl(risk))!,
+                                                        fontWeight:
+                                                            FontWeight.w600,
                                                         color: bottomBarColor),
                                                   ),
                                                 ),
@@ -298,14 +318,19 @@ class _BuildDetecionsState extends State<BuildDetecions> {
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     child: Row(children: [
                       Image.asset(
-                        'assets/images/mark.png',
-                        height: 24,
-                        width: 24,
+                        disease.healthStatus == 0
+                            ? 'assets/images/mark.png'
+                            : disease.healthStatus == 1
+                                ? 'assets/images/alert.png'
+                                : 'assets/images/iconoir_delete-circle.png',
+                        color: getHealthLevelColor(disease.healthStatus),
+                        height: 23,
+                        width: 23,
                       ),
                       const SizedBox(width: 5),
                       text(
                           fontSize: 18,
-                          label: DateFormat('dd MMM, yyyy')
+                          label: DateFormat('d MMM, yyyy')
                               .format(disease.createdOn)),
                       const Spacer(),
                       Container(

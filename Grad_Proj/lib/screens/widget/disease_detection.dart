@@ -22,7 +22,7 @@ Color? getHealthLevelColor(int healthLevel) {
   } else if (healthLevel == 0) {
     return green;
   } else {
-    return red;
+    return const Color.fromARGB(255, 255, 0, 0);
   }
 }
 
