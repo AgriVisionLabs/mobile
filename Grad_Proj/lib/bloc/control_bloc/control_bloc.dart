@@ -1,6 +1,9 @@
 // ignore_for_file: unused_local_variable
 
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/models/diseaseDetections.dart';
@@ -10,6 +13,7 @@ import 'package:grd_proj/service/api/end_points.dart';
 import 'package:grd_proj/service/errors/exception.dart';
 import 'package:grd_proj/models/automation_rule_model.dart';
 import 'package:grd_proj/models/task_model.dart';
+import 'package:http_parser/http_parser.dart';
 
 part 'control_event.dart';
 part 'control_state.dart';
@@ -335,19 +339,56 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
 //========================= DiseaseDetection =========================
 //=====================================================================
 
-    // on<UseDiseaseDetectionEvent>((event, emit) async {
-    //   // bloc takes stream of event and give stream of states
-    //   try {
-    //     final response = await api.post(
-    //         "${EndPoints.diseaseDetections}/${event.farmId}/fields/${event.fieldId}/DiseaseDetections",
-    //       );
-    //     final sensorUnits = SensorDevice.fromJson(response);
-    //     emit(DiseaseScanSuccess(info: sensorUnits));
-    //   } on ServerException catch (e) {
-    //     emit(AddSensorUnitFailure(
-    //         errMessage: e.errorModel.message, errors: e.errorModel.error));
-    //   }
-    // });
+
+on<UseDiseaseDetectionEvent>((event, emit) async {
+  try {
+    final filePath = event.media.path;
+    final fileName = filePath.split('/').last;
+    final fileExtension = filePath.split('.').last.toLowerCase();
+
+    MediaType mediaType;
+    if (['jpg', 'jpeg'].contains(fileExtension)) {
+      mediaType = MediaType('image', 'jpeg');
+    } else if (fileExtension == 'png') {
+      mediaType = MediaType('image', 'png');
+    } else if (fileExtension == 'mp4') {
+      mediaType = MediaType('video', 'mp4');
+    } else {
+      emit(DiseaseScanFailure(
+        errMessage: 'Unsupported file type: .$fileExtension',
+        errors: const {},
+      ));
+      return;
+    }
+
+    final formData = FormData.fromMap({
+      'Image': await MultipartFile.fromFile(
+        filePath,
+        filename: fileName,
+        contentType: mediaType,
+      ),
+    });
+
+    final response = await api.post(
+      "${EndPoints.diseaseDetections}/${event.farmId}/fields/${event.fieldId}/DiseaseDetections",
+      data: formData,
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
+
+    final info = DiseaseDetectionModel.fromJson(response);
+    emit(DiseaseScanSuccess(info: info));
+  } on ServerException catch (e) {
+    emit(DeleteAutomationRulesFailure(
+      errMessage: e.errorModel.message,
+      errors: e.errorModel.error,
+    ));
+  }
+});
+
 
     on<OpenDiseaseDetectionEvent>((event, emit) async {
       // bloc takes stream of event and give stream of states

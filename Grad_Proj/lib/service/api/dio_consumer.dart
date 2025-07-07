@@ -85,7 +85,8 @@ class DioConsumer extends ApiConsumer {
   Future post(String path,
       {dynamic data,
       Map<String, dynamic>? queryParameters,
-      bool isNotAuth = false}) async {
+      bool isNotAuth = false,
+      dynamic options }) async {
     try {
       final response =
           await dio.post(

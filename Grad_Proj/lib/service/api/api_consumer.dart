@@ -12,7 +12,8 @@ abstract class ApiConsumer {
       Object? data,
       ///query parameters
       Map<String,dynamic>? queryParameters,
-      bool isNotAuth = false
+      bool isNotAuth = false, 
+      dynamic options
     }
   );
   Future <dynamic> patch(

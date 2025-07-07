@@ -5,7 +5,6 @@ import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/diseaseDetections.dart';
 import 'package:grd_proj/models/field_model.dart';
 import 'package:grd_proj/screens/disease_detection_screen.dart';
-import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:grd_proj/screens/widget/disease_detection.dart';
 import 'package:grd_proj/screens/widget/text.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +15,11 @@ class BuildDetecions extends StatefulWidget {
   final int? status;
   final List<FieldModel> fields;
   const BuildDetecions(
-      {super.key, required this.farmId, this.status, required this.fields, required this.farmName});
+      {super.key,
+      required this.farmId,
+      this.status,
+      required this.fields,
+      required this.farmName});
 
   @override
   State<BuildDetecions> createState() => _BuildDetecionsState();
@@ -28,7 +31,9 @@ class _BuildDetecionsState extends State<BuildDetecions> {
   List<String> loadingFieldsIds = [];
   List<FieldModel>? pendingFieldIdByState = [];
   DateTime? lastScan;
-
+  double totalProgress = 0;
+  double risk = 0;
+  int? healthStatus;
   @override
   void initState() {
     _controlBloc = context.read<ControlBloc>();
@@ -54,225 +59,206 @@ class _BuildDetecionsState extends State<BuildDetecions> {
         }
       },
       builder: (context, state) {
-        if (state is ViewDiseaseDetectionFailure) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errMessage),
-              ),
-            );
-          });
-        } else if (state is ViewDetectionSuccess) {
-          return SizedBox(
-            height: 500,
-            width: 400,
-            child: widget.fields.isEmpty
-                ? const Center(
-                    child: Text('Nothing Found',
-                        style: TextStyle(
-                          color: Color(0xff1E6930),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "manrope",
-                        )),
-                  )
-                : CustomScrollView(
-                    scrollDirection: Axis.vertical,
-                    slivers: [
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          childCount: widget.fields.length,
-                          (context, index) {
-                            final item = widget.fields[index];
+        return SizedBox(
+          height: 500,
+          width: 400,
+          child: widget.fields.isEmpty
+              ? const Center(
+                  child: Text('Nothing Found',
+                      style: TextStyle(
+                        color: Color(0xff1E6930),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "manrope",
+                      )),
+                )
+              : CustomScrollView(
+                  scrollDirection: Axis.vertical,
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: widget.fields.length,
+                        (context, index) {
+                          final item = widget.fields[index];
 
-                            final detections = info
-                                    ?.where((i) => i.fieldId == item.id)
-                                    .toList() ??
-                                [];
-                            if (item.cropName == null) {
-                              return const SizedBox
-                                  .shrink(); 
-                            }
-                            return GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                  margin: const EdgeInsets.only(
-                                      bottom: 20, left: 10, right: 10, top: 20),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                          color: const Color.fromARGB(
-                                              62, 13, 18, 28),
-                                          width: 1),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            color: Color.fromARGB(50, 0, 0, 0),
-                                            blurRadius: 15,
-                                            spreadRadius: 2,
-                                            offset: Offset(0, 5))
-                                      ]),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 24, vertical: 24),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  text(
-                                                      fontSize: 24,
-                                                      label: item.name,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                  const Spacer(),
-                                                  // Container(
-                                                  //   width: 77,
-                                                  //   height: 30,
-                                                  //   decoration: BoxDecoration(
-                                                  //     color: getHealthLevelColor(
-                                                  //         item.healthStatus),
-                                                  //     borderRadius:
-                                                  //         BorderRadius.circular(25),
-                                                  //   ),
-                                                  //   child: Center(
-                                                  //     child: text(
-                                                  //         fontSize: 16,
-                                                  //         label: getHealthLevelLabel(
-                                                  //             item.healthStatus)!,
-                                                  //         fontWeight: FontWeight.w600,
-                                                  //         color: bottomBarColor),
-                                                  //   ),
-                                                  // ),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    'assets/images/lucide_leaf.png',
-                                                    height: 24,
-                                                    width: 24,
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  text(
-                                                      fontSize: 20,
-                                                      label: item.cropName ??
-                                                          "Not Exist",
-                                                      color: textColor2)
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 24,
-                                              ),
-                                              if (detections.isEmpty)
+                          final detections = info
+                                  ?.where((i) => i.fieldId == item.id)
+                                  .toList() ??
+                              [];
+                          if (item.cropName == null) {
+                            return const SizedBox.shrink();
+                          }
+                          
+                          risk = getrisk(detections)!;
+                          return GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                                margin: const EdgeInsets.only(
+                                    bottom: 20, left: 5, right: 5, top: 20),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                        color: const Color.fromARGB(
+                                            62, 13, 18, 28),
+                                        width: 1),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Color.fromARGB(50, 0, 0, 0),
+                                          blurRadius: 15,
+                                          spreadRadius: 2,
+                                          offset: Offset(0, 5))
+                                    ]),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 24, vertical: 24),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
                                                 text(
                                                     fontSize: 24,
-                                                    label: "No Detections")
-                                              else
-                                                _buildInfo(info: detections),
-                                            ],
-                                          ),
-                                        ),
-                                        const Divider(
-                                          color: grayColor,
-                                          thickness: 1,
-                                        ),
-                                        const SizedBox(
-                                          height: 16,
-                                        ),
-                                        Center(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          DiseaseDetectionScreen(farmName: widget.farmName,cropName: item.cropName!,)));
-                                            },
-                                            child: Container(
-                                              width: 224,
-                                              height: 54,
-                                              padding: const EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                color: primaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(45),
-                                                border: Border.all(
-                                                  color:
-                                                      const Color(0xFF616161),
-                                                  width: 1,
+                                                    label: item.name,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                                const Spacer(),
+                                                Container(
+                                                  width: 77,
+                                                  height: 30,
+                                                  decoration: BoxDecoration(
+                                                    color: getHealthLevelColor(
+                                                        getlevl(risk)),
+                                                    borderRadius:
+                                                        BorderRadius.circular(25),
+                                                  ),
+                                                  child: Center(
+                                                    child: text(
+                                                        fontSize: 16,
+                                                        label: getHealthLevelLabel(
+                                                           getlevl(risk))!,
+                                                        fontWeight: FontWeight.w600,
+                                                        color: bottomBarColor),
+                                                  ),
                                                 ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/lucide_leaf.png',
+                                                  height: 24,
+                                                  width: 24,
+                                                ),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                text(
+                                                    fontSize: 20,
+                                                    label: item.cropName ??
+                                                        "Not Exist",
+                                                    color: textColor2)
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 24,
+                                            ),
+                                            if (detections.isEmpty)
+                                              text(
+                                                  fontSize: 24,
+                                                  label: "No Detections")
+                                            else
+                                              _buildInfo(info: detections),
+                                          ],
+                                        ),
+                                      ),
+                                      const Divider(
+                                        color: grayColor,
+                                        thickness: 1,
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      Center(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DiseaseDetectionScreen(
+                                                          farmName:
+                                                              widget.farmName,
+                                                          cropName:
+                                                              item.cropName!,
+                                                          farmId: widget.farmId,
+                                                          fieldId: item.id,
+                                                        )));
+                                          },
+                                          child: Container(
+                                            width: 224,
+                                            height: 54,
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              color: primaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(45),
+                                              border: Border.all(
+                                                color: const Color(0xFF616161),
+                                                width: 1,
                                               ),
-                                              child: Center(
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Image.asset(
-                                                      'assets/images/tabler_camera.png',
-                                                      height: 23,
-                                                      width: 23,
+                                            ),
+                                            child: Center(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/tabler_camera.png',
+                                                    height: 23,
+                                                    width: 23,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  const Text(
+                                                    "New Detection",
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontFamily: "Manrope",
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.white,
                                                     ),
-                                                    const SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    const Text(
-                                                      "New Detection",
-                                                      style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontFamily: "Manrope",
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(
-                                          height: 24,
-                                        )
-                                      ])),
-                            );
-                          },
-                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 24,
+                                      )
+                                    ])),
+                          );
+                        },
                       ),
-                    ],
-                  ),
-          );
-        } else if (state is DiseaseDetectionEmpty) {
-          return const SizedBox(
-              child: Center(
-                  child: Text('No Scans found',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "manrope",
-                        color: primaryColor,
-                      ))));
-        }
-        return circularProgressIndicator();
+                    ),
+                  ],
+                ),
+        );
       },
     );
   }
 
   Widget _buildInfo({required List<DiseaseDetectionModel> info}) {
-    final double totalProgress =
-        info.fold(0, (sum, info) => sum + (info.healthStatus));
-    final double risk =
-        info.isNotEmpty ? ((100 - totalProgress) / info.length) : 0;
     final DateTime lastScan = info.last.createdOn;
     final String byWho = info.last.createdBy;
     return Column(

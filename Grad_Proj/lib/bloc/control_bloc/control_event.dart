@@ -173,13 +173,15 @@ class AddLogEvent extends ControlEvent {
 
 
 class UseDiseaseDetectionEvent extends ControlEvent {
-  final String fieldId;
   final String farmId;
+  final String fieldId;
+  final File media;
+
   UseDiseaseDetectionEvent({
-    required this.fieldId,
     required this.farmId,
+    required this.fieldId,
+    required this.media,
   });
-  
 }
 
 class OpenDiseaseDetectionEvent extends ControlEvent {

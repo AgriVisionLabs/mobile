@@ -39,6 +39,7 @@ class _FarmsScreen extends State<FarmsScreen> {
     List<FarmModel>? farms;
     return BlocListener<FieldBloc, FieldState>(
       listener: (context, state) {
+        if (loadingFarmIds.isEmpty) return;
         if (state is FieldLoaded) {
           final farmId = loadingFarmIds.first;
           setState(() {
