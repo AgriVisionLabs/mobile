@@ -44,8 +44,6 @@ class _MyTasksState extends State<MyTasks> {
                     childCount: myTasks.length,
                     (context, index) {
                       final item = myTasks[index];
-                      context.read<FieldBloc>().add(ViewFieldDetails(
-                          farmId: item.farmId, fieldId: item.fieldId));
                       return Container(
                         margin: const EdgeInsets.only(bottom: 30),
                         padding: const EdgeInsets.only(top: 24),

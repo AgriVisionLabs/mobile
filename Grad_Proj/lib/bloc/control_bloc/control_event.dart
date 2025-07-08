@@ -101,6 +101,15 @@ class OpenTaskEvent extends ControlEvent {
   });
 }
 
+class EditTaskEvent extends ControlEvent {
+  final String farmId;
+  final String taskId;
+  EditTaskEvent({
+    required this.farmId,
+    required this.taskId,
+  });
+}
+
 class DeteteTaskEvent extends ControlEvent {
   final String farmId;
   final String taskId;

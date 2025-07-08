@@ -4,16 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
+import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/components/date_input_formatter.dart';
+import 'package:grd_proj/models/member_model.dart';
+import 'package:grd_proj/models/task_model.dart';
 import 'package:grd_proj/screens/widget/text.dart';
+import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 
 class NewTask extends StatefulWidget {
   final String farmId;
-  const NewTask({super.key, required this.farmId});
+  final bool isEdit;
+  final TaskModel? item;
+  const NewTask(
+      {super.key, required this.farmId, required this.isEdit, this.item});
 
   @override
   State<NewTask> createState() => _NewTaskState();
@@ -32,10 +39,42 @@ class _NewTaskState extends State<NewTask> {
   int? selectedtype;
   int? selectedcat;
   String? selectedFieldId;
+  String? selectedmemberId;
+  List<FarmMemberModel>? members;
+  ControlBloc? _controlBloc;
   @override
   void initState() {
     context.read<FieldBloc>().add(OpenFieldEvent(farmId: widget.farmId));
+    context.read<FarmBloc>().add(OpenFarmMembers(farmId: widget.farmId));
+    _controlBloc = context.read<ControlBloc>();
+    if (widget.isEdit == true && widget.item != null) {
+      selectedFieldId = widget.item!.fieldId;
+      selectedcat = widget.item!.category;
+      selectedtype = widget.item!.itemPriority;
+      selectedmemberId = widget.item!.assignedToId;
+      _controlBloc!.fieldId.text = selectedFieldId!;
+      _controlBloc!.itemCategory.text = selectedcat!.toString();
+      _controlBloc!.itemPriority.text = selectedtype!.toString();
+      _controlBloc!.title.text = widget.item!.title;
+      _controlBloc!.dueDate.text = widget.item!.dueDate != null
+          ? DateFormat('yyyy-MM-dd').format(widget.item!.dueDate!)
+          : "Not Exist";
+      _controlBloc!.assignedToId.text = widget.item!.assignedToId.toString();
+    }
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controlBloc!.fieldId.clear();
+    _controlBloc!.itemCategory.clear();
+    _controlBloc!.itemPriority.clear();
+    _controlBloc!.title.clear();
+    _controlBloc!.description.clear();
+    _controlBloc!.dueDate.clear();
+    _controlBloc!.assignedToId.clear();
+    _controlBloc!.add(OpenFarmTasksEvent(farmId: widget.farmId));
+    super.dispose();
   }
 
   @override
@@ -51,9 +90,7 @@ class _NewTaskState extends State<NewTask> {
               ),
             );
           });
-          context.read<ControlBloc>().add(OpenFarmTasksEvent(
-                farmId: widget.farmId,
-              ));
+
           Navigator.pop(context);
         } else if (state is AddTaskFailure) {
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -64,8 +101,29 @@ class _NewTaskState extends State<NewTask> {
               ),
             );
           });
+          context.read<ControlBloc>().taskFormKey.currentState!.validate();
         }
-        context.read<ControlBloc>().taskFormKey.currentState!.validate();
+        if (state is EditTaskSuccess) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Task Edited successfuly"),
+              ),
+            );
+          });
+          Navigator.pop(context);
+        } else if (state is EditTaskFailure) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
+          context.read<ControlBloc>().taskFormKey.currentState!.validate();
+        }
       },
       builder: (context, state) {
         return BlocBuilder<FieldBloc, FieldState>(
@@ -163,8 +221,9 @@ class _NewTaskState extends State<NewTask> {
                                                 .title,
                                             keyboardType: TextInputType.text,
                                             decoration: InputDecoration(
-                                              hintText:
-                                                  'Enter a descriptive title',
+                                              hintText: widget.isEdit
+                                                  ? _controlBloc!.title.text
+                                                  : 'Enter a descriptive title',
                                               hintStyle: TextStyle(
                                                 color: borderColor,
                                                 fontFamily: "Manrope",
@@ -175,28 +234,23 @@ class _NewTaskState extends State<NewTask> {
                                                   EdgeInsets.symmetric(
                                                       horizontal: 16,
                                                       vertical: 14),
-                                              enabledBorder:
-                                                  OutlineInputBorder(
+                                              enabledBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(
-                                                        30.0),
+                                                    BorderRadius.circular(30.0),
                                                 borderSide: const BorderSide(
                                                     color: borderColor,
                                                     width: 3.0),
                                               ),
-                                              focusedBorder:
-                                                  OutlineInputBorder(
+                                              focusedBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(
-                                                        30.0),
+                                                    BorderRadius.circular(30.0),
                                                 borderSide: const BorderSide(
                                                     color: primaryColor,
                                                     width: 3.0),
                                               ),
                                               errorBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(
-                                                        30.0),
+                                                    BorderRadius.circular(30.0),
                                                 borderSide: const BorderSide(
                                                     color: errorColor,
                                                     width: 3.0),
@@ -204,8 +258,7 @@ class _NewTaskState extends State<NewTask> {
                                               focusedErrorBorder:
                                                   OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(
-                                                        30.0),
+                                                    BorderRadius.circular(30.0),
                                                 borderSide: const BorderSide(
                                                     color: errorColor,
                                                     width: 3.0),
@@ -685,7 +738,9 @@ class _NewTaskState extends State<NewTask> {
                                                 DateInputFormatter()
                                               ],
                                               decoration: InputDecoration(
-                                                hintText: 'YYYY-MM-DD',
+                                                hintText: widget.isEdit
+                                                    ? _controlBloc!.dueDate.text
+                                                    : 'YYYY-MM-DD',
                                                 hintStyle: TextStyle(
                                                     color: Colors.grey[400]),
                                                 contentPadding:
@@ -730,6 +785,123 @@ class _NewTaskState extends State<NewTask> {
                                               ),
                                             ),
                                           ),
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          Text(
+                                            "Assigned to",
+                                            style: TextStyle(
+                                              fontSize: 21,
+                                              fontFamily: "Manrope",
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          BlocConsumer<FarmBloc, FarmState>(
+                                              listener: (context, state) {
+                                            if (state
+                                                is ViewFarmMembersSuccess) {
+                                              members = state.members;
+                                            } else if (state
+                                                is ViewFarmMembersFailure) {
+                                              ScaffoldMessenger.of(context)
+                                                  .clearSnackBars();
+                                              WidgetsBinding.instance
+                                                  .addPostFrameCallback((_) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content:
+                                                        Text(state.errMessage),
+                                                  ),
+                                                );
+                                              });
+                                            }
+                                          }, builder: (context, state) {
+                                            return SizedBox(
+                                              width: 410,
+                                              height: 52,
+                                              child:
+                                                  DropdownButtonHideUnderline(
+                                                child: DropdownButton2<String>(
+                                                  isExpanded: true,
+                                                  hint: text(
+                                                      fontSize: 18,
+                                                      label: "select field",
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: borderColor),
+                                                  value: selectedmemberId,
+                                                  items: members?.map((member) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: member.memberId,
+                                                      child: Text(
+                                                        member.userName,
+                                                        style: const TextStyle(
+                                                          fontFamily: 'Manrope',
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      selectedmemberId = value;
+                                                      context
+                                                              .read<ControlBloc>()
+                                                              .assignedToId
+                                                              .text =
+                                                          selectedmemberId!;
+                                                    });
+                                                  },
+                                                  buttonStyleData:
+                                                      ButtonStyleData(
+                                                    height: 55,
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 5),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25),
+                                                      border: Border.all(
+                                                          color: borderColor,
+                                                          width: 3),
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  dropdownStyleData:
+                                                      DropdownStyleData(
+                                                    maxHeight: 250,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15),
+                                                      color: Colors.white,
+                                                      border: Border.all(
+                                                          color: borderColor),
+                                                    ),
+                                                    elevation: 2,
+                                                    offset: const Offset(0, -5),
+                                                  ),
+                                                  iconStyleData:
+                                                      const IconStyleData(
+                                                    icon: Icon(Icons
+                                                        .keyboard_arrow_down_rounded),
+                                                    iconSize: 40,
+                                                    iconEnabledColor:
+                                                        Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }),
                                           SizedBox(height: 70),
                                           //After adding the dropdown menus make sure to add the buttons below are at the end of the screen by adjusting the previous sizedbox()
                                           Row(
@@ -768,7 +940,9 @@ class _NewTaskState extends State<NewTask> {
                                               Spacer(),
                                               GestureDetector(
                                                 onTap: () {
-                                                  if (selectedFieldId == null || selectedcat == null || selectedtype == null) {
+                                                  if (selectedFieldId == null ||
+                                                      selectedcat == null ||
+                                                      selectedtype == null) {
                                                     showDialog(
                                                       context: context,
                                                       builder: (_) =>
@@ -841,13 +1015,23 @@ class _NewTaskState extends State<NewTask> {
                                                       ),
                                                     );
                                                   } else {
-                                                    context
-                                                        .read<ControlBloc>()
-                                                        .add(AddTaskEvent(
-                                                            farmId:
-                                                                widget.farmId,
-                                                            fieldId:
-                                                                selectedFieldId!));
+                                                    if (widget.isEdit) {
+                                                      context
+                                                          .read<ControlBloc>()
+                                                          .add(EditTaskEvent(
+                                                              farmId:
+                                                                  widget.farmId,
+                                                              taskId: widget
+                                                                  .item!.id));
+                                                    } else {
+                                                      context
+                                                          .read<ControlBloc>()
+                                                          .add(AddTaskEvent(
+                                                              farmId:
+                                                                  widget.farmId,
+                                                              fieldId:
+                                                                  selectedFieldId!));
+                                                    }
                                                   }
                                                 },
                                                 child: Container(
@@ -860,7 +1044,7 @@ class _NewTaskState extends State<NewTask> {
                                                             15),
                                                   ),
                                                   child: Center(
-                                                    child: Text(
+                                                    child: Text(widget.isEdit?"Edit Task":
                                                       "Creat Task",
                                                       style: TextStyle(
                                                         fontSize: 18,

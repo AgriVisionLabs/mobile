@@ -120,6 +120,7 @@ class _TaskScreen extends State<TaskScreen> {
                                           MaterialPageRoute(
                                               builder: (context) => NewTask(
                                                     farmId: selectedFarmId!,
+                                                    isEdit: false,
                                                   )));
                                     } else {
                                       print(

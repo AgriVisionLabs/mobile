@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'chat_bloc.dart';
 
 @immutable
@@ -12,10 +13,21 @@ class NewConversationEvent extends ConversationEvent {
 
 class UpdateConversationEvent extends ConversationEvent {
   final ConversationModel data;
-  UpdateConversationEvent(this.data);
+  UpdateConversationEvent(
+    this.data
+  );
 }
 
 class RemoveConversationEvent extends ConversationEvent {
-  final String id;
-  RemoveConversationEvent(this.id);
+  final String conversationId;
+  RemoveConversationEvent(this.conversationId);
+}
+
+class CreateConversationEvent extends ConversationEvent {}
+
+class DeleteConversationEvent extends ConversationEvent {
+  final String conversationId;
+  DeleteConversationEvent({
+    required this.conversationId,
+  });
 }

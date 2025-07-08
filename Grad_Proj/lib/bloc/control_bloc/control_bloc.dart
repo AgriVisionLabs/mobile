@@ -213,6 +213,17 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
       }
     });
 
+    on<EditTaskEvent>((event, emit) async {
+      try {
+        final response = await api.put(
+            "${EndPoints.task}/${event.farmId}/Tasks/${event.taskId}");
+        emit(EditTaskSuccess());
+      } on ServerException catch (e) {
+        emit(EditTaskFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
     on<DeteteTaskEvent>((event, emit) async {
       try {
         final response = await api

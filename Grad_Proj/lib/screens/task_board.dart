@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/screens/new_task.dart';
+import 'package:grd_proj/screens/view_task.dart';
 import 'package:intl/intl.dart';
 
 class TaskBoard extends StatefulWidget {
@@ -64,8 +66,6 @@ class _TaskBoardState extends State<TaskBoard> {
                     childCount: myTasks.length,
                     (context, index) {
                       final item = myTasks[index];
-                      context.read<FieldBloc>().add(ViewFieldDetails(
-                          farmId: item.farmId, fieldId: item.fieldId));
                       return Container(
                         margin: const EdgeInsets.only(bottom: 30),
                         padding: const EdgeInsets.only(top: 24),
@@ -280,15 +280,18 @@ class _TaskBoardState extends State<TaskBoard> {
                                               ],
                                             ),
                                             onTap: () {
-                                              // Navigator.push(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (context) =>
-                                              //             ItemLog(
-                                              //               farmId: item.farmId,
-                                              //               itemId: item.id,
-                                              //               itemName: item.name,
-                                              //             )));
+                                              context.read<ControlBloc>().add(
+                                                  OpenTaskEvent(
+                                                      farmId: item.farmId,
+                                                      taskId: item.id));
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ViewTask(
+                                                            farmName: widget
+                                                                .farmName)),
+                                              );
                                             },
                                           ),
                                           PopupMenuItem(
@@ -305,16 +308,16 @@ class _TaskBoardState extends State<TaskBoard> {
                                               ],
                                             ),
                                             onTap: () {
-                                              // Navigator.push(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (context) =>
-                                              //             AddItem(
-                                              //               isEdit: true,
-                                              //               item: item,
-                                              //               farmId:
-                                              //                   widget.farmId,
-                                              //             )));
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          NewTask(
+                                                            isEdit: true,
+                                                            item: item,
+                                                            farmId:
+                                                                widget.farmId,
+                                                          )));
                                             },
                                           ),
                                           PopupMenuItem(

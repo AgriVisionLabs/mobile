@@ -211,7 +211,7 @@ class _MoreScreen extends State<MoreScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => HomeScreen(
-                                  initialIndex: 8,
+                                  initialIndex: 11,
                                 )));
                   },
                   child: Container(

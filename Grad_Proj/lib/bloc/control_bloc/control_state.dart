@@ -136,6 +136,17 @@ class ViewTaskFailure extends ControlState {
 
 }
 
+class EditTaskSuccess extends ControlState {}
+class EditTaskFailure extends ControlState {
+  final String errMessage;
+  final dynamic errors;
+  EditTaskFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+}
+
+
 class DeleteTaskSuccess extends ControlState {}
 class DeleteTaskFailure extends ControlState {
   final String errMessage;

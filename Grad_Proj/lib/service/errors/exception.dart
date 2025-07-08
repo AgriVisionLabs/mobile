@@ -21,7 +21,12 @@ void handelDioException(DioException e) {
     case DioExceptionType.cancel:
       throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
     case DioExceptionType.connectionError:
-      throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
+      throw ServerException(
+          errorModel: ErrorModel(
+              message:
+                  'connection errored',
+              status: 6,
+              error: []));
     case DioExceptionType.unknown:
       throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
     case DioExceptionType.badResponse:
@@ -38,8 +43,8 @@ void handelDioException(DioException e) {
           throw ServerException(
             errorModel: e.response?.data is Map<String, dynamic>
                 ? ErrorModel.fromJson(e.response!.data)
-                : ErrorModel(
-                    message: 'unauthorized' , status: 401 , error: []),);
+                : ErrorModel(message: 'unauthorized', status: 401, error: []),
+          );
         case 403:
 
           ///forbidden
@@ -73,7 +78,10 @@ void handelDioException(DioException e) {
             errorModel: e.response?.data is Map<String, dynamic>
                 ? ErrorModel.fromJson(e.response!.data)
                 : ErrorModel(
-                    message: 'the server failed to fulfil an apparently valid request' , status: 500 , error: []),
+                    message:
+                        'the server failed to fulfil an apparently valid request',
+                    status: 500,
+                    error: []),
           );
 
         case 504:
