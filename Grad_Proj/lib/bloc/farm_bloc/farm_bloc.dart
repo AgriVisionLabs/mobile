@@ -1,8 +1,10 @@
 // ignore_for_file: avoid_print, unused_local_variable
 
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
+import 'package:grd_proj/models/member_model.dart';
 import 'package:grd_proj/service/api/api_consumer.dart';
 import 'package:grd_proj/service/api/end_points.dart';
 import 'package:grd_proj/service/errors/exception.dart';
@@ -148,7 +150,7 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
         final response =
             await api.put("${EndPoints.farmControl}/${event.farmId}", data: {
           ApiKey.name: name.text,
-          ApiKey.area: int.tryParse(area.text),
+          ApiKey.area: double.tryParse(area.text),
           ApiKey.location: location.text,
           ApiKey.soilType: int.tryParse(soilType.text)
         });
@@ -156,6 +158,50 @@ class FarmBloc extends Bloc<FarmEvent, FarmState> {
         emit(FarmEditSuccess());
       } on ServerException catch (e) {
         emit(FarmEditFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<OpenFarmMembers>((event, emit) async {
+      try {
+        final response = await api.get("${EndPoints.farmMembers}/${event.farmId}/members");
+        final members = response
+              .map<FarmMemberModel>((json) => FarmMemberModel.fromJson(json))
+              .toList();
+          emit(ViewFarmMembersSuccess(members: members));
+      } on ServerException catch (e) {
+        emit(ViewFarmMembersFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<ViewMember>((event, emit) async {
+      try {
+        final response = await api.get("${EndPoints.farmMembers}/${event.farmId}/members/${event.memberId}");
+        final member = FarmMemberModel.fromJson(response);
+          emit(ViewFarmMemberSuccess(member: member));
+      } on ServerException catch (e) {
+        emit(ViewFarmMemberFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+     on<EditMember>((event, emit) async {
+      try {
+        final response = await api.put("${EndPoints.farmMembers}/${event.farmId}/members/${event.userId}");
+          emit(EditFarmMemberSuccess());
+      } on ServerException catch (e) {
+        emit(EditFarmMemberFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
+      }
+    });
+
+    on<DeleteMemberformFarm>((event, emit) async {
+      try {
+        final response = await api.delete("${EndPoints.farmMembers}/${event.farmId}/members/${event.userId}");
+          emit(DeleteFarmMemberSuccess());
+      } on ServerException catch (e) {
+        emit(DeleteFarmMemberFailure(
             errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });

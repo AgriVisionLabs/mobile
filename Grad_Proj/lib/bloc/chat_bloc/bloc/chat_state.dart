@@ -1,34 +1,18 @@
-import 'package:flutter/foundation.dart';
+part of 'chat_bloc.dart';
 
 @immutable
-class ChatState {
-  final bool isConnected;
-  final bool isLoading;
-  final List<Map<String, dynamic>> conversations;
-  final List<Map<String, dynamic>> messages;
-  final String? selectedConversationId;
+abstract class ConversationState {}
 
-  const ChatState({
-    this.isConnected = false,
-    this.isLoading = false,
-    this.conversations = const [],
-    this.messages = const [],
-    this.selectedConversationId,
-  });
+class ConversationInitial extends ConversationState {}
 
-  ChatState copyWith({
-    bool? isConnected,
-    bool? isLoading,
-    List<Map<String, dynamic>>? conversations,
-    List<Map<String, dynamic>>? messages,
-    String? selectedConversationId,
-  }) {
-    return ChatState(
-      isConnected: isConnected ?? this.isConnected,
-      isLoading: isLoading ?? this.isLoading,
-      conversations: conversations ?? this.conversations,
-      messages: messages ?? this.messages,
-      selectedConversationId: selectedConversationId ?? this.selectedConversationId,
-    );
-  }
+class ConversationLoading extends ConversationState {}
+
+class ConversationLoaded extends ConversationState {
+  final List<ConversationModel> conversations;
+  ConversationLoaded(this.conversations);
+}
+
+class ConversationError extends ConversationState {
+  final String message;
+  ConversationError(this.message);
 }

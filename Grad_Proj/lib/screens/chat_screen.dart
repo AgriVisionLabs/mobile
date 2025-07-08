@@ -1,111 +1,100 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/chat_bloc/bloc/chat_bloc.dart';
-import 'package:grd_proj/bloc/chat_bloc/bloc/chat_state.dart';
+import 'package:grd_proj/components/color.dart';
 
-class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+class ChatListScreen extends StatelessWidget {
+  const ChatListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChatBloc, ChatState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('💬 Conversations'),
-            actions: [
-              if (!state.isConnected)
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(Icons.cloud_off, color: Colors.red),
-                ),
-            ],
-          ),
-          body: state.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : state.selectedConversationId == null
-                  ? _buildConversationList(context, state)
-                  : _buildMessagesView(context, state),
-        );
-      },
-    );
-  }
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          const SizedBox(height: 60),
+          _buildSearchBar(),
+          Expanded(
+            child: BlocBuilder<ConversationBloc, ConversationState>(
+              builder: (context, state) {
+                if (state is ConversationLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is ConversationLoaded) {
+                  final chats = state.conversations;
+                  if (chats.isEmpty) return const Center(child: Text("No conversations"));
 
-  Widget _buildConversationList(BuildContext context, ChatState state) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(12),
-      itemCount: state.conversations.length,
-      itemBuilder: (context, index) {
-        final conv = state.conversations[index];
-        return Card(
-          child: ListTile(
-            title: Text('Conversation ${conv['id']}'),
-            subtitle: Text(conv['name'] ?? 'No name'),
-            onTap: () {
-              context.read<ChatBloc>().add(
-                    SelectConversationEvent(conv['id']),
+                  return ListView.builder(
+                    itemCount: chats.length,
+                    itemBuilder: (context, index) {
+                      final chat = chats[index];
+                      return ListTile(
+                        onTap: () {
+                         
+                        },
+                        leading: CircleAvatar(
+                          backgroundColor: primaryColor,
+                          child: Text(
+                            chat.name[0].toUpperCase(),
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        title: Text(chat.name,
+                            style: const TextStyle(fontWeight: FontWeight.w600)),
+                        subtitle: Text('Members: ${chat.members.length }'),
+                        trailing: const Text("🕐"),
+                      );
+                    },
                   );
-            },
+                } else if (state is ConversationError) {
+                  return Center(child: Text(state.message));
+                }
+                return const Center(child: Text("Loading..."));
+              },
+            ),
           ),
-        );
-      },
+        ],
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 24.0, right: 8.0),
+        child: FloatingActionButton(
+          onPressed: () {
+            // open create conversation screen (we'll build it بعدين)
+          },
+          backgroundColor: primaryColor,
+          tooltip: 'New Chat',
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: const Icon(Icons.add, color: Colors.white, size: 24),
+        ),
+      ),
     );
   }
 
-  Widget _buildMessagesView(BuildContext context, ChatState state) {
-    final TextEditingController controller = TextEditingController();
-
-    return Column(
-      children: [
-        Expanded(
-          child: ListView.builder(
-            reverse: true,
-            padding: const EdgeInsets.all(12),
-            itemCount: state.messages.length,
-            itemBuilder: (context, index) {
-              final msg = state.messages.reversed.toList()[index];
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 4),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade100,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(msg['content'] ?? ''),
-                ),
-              );
-            },
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Search conversations...',
+          hintStyle: const TextStyle(
+            color: Color(0xff616161),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'Monrope',
+          ),
+          prefixIcon: const Icon(Icons.search, color: Color(0xff9F9F9F), size: 20),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: borderColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: borderColor),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  decoration: const InputDecoration(hintText: 'Type a message'),
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: () {
-                  final message = {
-                    'conversationId': state.selectedConversationId,
-                    'senderId': context.read<ChatBloc>().userId,
-                    'content': controller.text,
-                    'timestamp': DateTime.now().toIso8601String(),
-                  };
-                  context.read<ChatBloc>().add(SendMessageEvent(message));
-                  controller.clear();
-                },
-              ),
-            ],
-          ),
-        )
-      ],
+      ),
     );
   }
-} 
+}

@@ -52,4 +52,36 @@ class ViewFarmMembers extends FarmEvent {
 }
 
 
-class RolePermissions extends FarmEvent{}
+class OpenFarmMembers extends FarmEvent {
+  final String farmId;
+  OpenFarmMembers({
+    required this.farmId,
+  });
+}
+
+class ViewMember extends FarmEvent {
+  final String farmId;
+  final String memberId;
+  ViewMember({
+    required this.farmId,
+    required this.memberId,
+  });
+}
+
+class EditMember extends FarmEvent {
+  final String farmId;
+  final String userId;
+  EditMember({
+    required this.farmId,
+    required this.userId,
+  });
+}
+
+class DeleteMemberformFarm extends FarmEvent {
+  final String farmId;
+  final String userId;
+  DeleteMemberformFarm({
+    required this.farmId,
+    required this.userId,
+  });
+}

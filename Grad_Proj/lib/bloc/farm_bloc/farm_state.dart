@@ -107,3 +107,50 @@ final class FarmEditFailure extends FarmState {
 
   FarmEditFailure({required this.errMessage, required this.errors});
 }
+
+class ViewFarmMembersSuccess extends FarmState {
+  final List<FarmMemberModel> members;
+  ViewFarmMembersSuccess({required this.members});
+}
+
+//حصل مشكلة و احنا بنعرض ال farms
+final class ViewFarmMembersFailure extends FarmState {
+  final String errMessage;
+  final dynamic errors;
+
+  ViewFarmMembersFailure({required this.errMessage, required this.errors});
+}
+
+class ViewFarmMemberSuccess extends FarmState {
+  final FarmMemberModel member;
+  ViewFarmMemberSuccess({required this.member});
+}
+
+//حصل مشكلة و احنا بنعرض ال farms
+final class ViewFarmMemberFailure extends FarmState {
+  final String errMessage;
+  final dynamic errors;
+
+  ViewFarmMemberFailure({required this.errMessage, required this.errors});
+}
+
+
+class EditFarmMemberSuccess extends FarmState {}
+
+//حصل مشكلة و احنا بنعرض ال farms
+final class EditFarmMemberFailure extends FarmState {
+  final String errMessage;
+  final dynamic errors;
+
+  EditFarmMemberFailure({required this.errMessage, required this.errors});
+}
+
+class DeleteFarmMemberSuccess extends FarmState {}
+
+//حصل مشكلة و احنا بنعرض ال farms
+final class DeleteFarmMemberFailure extends FarmState {
+  final String errMessage;
+  final dynamic errors;
+
+  DeleteFarmMemberFailure({required this.errMessage, required this.errors});
+}

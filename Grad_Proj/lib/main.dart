@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/account_bloc/bloc/account_bloc.dart';
 import 'package:grd_proj/bloc/chat_bloc/bloc/chat_bloc.dart';
+import 'package:grd_proj/bloc/chat_bloc/conversation_repositry.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
@@ -35,7 +36,6 @@ import 'bloc/user_cubit.dart';
 import 'screens/register.dart';
 import 'screens/splash_screen.dart';
 
-
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -53,41 +53,61 @@ void callbackDispatcher() {
     return Future.value(true);
   });
 }
+
 // ignore: prefer_const_declarations
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
+  final token = CacheHelper.getData(key: ApiKey.token);
+  final userId = CacheHelper.getData(key: ApiKey.id);
+  final dio = Dio();
+
+  final apiConsumer = DioConsumer(dio: dio);
+  final signalR = ConversationSignalRService(jwtToken: token, userId: userId);
+  await signalR.init();
+
+  final conversationRepository = ConversationRepository(apiConsumer, signalR);
   runApp(
     MultiBlocProvider(
-      
       // single Responsiblity
       providers: [
         BlocProvider<UserCubit>(
-        create: (BuildContext context) => UserCubit(DioConsumer(dio : Dio())),
-      ),
-      BlocProvider<FarmBloc>(
-        create: (BuildContext context) => FarmBloc(DioConsumer(dio : Dio())),
-      ),
-      BlocProvider<FieldBloc>(
-        create: (BuildContext context) => FieldBloc(DioConsumer(dio : Dio())),
-      ),
-      BlocProvider<ControlBloc>(
-        create: (BuildContext context) => ControlBloc(DioConsumer(dio : Dio())),
-      ),
-      BlocProvider<AccountBloc>(
-        create: (BuildContext context) => AccountBloc(DioConsumer(dio : Dio())),
-      ),
-      BlocProvider<SensorBloc>(
-        create: (BuildContext context) => SensorBloc(),
-      )
-],
+          create: (BuildContext context) => UserCubit(DioConsumer(dio: Dio())),
+        ),
+        BlocProvider<FarmBloc>(
+          create: (BuildContext context) => FarmBloc(DioConsumer(dio: Dio())),
+        ),
+        BlocProvider<FieldBloc>(
+          create: (BuildContext context) => FieldBloc(DioConsumer(dio: Dio())),
+        ),
+        BlocProvider<ControlBloc>(
+          create: (BuildContext context) =>
+              ControlBloc(DioConsumer(dio: Dio())),
+        ),
+        BlocProvider<AccountBloc>(
+          create: (BuildContext context) =>
+              AccountBloc(DioConsumer(dio: Dio())),
+        ),
+        BlocProvider<SensorBloc>(
+          create: (BuildContext context) => SensorBloc(),
+        ),
+        BlocProvider<ConversationBloc>(
+          create: (BuildContext context) {
+            final bloc = ConversationBloc(conversationRepository);
+            conversationRepository.setBlocListeners(bloc);
+            bloc.add(LoadConversationsEvent());
+            return bloc;
+          },
+        ),
+      ],
       child: const MyApp(),
-    ),);
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
-  
+
   get farm => null;
   @override
   State<MyApp> createState() => _MyAppState();
@@ -97,7 +117,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final userCubit = context.read<UserCubit>();
 
@@ -107,31 +127,33 @@ class _MyAppState extends State<MyApp> {
         // تبدأ جدولة التجديد
         userCubit.startTokenRefreshTimer();
       }
-    });}
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: 
-      
-  //     BlocProvider(
-  // create: (_) => ChatBloc(
-  //   token: CacheHelper.getData(key: 'token'),
-  //   userId: CacheHelper.getData(key: 'id'),
-  //   baseUrl: "https://api.agrivisionlabs.tech/hubs/conversations",
-  //   signalR: SignalRService(token: CacheHelper.getData(key: 'token')),
-  // )..add(StartConnectionEvent())..add(LoadConversationsEvent()),
-  // child: ChatScreen(),
-  //   )
-      // ScheduleMaintenance()
-      // SensorView()
-      // SplashScreen()
-      LoginScreen(),
-      // SplashScreen()
-      // HomeScreen() 
+        debugShowCheckedModeBanner: false,
+        home:
 
-      // ChatScreen(),
-      
-    );
+            //     BlocProvider(
+            // create: (_) => ChatBloc(
+            //   token: CacheHelper.getData(key: 'token'),
+            //   userId: CacheHelper.getData(key: 'id'),
+            //   baseUrl: "https://api.agrivisionlabs.tech/hubs/conversations",
+            //   signalR: SignalRService(token: CacheHelper.getData(key: 'token')),
+            // )..add(StartConnectionEvent())..add(LoadConversationsEvent()),
+            // child: ChatScreen(),
+            //   )
+            // ScheduleMaintenance()
+            // SensorView()
+            // SplashScreen()
+            // LoginScreen(),
+            // SplashScreen()
+            // HomeScreen()
+            ChatListScreen()
+        // ChatScreen(),
+
+        );
   }
 }

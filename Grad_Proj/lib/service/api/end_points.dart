@@ -22,6 +22,7 @@ class EndPoints {
   static const String invitem = '/farms';
   static const String diseaseDetections = '/farms';
   static const String farmMembers = '/farms';
+  static const String conversations = '/Conversations';
 }
 
 class ApiKey {
