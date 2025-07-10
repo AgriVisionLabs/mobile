@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:grd_proj/models/user_model.dart';
 import 'package:grd_proj/service/api/api_consumer.dart';
 import 'package:grd_proj/service/api/end_points.dart';
 import 'package:grd_proj/service/errors/exception.dart';
-
 
 part 'account_event.dart';
 part 'account_state.dart';
@@ -80,5 +82,31 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     });
 
 
+    on<PayForPlan>((event, emit) async {
+      try {
+        // 1. استدعاء API backend لإنشاء PaymentIntent
+        final response = await api.post(EndPoints.webHook,);
+
+        final json = jsonDecode(response.body);
+        final clientSecret = json['clientSecret'];
+
+        // 2. تهيئة صفحة الدفع
+        await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: clientSecret,
+            merchantDisplayName: 'Your App',
+            style: ThemeMode.light,
+          ),
+        );
+
+        // 3. عرض صفحة الدفع
+        await Stripe.instance.presentPaymentSheet();
+
+        // 4. تأكيد الدفع
+        print('✅ Payment successful!');
+      } catch (e) {
+        print('❌ Payment failed: $e');
+      }
+    });
   }
 }

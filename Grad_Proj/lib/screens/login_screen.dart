@@ -361,7 +361,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Footer Text
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children:  [
+                      children: [
                         Container(
                           color: borderColor,
                           height: 1,
@@ -389,7 +389,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            // TODO: Implement Google sign-in logic here
+                            try {
+                              BlocProvider.of<UserCubit>(context)
+                                  .loginWithGoogle();
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content:
+                                        Text('فشل تسجيل الدخول بـ Google')),
+                              );
+                            }
                           },
                           child: SvgPicture.asset(
                             'assets/images/devicon_google.svg',

@@ -1,9 +1,11 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unused_local_variable
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/service/api/api_consumer.dart';
 import 'package:grd_proj/service/api/end_points.dart';
@@ -82,7 +84,6 @@ class UserCubit extends Cubit<UserState> {
   singUp() async {
     try {
       emit(SignUpLoading());
-      // ignore: unused_local_variable
       final response = await api.post(EndPoints.register, data: {
         ApiKey.userName: signUpName.text,
         ApiKey.email: signUpEmail.text,
@@ -132,7 +133,7 @@ class UserCubit extends Cubit<UserState> {
 
   void startTokenRefreshTimer() {
     _tokenRefreshTimer?.cancel();
-    _tokenRefreshTimer = Timer.periodic(const Duration(minutes:15), (timer) {
+    _tokenRefreshTimer = Timer.periodic(const Duration(minutes: 15), (timer) {
       refreshToken();
     });
   }
@@ -192,4 +193,36 @@ class UserCubit extends Cubit<UserState> {
     prefs.setBool('isLoggedIn', false);
     emit(SignOut());
   }
+
+  Future<void> loginWithGoogle() async {
+
+    try {
+      // تسجيل الدخول باستخدام Google
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) throw Exception("تم إلغاء تسجيل الدخول");
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final idToken = googleAuth.idToken;
+
+      final response = await api.post(
+        EndPoints.googleLogin,
+        data: jsonEncode({'token': idToken}),
+      );
+      CacheHelper.saveData(key: ApiKey.token, value: user!.token);
+      CacheHelper.saveData(key: ApiKey.refreshToken, value: user!.refreshToken);
+      CacheHelper.saveData(key: ApiKey.expiresIn, value: user!.expiresIn);
+      CacheHelper.saveData(
+          key: ApiKey.refreshTokenExpiration,
+          value: user!.refreshTokenExpiration);
+      CacheHelper.saveData(key: ApiKey.id, value: user!.id);
+      startTokenRefreshTimer();
+      emit(SignInSuccess());
+    } on ServerException catch (e) {
+      emit(SignInFailure(
+          errMessage: e.errorModel.message, errors: e.errorModel.error));
+    }
+  }
+
+  
 }

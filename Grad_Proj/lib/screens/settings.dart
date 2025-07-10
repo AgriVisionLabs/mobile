@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/components/personal_settings.dart';
 import 'package:grd_proj/components/security_settings.dart';
+import 'package:grd_proj/components/subcreption_settings.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -91,7 +92,7 @@ class _SettingsState extends State<Settings> {
               SizedBox(height: 20),
               if (selectedTab == 0) PersonalSetting(),
               if (selectedTab == 1) SecuritySettings(),
-              // if (selectedTab == 2) SubcreptionSetting(),
+              if (selectedTab == 2) SubcreptionSetting(),
               // if (selectedTab == 3) NotificationSettings(),
           ]),
         )

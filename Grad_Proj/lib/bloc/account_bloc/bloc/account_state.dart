@@ -56,3 +56,15 @@ class VerifyFailure extends AccountState {
   });
 
 }
+
+class PaymentSuccess extends AccountState {}
+
+class PaymentFailure extends AccountState {
+  final String errMessage;
+  final dynamic errors;
+   PaymentFailure({
+    required this.errMessage,
+    required this.errors,
+  });
+
+}

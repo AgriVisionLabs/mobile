@@ -1,8 +1,10 @@
 // ignore_for_file: use_super_parameters, prefer_const_constructors, use_key_in_widget_constructors, unused_import
 
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:grd_proj/bloc/account_bloc/bloc/account_bloc.dart';
 import 'package:grd_proj/bloc/chat_bloc/conversation/chat_bloc.dart';
 import 'package:grd_proj/bloc/chat_bloc/conversation_repositry.dart';
@@ -61,6 +63,9 @@ void callbackDispatcher() {
 // ignore: prefer_const_declarations
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  Stripe.publishableKey = 'pk_test_51Rj9rZP97SHnyUFZM55CofWijFSTuNDAfGYzJ0hMCuEpOQc3gmroPMDUr8R1jiKz4ba9B7q5OhuVzPYY5ufrgWgh003jXrSLDi'; // مفتاح من Stripe Dashboard
+  await Stripe.instance.applySettings();
   await CacheHelper.init();
   final token = CacheHelper.getData(key: ApiKey.token);
   final userId = CacheHelper.getData(key: ApiKey.id);
@@ -162,9 +167,9 @@ class _MyAppState extends State<MyApp> {
           // ScheduleMaintenance()
           // SensorView()
           // SplashScreen()
-          // LoginScreen(),
+          LoginScreen(),
       // SplashScreen()
-      HomeScreen()
+      // HomeScreen()
       // ChatListScreen()
       // ChatScreen(),
     );

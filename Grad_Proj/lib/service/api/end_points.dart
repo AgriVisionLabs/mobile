@@ -7,6 +7,7 @@ class EndPoints {
   static const String forgetPassword = '/Auth/request-password-reset';
   static const String otp = '/Auth/verify-password-reset-otp';
   static const String resetPassword = '/Auth/password-reset';
+  static const String googleLogin = '/Auth/google';
   static const String farmsInfo = '/Farms';
   static const String allFarms = '/Farms';
   static const String farmControl = '/Farms';
@@ -23,7 +24,13 @@ class EndPoints {
   static const String diseaseDetections = '/farms';
   static const String farmMembers = '/farms';
   static const String conversations = '/Conversations';
+  static const String webHook = '/WebHook/stripe-webhook';
+
 }
+
+
+
+
 
 class ApiKey {
   static String status = 'status';

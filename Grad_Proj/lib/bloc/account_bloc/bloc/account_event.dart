@@ -6,3 +6,4 @@ class ViewAccountDetails extends AccountEvent{}
 class EditAccountDetails extends AccountEvent{}
 class ChangedPassword extends AccountEvent{}
 class VerifyOtp extends AccountEvent{}
+class PayForPlan extends AccountEvent{}
