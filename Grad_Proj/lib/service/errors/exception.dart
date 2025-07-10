@@ -21,14 +21,17 @@ void handelDioException(DioException e) {
     case DioExceptionType.cancel:
       throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
     case DioExceptionType.connectionError:
-      throw ServerException(
-          errorModel: ErrorModel(
-              message:
-                  'connection errored',
-              status: 6,
-              error: []));
+       throw ServerException(
+            errorModel: e.response?.data is Map<String, dynamic>
+                ? ErrorModel.fromJson(e.response!.data)
+                : ErrorModel(message: 'ConnectionError : Please Check Your Connection', status: 7, error: []),
+          );
     case DioExceptionType.unknown:
-      throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
+       throw ServerException(
+            errorModel: e.response?.data is Map<String, dynamic>
+                ? ErrorModel.fromJson(e.response!.data)
+                : ErrorModel(message: 'Unknown', status: 8, error: []),
+          );
     case DioExceptionType.badResponse:
       switch (e.response!.statusCode) {
         case 400:

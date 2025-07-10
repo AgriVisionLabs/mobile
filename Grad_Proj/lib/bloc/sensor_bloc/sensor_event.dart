@@ -25,3 +25,9 @@ class UpdateSensorFromSignalREvent extends SensorEvent {
 
   UpdateSensorFromSignalREvent({required this.updatedDevice});
 }
+
+class LoadInitialSensorReadings extends SensorEvent {
+  final String farmId;
+  LoadInitialSensorReadings({required this.farmId});
+}
+

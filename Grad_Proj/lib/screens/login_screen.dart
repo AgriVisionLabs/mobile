@@ -9,7 +9,7 @@ import 'package:grd_proj/screens/home_screen.dart';
 import 'package:grd_proj/screens/register.dart';
 import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import '../models/unauthorize_model.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if (state.errMessage == 'Unauthorized' ||
                 state.errMessage == 'Forbidden') {
               description = state.errors[0]['description'];
-            } else {
+            } else if (state.errors is Map) {
               response = UnAuthorizeModel.fromJson(state.errors);
             }
             ScaffoldMessenger.of(context).clearSnackBars();
@@ -296,7 +296,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Login Button
                     state is SignInLoading
-                        ?  circularProgressIndicator()
+                        ? circularProgressIndicator()
                         : Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 24),
                             child: SizedBox(
@@ -355,6 +355,62 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    // Footer Text
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children:  [
+                        Container(
+                          color: borderColor,
+                          height: 1,
+                          width: 100,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12.5),
+                          child: Text('Or Continue with',
+                              style: TextStyle(
+                                color: borderColor,
+                                fontSize: 18,
+                                fontFamily: "Manrope",
+                              )),
+                        ),
+                        Container(
+                          color: borderColor,
+                          height: 1,
+                          width: 100,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 28),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // TODO: Implement Google sign-in logic here
+                          },
+                          child: SvgPicture.asset(
+                            'assets/images/devicon_google.svg',
+                            height: 30,
+                            width: 30,
+                          ),
+                        ),
+                        const SizedBox(width: 32),
+                        GestureDetector(
+                          onTap: () {
+                            // TODO: Implement Facebook sign-in logic here
+                          },
+                          child: SvgPicture.asset(
+                            'assets/images/logos_facebook.svg',
+                            height: 30,
+                            width: 30,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 28),
                   ],
                 ),
               ),

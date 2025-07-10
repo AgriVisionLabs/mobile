@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grd_proj/bloc/chat_bloc/bloc/chat_bloc.dart';
+import 'package:grd_proj/bloc/chat_bloc/conversation/chat_bloc.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/screens/message_screen.dart';
+import 'package:grd_proj/screens/widget/avatar_color.dart';
+import 'package:grd_proj/screens/widget/circule_indector.dart';
+import 'package:grd_proj/screens/widget/conversation_function.dart';
 import 'package:grd_proj/screens/widget/text.dart';
 
 class ChatListScreen extends StatefulWidget {
@@ -12,9 +16,15 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreenState extends State<ChatListScreen> {
   @override
+  void initState() {
+    context.read<ConversationBloc>().add(LoadConversationsEvent());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final TextEditingController _controller = TextEditingController();
-    final List<String> _usernames = [];
+    final TextEditingController controller = TextEditingController();
+    final List<String> userNames = [];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -86,7 +96,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 },
                 builder: (context, state) {
                   if (state is ConversationLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return circularProgressIndicator();
                   } else if (state is ConversationLoaded) {
                     final chats = state.conversations;
                     return ListView.builder(
@@ -118,19 +128,45 @@ class _ChatListScreenState extends State<ChatListScreen> {
                               ],
                             ),
                             child: ListTile(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatDetailScreen(
+                                              name: chat.name,
+                                              color: primaryColor,
+                                              conversationId: chat.id,
+                                            )));
+                              },
                               leading: CircleAvatar(
-                                backgroundColor: primaryColor,
+                                radius: 20,
+                                backgroundColor: getColorFromLetter(
+                                    chat.name[0]), // لون حسب الحرف
                                 child: Text(
                                   chat.name[0].toUpperCase(),
-                                  style: const TextStyle(color: Colors.white),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 18),
                                 ),
                               ),
                               title: Text(chat.name,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w600)),
-                              subtitle: Text('Members: ${chat.members.length}'),
-                              trailing: const Text("🕐"),
+                              subtitle: Text(
+                                chat.lastMessage?.content ?? "No messages yet",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              trailing: Text(
+                                chat.lastMessage != null
+                                    ? formatMessageTime(
+                                        chat.lastMessage!.sentAt)
+                                    : '',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ));
                       },
                     );
@@ -197,7 +233,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         key: context.read<ConversationBloc>().formKey,
                         child: TextFormField(
                           keyboardType: TextInputType.name,
-                          controller: _controller,
+                          controller: controller,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 17),
@@ -232,10 +268,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           onFieldSubmitted: (value) {
                             final trimmed = value.trim();
                             if (trimmed.isNotEmpty &&
-                                !_usernames.contains(trimmed)) {
+                                !userNames.contains(trimmed)) {
                               setState(() {
-                                _usernames.add(trimmed);
-                                _controller.clear();
+                                userNames.add(trimmed);
+                                controller.clear();
                               });
                             }
                           },
@@ -254,7 +290,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     child: GestureDetector(
                       onTap: () {
                         context.read<ConversationBloc>().memberEmails =
-                            _usernames;
+                            userNames;
                         context.read<ConversationBloc>().add(
                               CreateConversationEvent(),
                             );

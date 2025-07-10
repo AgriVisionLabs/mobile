@@ -8,6 +8,7 @@ import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/screens/disease_detected_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:video_player/video_player.dart';
 
 class DiseaseDetectionScreen extends StatefulWidget {
   final String farmName;
@@ -27,8 +28,10 @@ class DiseaseDetectionScreen extends StatefulWidget {
 
 class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
   File? _mediaFile;
+  bool _isVideo = false;
   ControlBloc? _controlBloc;
   bool isAnalysis = false;
+  VideoPlayerController? _videoController;
   Future<void> requestPermissions() async {
     if (Platform.isAndroid) {
       await Permission.camera.request();
@@ -49,27 +52,54 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
 
   @override
   void dispose() {
+    _videoController?.dispose();
     if (!isAnalysis) {
       _controlBloc!.add(OpenFarmDiseaseDetectionEvent(farmId: widget.farmId));
     }
     super.dispose();
   }
 
+  bool isVideoFile(String path) {
+  final lower = path.toLowerCase();
+  return lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.avi');
+}
+
+
   Future<void> _pickMedia(ImageSource source) async {
-    final status = await Permission.camera.request();
-    if (status.isGranted) {
-      final picked = await ImagePicker().pickImage(source: source);
-      if (picked != null) {
-        setState(() {
-          _mediaFile = File(picked.path);
-        });
+  final status = await Permission.photos.request();
+
+  if (status.isGranted) {
+    final picker = ImagePicker();
+    final XFile? picked = await picker.pickMedia();
+
+    if (picked != null) {
+      final file = File(picked.path);
+      final isVideo = isVideoFile(file.path); // ✅ استخدمي الدالة الجديدة
+
+      setState(() {
+        _mediaFile = file;
+        _isVideo = isVideo;
+      });
+
+      print('📦 Picked file path: ${file.path}');
+      print('🎞️ Is video? $_isVideo');
+
+      if (isVideo) {
+        _videoController?.dispose();
+        _videoController = VideoPlayerController.file(file)
+          ..initialize().then((_) {
+            setState(() {});
+            _videoController!.play();
+          });
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Camera permission denied")),
-      );
     }
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Permission denied")),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +107,16 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
 
     return BlocConsumer<ControlBloc, ControlState>(
       listener: (context, state) {
-        if (state is DiseaseScanSuccess) {
+        if (state is DiseaseDetectionFailure) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errMessage),
+              ),
+            );
+          });
+        } else {
           isAnalysis = true;
           Navigator.pushReplacement(
               context,
@@ -178,15 +217,30 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                     ),
                   ),
                   SizedBox(height: 30),
-                  if (isSelected == true) ...[
+                  if (isSelected) ...[
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15),
-                      child: Image.file(
-                        _mediaFile!,
-                        height: 260,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
+                      child: _isVideo
+                          ? (_videoController != null &&
+                                  _videoController!.value.isInitialized
+                              ? AspectRatio(
+                                  aspectRatio:
+                                      _videoController!.value.aspectRatio,
+                                  child: VideoPlayer(_videoController!),
+                                )
+                              : Container(
+                                  height: 260,
+                                  width: double.infinity,
+                                  color: Colors.black12,
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                ))
+                          : Image.file(
+                              _mediaFile!,
+                              height: 260,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ] else ...[
                     SizedBox(

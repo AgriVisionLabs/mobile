@@ -280,6 +280,8 @@ class DiseaseScanFailure extends ControlState {
 
 }
 
+class DiseaseScanLoading extends ControlState {}
+
 class ViewDetectionsSuccess extends ControlState{
   final List<DiseaseDetectionModel> info;
   ViewDetectionsSuccess({

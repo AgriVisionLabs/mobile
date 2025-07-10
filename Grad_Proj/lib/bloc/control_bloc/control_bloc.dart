@@ -355,6 +355,7 @@ class ControlBloc extends Bloc<ControlEvent, ControlState> {
 //=====================================================================
 
     on<UseDiseaseDetectionEvent>((event, emit) async {
+      emit(DiseaseScanLoading());
       try {
         final filePath = event.media.path;
         final fileName = filePath.split('/').last;

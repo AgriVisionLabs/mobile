@@ -263,6 +263,8 @@ class _DiseaseDetectedScreenState extends State<DiseaseDetectedScreen> {
                   ],
                 ),
               );
+            }else if(state is DiseaseScanLoading){
+              text(fontSize: 22, label: "Loading..........");
             }
             return circularProgressIndicator();
           },

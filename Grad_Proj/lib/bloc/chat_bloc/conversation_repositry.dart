@@ -1,7 +1,8 @@
 // ignore_for_file: use_rethrow_when_possible, avoid_print, unused_local_variable
 
-import 'package:grd_proj/bloc/chat_bloc/bloc/chat_bloc.dart';
+import 'package:grd_proj/bloc/chat_bloc/conversation/chat_bloc.dart';
 import 'package:grd_proj/models/conversation_model.dart';
+import 'package:grd_proj/models/message_model.dart';
 import 'package:grd_proj/service/api/api_consumer.dart';
 import 'package:grd_proj/service/api/end_points.dart';
 import 'package:grd_proj/service/errors/exception.dart';
@@ -13,21 +14,21 @@ class ConversationRepository {
   ConversationRepository(this.api, this.signalR);
 
   // API: GET all conversations
-  Future<List<ConversationModel>> fetchConversations() async {
-    try {
-      final response = await api.get(EndPoints.conversations);
-      return (response as List)
-          .map((e) => ConversationModel.fromJson(e))
-          .toList();
-    } on ServerException catch (e) {
-      print("ServerException: ${e.errorModel.message}");
+  // Future<List<ConversationModel>> fetchConversations() async {
+  //   try {
+  //     final response = await api.get(EndPoints.conversations);
+  //     return (response as List)
+  //         .map((e) => ConversationModel.fromJson(e))
+  //         .toList();
+  //   } on ServerException catch (e) {
+  //     print("ServerException: ${e.errorModel.message}");
 
-      rethrow;
-    } catch (e) {
-      // لأي خطأ تاني غير ServerException
-      throw Exception("Failed to create conversation");
-    }
-  }
+  //     rethrow;
+  //   } catch (e) {
+  //     // لأي خطأ تاني غير ServerException
+  //     throw Exception("Failed to create conversation");
+  //   }
+  // }
 
   // API: POST create new conversation
   Future<ConversationModel> createConversation({
@@ -58,7 +59,7 @@ class ConversationRepository {
   }) async {
     try {
       final response = await api.delete(
-        "${EndPoints.conversations}/${convId}",
+        "${EndPoints.conversations}/$convId",
       );
     } on ServerException catch (e) {
       print("ServerException: ${e.errorModel.message}");
@@ -66,6 +67,38 @@ class ConversationRepository {
     } catch (e) {
       print("Unknown error in createConversation: $e");
       throw Exception("Failed to create conversation");
+    }
+  }
+
+  Future<List<ConversationModel>> fetchConversations() async {
+    try {
+      final response = await api.get(EndPoints.conversations);
+      final conversations =
+          (response as List).map((e) => ConversationModel.fromJson(e)).toList();
+
+      for (final conv in conversations) {
+        try {
+          final messagesResponse = await api
+              .get('${EndPoints.conversations}/${conv.id}/Messages'); // تأكدي من endpoint هنا
+
+          final messages =
+              messagesResponse.map<MessageModel>((json) => MessageModel.fromJson(json))
+              .toList();
+
+          if (messages.isNotEmpty) {
+            conv.lastMessage = messages.first;
+          }
+        } catch (e) {
+          print('❌ Failed to fetch messages for ${conv.id}: $e');
+        }
+      }
+
+      return conversations;
+    } on ServerException catch (e) {
+      print("ServerException: ${e.errorModel.message}");
+      rethrow;
+    } catch (e) {
+      throw Exception("Failed to fetch conversations");
     }
   }
 

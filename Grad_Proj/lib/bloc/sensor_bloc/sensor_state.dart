@@ -4,6 +4,8 @@ abstract class SensorState {}
 
 class SensorInitial extends SensorState {}
 
+class SensorLoading extends SensorState {}
+
 class SensorConnecting extends SensorState {}
 
 class SensorConnected extends SensorState {
@@ -32,4 +34,10 @@ class SensorDataReceived extends SensorState {
 class SensorDataError extends SensorState {
   final String error;
    SensorDataError({required this.error});
+}
+
+class SensorInitialReadingsLoaded extends SensorState {
+  final Map<String, String> latestReadings; // unitId -> data
+
+  SensorInitialReadingsLoaded(this.latestReadings);
 }

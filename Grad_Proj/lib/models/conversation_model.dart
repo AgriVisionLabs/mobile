@@ -1,4 +1,5 @@
 import 'package:grd_proj/models/conversation_member.dart';
+import 'package:grd_proj/models/message_model.dart';
 
 class ConversationModel {
   final String id;
@@ -6,13 +7,15 @@ class ConversationModel {
   final bool isGroup;
   final String? adminId;
   final List<ConversationMember> members;
-
+  MessageModel? lastMessage;
+  
   ConversationModel({
     required this.id,
     required this.name,
     required this.isGroup,
     required this.adminId,
     required this.members,
+    this.lastMessage,
   });
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {

@@ -4,8 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/account_bloc/bloc/account_bloc.dart';
-import 'package:grd_proj/bloc/chat_bloc/bloc/chat_bloc.dart';
+import 'package:grd_proj/bloc/chat_bloc/conversation/chat_bloc.dart';
 import 'package:grd_proj/bloc/chat_bloc/conversation_repositry.dart';
+import 'package:grd_proj/bloc/chat_bloc/message/message_bloc.dart';
+import 'package:grd_proj/bloc/chat_bloc/message/message_event.dart';
+import 'package:grd_proj/bloc/chat_bloc/message_repositry.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
@@ -30,6 +33,7 @@ import 'package:grd_proj/screens/sensor_and_devices.dart';
 import 'package:grd_proj/screens/sensor_view.dart';
 import 'package:grd_proj/screens/verification.dart';
 import 'package:grd_proj/service/signalR/signalr_service.dart';
+import 'package:grd_proj/service/signalR/signar_service_message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'bloc/user_cubit.dart';
@@ -64,9 +68,12 @@ void main() async {
 
   final apiConsumer = DioConsumer(dio: dio);
   final signalR = ConversationSignalRService(jwtToken: token, userId: userId);
+  final signalRM = MessageSignalRService(jwtToken: token);
   await signalR.init();
 
   final conversationRepository = ConversationRepository(apiConsumer, signalR);
+  final messageRepository = MessageRepository(apiConsumer, signalRM);
+
   runApp(
     MultiBlocProvider(
       // single Responsiblity
@@ -89,13 +96,20 @@ void main() async {
               AccountBloc(DioConsumer(dio: Dio())),
         ),
         BlocProvider<SensorBloc>(
-          create: (BuildContext context) => SensorBloc(),
+          create: (BuildContext context) => SensorBloc( DioConsumer(dio: Dio())),
         ),
         BlocProvider<ConversationBloc>(
           create: (BuildContext context) {
             final bloc = ConversationBloc(conversationRepository);
             conversationRepository.setBlocListeners(bloc);
             bloc.add(LoadConversationsEvent());
+            return bloc;
+          },
+        ),
+        BlocProvider<MessageBloc>(
+          create: (BuildContext context) {
+            final bloc = MessageBloc(messageRepository);
+            messageRepository.setBlocListeners(bloc);
             return bloc;
           },
         ),
@@ -133,27 +147,26 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home:
+      debugShowCheckedModeBanner: false,
+      home:
 
-            //     BlocProvider(
-            // create: (_) => ChatBloc(
-            //   token: CacheHelper.getData(key: 'token'),
-            //   userId: CacheHelper.getData(key: 'id'),
-            //   baseUrl: "https://api.agrivisionlabs.tech/hubs/conversations",
-            //   signalR: SignalRService(token: CacheHelper.getData(key: 'token')),
-            // )..add(StartConnectionEvent())..add(LoadConversationsEvent()),
-            // child: ChatScreen(),
-            //   )
-            // ScheduleMaintenance()
-            // SensorView()
-            // SplashScreen()
-            LoginScreen(),
-            // SplashScreen()
-            // HomeScreen()
-            // ChatListScreen()
-        // ChatScreen(),
-
-        );
+          //     BlocProvider(
+          // create: (_) => ChatBloc(
+          //   token: CacheHelper.getData(key: 'token'),
+          //   userId: CacheHelper.getData(key: 'id'),
+          //   baseUrl: "https://api.agrivisionlabs.tech/hubs/conversations",
+          //   signalR: SignalRService(token: CacheHelper.getData(key: 'token')),
+          // )..add(StartConnectionEvent())..add(LoadConversationsEvent()),
+          // child: ChatScreen(),
+          //   )
+          // ScheduleMaintenance()
+          // SensorView()
+          // SplashScreen()
+          // LoginScreen(),
+      // SplashScreen()
+      HomeScreen()
+      // ChatListScreen()
+      // ChatScreen(),
+    );
   }
 }

@@ -4,6 +4,7 @@
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:grd_proj/models/sensor_model.dart';
+import 'package:grd_proj/service/api/api_consumer.dart';
 import 'package:signalr_netcore/http_connection_options.dart';
 import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
@@ -12,8 +13,9 @@ part 'sensor_event.dart';
 part 'sensor_state.dart';
 
 class SensorBloc extends Bloc<SensorEvent, SensorState> {
+  final ApiConsumer api;
   HubConnection? _connection;
-  SensorBloc() : super(SensorInitial()) {
+  SensorBloc(this.api) : super(SensorInitial()) {
     on<ConnectToHub>((event, emit) async {
       emit(SensorConnecting());
 
@@ -45,7 +47,8 @@ class SensorBloc extends Bloc<SensorEvent, SensorState> {
       });
 
       _connection!.on('message', (args) {
-        print("================Generic message received: ${args?.toString()}================");
+        print(
+            "================Generic message received: ${args?.toString()}================");
       });
 
       //start connection
@@ -54,11 +57,12 @@ class SensorBloc extends Bloc<SensorEvent, SensorState> {
           await _connection!.start();
           print("================Connected================");
         }
-        
+
         if (_connection != null) {
           await _connection!
               .invoke("SubscribeToFarm", args: [event.farmId.toString()]);
-          print("================Subscribed to farm: ${event.farmId}================");
+          print(
+              "================Subscribed to farm: ${event.farmId}================");
         }
 
         emit(SensorConnected(farmId: event.farmId.toString()));
@@ -75,10 +79,36 @@ class SensorBloc extends Bloc<SensorEvent, SensorState> {
     on<NewSensorDataReceived>((event, emit) async {
       emit(SensorDataReceived(unitId: event.unitId, data: event.data));
     });
+    on<LoadInitialSensorReadings>((event, emit) async {
+  emit(SensorLoading());
+  try {
+    final readings = await _fetchLatestReadingsFromApi(event.farmId);
+    emit(SensorInitialReadingsLoaded(readings));
+  } catch (e) {
+    emit(SensorConnectionError(error: e.toString()));
+  }
+});
   }
   @override
   Future<void> close() async {
     await _connection?.stop();
     return super.close();
+  }
+
+  Future<Map<String, String>> _fetchLatestReadingsFromApi(String farmId) async {
+    final response =
+        await api.get('/your-endpoint/$farmId'); // غيري حسب API الفعلي
+    final List data = response['sensors']; // غيري حسب شكل الـ JSON
+
+    Map<String, String> latestReadings = {};
+
+    for (var item in data) {
+      final unitId = item['unitId'];
+      final reading =
+          const JsonEncoder.withIndent('  ').convert(item['latestReading']);
+      latestReadings[unitId] = reading;
+    }
+
+    return latestReadings;
   }
 }
