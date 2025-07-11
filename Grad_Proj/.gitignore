@@ -1,43 +1,74 @@
-# Miscellaneous
+# =======================================
+# 📦 General files to ignore
+# =======================================
 *.class
 *.log
 *.pyc
 *.swp
 .DS_Store
+*.lock
+*.tmp
+*.bak
+
+# VS Code
+.vscode/
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Migration / backup folders
 .atom/
 .buildlog/
 .history
 .svn/
 migrate_working_dir/
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# =======================================
+# 🚫 Dart / Flutter specific
+# =======================================
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
-/build/
+build/
+**/build/
+**/ios/Flutter/.last_build_id
+**/doc/api/
 
-# Symbolication related
+# =======================================
+# 📱 Android-specific
+# =======================================
+android/.gradle/
+android/captures/
+android/local.properties
+android/app/debug
+android/app/profile
+android/app/release
+
+# =======================================
+# 📦 Obfuscation and symbolication
+# =======================================
 app.*.symbols
-
-# Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# =======================================
+# 🧪 Test coverage
+# =======================================
+coverage/
+coverage.lcov
+
+# =======================================
+# 🗂 Git Large File Storage - optional (handled by .gitattributes)
+# =======================================
+*.mp4
+*.png
+*.jpg
+*.jpeg
+*.zip
+*.apk
+*.ipa

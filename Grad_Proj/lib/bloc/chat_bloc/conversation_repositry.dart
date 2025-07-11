@@ -70,6 +70,22 @@ class ConversationRepository {
     }
   }
 
+  Future<void> viewConv({
+    required String convId,
+  }) async {
+    try {
+      final response = await api.get(
+        "${EndPoints.conversations}/$convId",
+      );
+    } on ServerException catch (e) {
+      print("ServerException: ${e.errorModel.message}");
+      rethrow;
+    } catch (e) {
+      print("Unknown error in createConversation: $e");
+      throw Exception("Failed to create conversation");
+    }
+  }
+
   Future<List<ConversationModel>> fetchConversations() async {
     try {
       final response = await api.get(EndPoints.conversations);

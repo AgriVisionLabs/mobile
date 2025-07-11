@@ -195,15 +195,19 @@ class UserCubit extends Cubit<UserState> {
   }
 
   Future<void> loginWithGoogle() async {
-
     try {
       // تسجيل الدخول باستخدام Google
+      print("✨ Signing in...");
+
+      print("✅ Signed in user: ${user?.email}");
+
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) throw Exception("تم إلغاء تسجيل الدخول");
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
       final idToken = googleAuth.idToken;
+      print("object============================${googleAuth.idToken}");
 
       final response = await api.post(
         EndPoints.googleLogin,
@@ -223,6 +227,4 @@ class UserCubit extends Cubit<UserState> {
           errMessage: e.errorModel.message, errors: e.errorModel.error));
     }
   }
-
-  
 }

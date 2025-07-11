@@ -47,6 +47,13 @@ class ConversationDeleteFailure extends ConversationState {
   ConversationDeleteFailure(this.message);
 }
 
+class ConversationViewSuccess extends ConversationState {}
+
+class ConversationViewFailure extends ConversationState {
+  final String message;
+  ConversationViewFailure(this.message);
+}
+
 
 class MemeberDeleteSuccess extends ConversationState {}
 

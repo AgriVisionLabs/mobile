@@ -64,20 +64,10 @@ void callbackDispatcher() {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  Stripe.publishableKey = 'pk_test_51Rj9rZP97SHnyUFZM55CofWijFSTuNDAfGYzJ0hMCuEpOQc3gmroPMDUr8R1jiKz4ba9B7q5OhuVzPYY5ufrgWgh003jXrSLDi'; // مفتاح من Stripe Dashboard
+  Stripe.publishableKey =
+      'pk_test_51Rj9rZP97SHnyUFZM55CofWijFSTuNDAfGYzJ0hMCuEpOQc3gmroPMDUr8R1jiKz4ba9B7q5OhuVzPYY5ufrgWgh003jXrSLDi'; // مفتاح من Stripe Dashboard
   await Stripe.instance.applySettings();
   await CacheHelper.init();
-  final token = CacheHelper.getData(key: ApiKey.token);
-  final userId = CacheHelper.getData(key: ApiKey.id);
-  final dio = Dio();
-
-  final apiConsumer = DioConsumer(dio: dio);
-  final signalR = ConversationSignalRService(jwtToken: token, userId: userId);
-  final signalRM = MessageSignalRService(jwtToken: token);
-  await signalR.init();
-
-  final conversationRepository = ConversationRepository(apiConsumer, signalR);
-  final messageRepository = MessageRepository(apiConsumer, signalRM);
 
   runApp(
     MultiBlocProvider(
@@ -101,22 +91,7 @@ void main() async {
               AccountBloc(DioConsumer(dio: Dio())),
         ),
         BlocProvider<SensorBloc>(
-          create: (BuildContext context) => SensorBloc( DioConsumer(dio: Dio())),
-        ),
-        BlocProvider<ConversationBloc>(
-          create: (BuildContext context) {
-            final bloc = ConversationBloc(conversationRepository);
-            conversationRepository.setBlocListeners(bloc);
-            bloc.add(LoadConversationsEvent());
-            return bloc;
-          },
-        ),
-        BlocProvider<MessageBloc>(
-          create: (BuildContext context) {
-            final bloc = MessageBloc(messageRepository);
-            messageRepository.setBlocListeners(bloc);
-            return bloc;
-          },
+          create: (BuildContext context) => SensorBloc(DioConsumer(dio: Dio())),
         ),
       ],
       child: const MyApp(),
@@ -167,9 +142,9 @@ class _MyAppState extends State<MyApp> {
           // ScheduleMaintenance()
           // SensorView()
           // SplashScreen()
-          LoginScreen(),
+          // LoginScreen(),
       // SplashScreen()
-      // HomeScreen()
+      HomeScreen()
       // ChatListScreen()
       // ChatScreen(),
     );

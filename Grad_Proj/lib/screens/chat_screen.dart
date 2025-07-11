@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/chat_bloc/conversation/chat_bloc.dart';
+import 'package:grd_proj/bloc/chat_bloc/message/message_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/screens/message_screen.dart';
 import 'package:grd_proj/screens/widget/avatar_color.dart';
@@ -130,13 +131,26 @@ class _ChatListScreenState extends State<ChatListScreen> {
                             child: ListTile(
                               onTap: () {
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ChatDetailScreen(
-                                              name: chat.name,
-                                              color: primaryColor,
-                                              conversationId: chat.id,
-                                            )));
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => MultiBlocProvider(
+                                      providers: [
+                                        BlocProvider.value(
+                                          value:
+                                              context.read<ConversationBloc>(),
+                                        ),
+                                        BlocProvider.value(
+                                          value: context.read<MessageBloc>(),
+                                        ),
+                                      ],
+                                      child: ChatDetailScreen(
+                                        name: chat.name,
+                                        groupe: chat.isGroup,
+                                        conversationId: chat.id,
+                                      ),
+                                    ),
+                                  ),
+                                );
                               },
                               leading: CircleAvatar(
                                 radius: 20,

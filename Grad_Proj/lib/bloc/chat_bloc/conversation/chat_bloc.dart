@@ -66,6 +66,20 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
       }
     });
 
+    on<ViewConv>((event, emit) async {
+      try {
+        await repository.viewConv(
+          convId: event.conversationId,
+        );
+        
+        emit(ConversationViewSuccess());
+      } on ServerException catch (e) {
+        emit(ConversationViewFailure(e.errorModel.message));
+      } catch (e) {
+        emit(ConversationViewFailure('Failed to create conversation'));
+      }
+    });
+
     on<NewConversationEvent>((event, emit) async {
       _currentConversations.add(event.data);
       emit(ConversationAddSuccess(conversation: event.data));

@@ -4,6 +4,9 @@ allprojects {
         mavenCentral()
     }
 }
+subprojects {
+    project.evaluationDependsOn(":app")
+}
 
 rootProject.buildDir = "../build"
 subprojects {

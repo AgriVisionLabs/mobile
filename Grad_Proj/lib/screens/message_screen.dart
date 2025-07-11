@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/chat_bloc/conversation/chat_bloc.dart';
@@ -10,6 +8,7 @@ import 'package:grd_proj/bloc/chat_bloc/message/message_state.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/message_model.dart';
+import 'package:grd_proj/screens/chat_details.dart';
 import 'package:grd_proj/screens/widget/avatar_color.dart';
 import 'package:grd_proj/service/signalR/signar_service_message.dart';
 import 'package:intl/intl.dart';
@@ -17,12 +16,12 @@ import 'package:intl/intl.dart';
 class ChatDetailScreen extends StatefulWidget {
   final String conversationId;
   final String name;
-  final Color color;
+  final bool groupe;
 
   const ChatDetailScreen({
     super.key,
     required this.name,
-    required this.color,
+    required this.groupe,
     required this.conversationId,
   });
 
@@ -78,8 +77,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,6 +118,31 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                  Spacer(),
+                  widget.groupe
+                      ? GestureDetector(
+                          onTap: () {
+                            _conversationBloc!.add(ViewConv(
+                                conversationId: widget.conversationId));
+
+                            MaterialPageRoute(
+                              builder: (_) => MultiBlocProvider(
+                                providers: [
+                                  BlocProvider.value(
+                                    value: context.read<ConversationBloc>(),
+                                  ),
+                                  BlocProvider.value(
+                                    value: context.read<MessageBloc>(),
+                                  ),
+                                ],
+                                child: ChatDetails(),
+                              ),
+                            );
+                          },
+                          child: Image.asset(
+                              "assets/images/mage_dots.png"), // زر الثلاث نقاط
+                        )
+                      : SizedBox()
                 ],
               ),
             ),
@@ -309,7 +331,8 @@ class _MessageBubbleState extends State<MessageBubble> {
     );
   }
 }
-  List<Widget> _buildGroupedMessages(List<MessageModel> messages) {
+
+List<Widget> _buildGroupedMessages(List<MessageModel> messages) {
   Map<String, List<MessageModel>> grouped = {};
 
   for (var message in messages.reversed) {
@@ -354,7 +377,6 @@ class _MessageBubbleState extends State<MessageBubble> {
     }
   });
 
-  return widgets.reversed.toList(); // مهم علشان تبقى الرسائل بالترتيب من تحت لفوق
-
-
+  return widgets.reversed
+      .toList(); // مهم علشان تبقى الرسائل بالترتيب من تحت لفوق
 }

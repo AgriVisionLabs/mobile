@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ClipPath(
                       clipper: CurvedClipper(),
                       child: Container(
-                        height: 350,
+                        height: 150,
                         decoration: const BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/images/background.png'),

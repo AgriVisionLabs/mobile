@@ -31,3 +31,10 @@ class DeleteConversationEvent extends ConversationEvent {
     required this.conversationId,
   });
 }
+
+class ViewConv extends ConversationEvent {
+  final String conversationId;
+  ViewConv({
+    required this.conversationId,
+  });
+}

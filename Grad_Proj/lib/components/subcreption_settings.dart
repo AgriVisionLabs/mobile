@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/screens/plans_screen.dart';
 
 class SubcreptionSetting extends StatefulWidget {
   const SubcreptionSetting({super.key});
@@ -145,9 +146,11 @@ class _SubcreptionSettingState extends State<SubcreptionSetting> {
                                   Spacer(),
                                   GestureDetector(
                                     onTap: () {
-                                      setState(() {
-                                      currentPlan = ! currentPlan;
-                                      });
+                                      Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PlansScreen()),
+                                  );
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
@@ -211,7 +214,11 @@ class _SubcreptionSettingState extends State<SubcreptionSetting> {
                               SizedBox(height: 24),
                               GestureDetector(
                                 onTap: () {
-                                  print('Changed');
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PlansScreen()),
+                                  );
                                 },
                                 child: Container(
                                   alignment: Alignment.topCenter,
@@ -499,4 +506,6 @@ class _SubcreptionSettingState extends State<SubcreptionSetting> {
                   ],
         ));
   }
+
+  
 }
