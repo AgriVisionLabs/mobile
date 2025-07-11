@@ -5,6 +5,7 @@ import 'package:grd_proj/bloc/sensor_bloc/sensor_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/sensor_model.dart';
+import 'package:grd_proj/screens/schedule_maintenance.dart';
 import 'package:grd_proj/screens/sensor_view.dart';
 
 class SensorDevices extends StatefulWidget {
@@ -40,8 +41,7 @@ class _SensorDevicesState extends State<SensorDevices> {
 
   @override
   void dispose() {
-    _sensorBloc!.add(DisconnectFromHub(
-        error: "Close Connection"));
+    _sensorBloc!.add(DisconnectFromHub(error: "Close Connection"));
     super.dispose();
   }
 
@@ -214,10 +214,12 @@ class _SensorDevicesState extends State<SensorDevices> {
                                   ),
                                   BlocConsumer<SensorBloc, SensorState>(
                                     listener: (context, state) {
-                                      if ( state is SensorConnected){
-                                        print("=============${state.farmId}============");
-                                      }else if(state is SensorDataReceived){
-                                        print("==============${state.data}============}");
+                                      if (state is SensorConnected) {
+                                        print(
+                                            "=============${state.farmId}============");
+                                      } else if (state is SensorDataReceived) {
+                                        print(
+                                            "==============${state.data}============}");
                                         mos = state.data;
                                         temp = state.data;
                                         hum = state.data;
@@ -245,8 +247,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                     width: 24,
                                                   ),
                                                   const SizedBox(height: 5),
-                                                  Text(
-                                                      "$mos%",
+                                                  Text("$mos%",
                                                       style: const TextStyle(
                                                         color:
                                                             Color(0xFF000000),
@@ -290,8 +291,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                     width: 24,
                                                   ),
                                                   const SizedBox(height: 5),
-                                                  Text(
-                                                      "$temp°C",
+                                                  Text("$temp°C",
                                                       style: const TextStyle(
                                                         color:
                                                             Color(0xFF000000),
@@ -335,8 +335,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                     width: 24,
                                                   ),
                                                   const SizedBox(height: 5),
-                                                  Text(
-                                                      "${hum!}%",
+                                                  Text("${hum!}%",
                                                       style: const TextStyle(
                                                         color:
                                                             Color(0xFF000000),
@@ -376,7 +375,10 @@ class _SensorDevicesState extends State<SensorDevices> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      print("maintaince");
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ScheduleMaintenance()));
                                     },
                                     child: Image.asset(
                                         'assets/images/Vector2.png',
