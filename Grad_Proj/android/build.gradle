@@ -1,13 +1,14 @@
 buildscript {
     repositories {
-        google()
-        mavenCentral()
+        google() // ✅ لازم يكون هنا
+        mavenCentral() // ✅ كمان هنا
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2' // أو أي إصدار عندك
-        classpath 'com.google.gms:google-services:4.3.15' // ← أضف هذا السطر هنا
+        classpath 'com.android.tools.build:gradle:8.3.0' // أو حسب الموجود عندك
+        classpath 'com.google.gms:google-services:4.3.15' // ✅ ده اللي بيدور عليه
     }
 }
+
 
 allprojects {
     repositories {

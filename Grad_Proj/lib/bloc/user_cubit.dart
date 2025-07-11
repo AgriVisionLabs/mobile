@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print, unused_local_variable
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -196,24 +195,40 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> loginWithGoogle() async {
     try {
-      // تسجيل الدخول باستخدام Google
       print("✨ Signing in...");
+      final googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+        serverClientId:
+            '769027848160-k3e11k5anbmk00osr85l37b793itm232.apps.googleusercontent.com', // Web ID فقط
+      );
 
-      print("✅ Signed in user: ${user?.email}");
+// 1. Disconnect أي جلسة سابقة (بدون signOut)
+      await googleSignIn
+          .disconnect()
+          .catchError((_) {}); // تجنّب الخطأ لو مفيش جلسة
 
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+// 2. اختيار حساب جديد
+      final googleUser = await googleSignIn.signIn();
       if (googleUser == null) throw Exception("تم إلغاء تسجيل الدخول");
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+// 3. جلب التوكن
+      final googleAuth = await googleUser.authentication;
       final idToken = googleAuth.idToken;
-      print("object============================${googleAuth.idToken}");
+
+      if (idToken == null) throw Exception("ID Token مفقود");
+      print("📧 User: ${googleUser.email}");
+      print("✅ ID Token: $idToken");
 
       final response = await api.post(
         EndPoints.googleLogin,
-        data: jsonEncode({'token': idToken}),
+        data: {"idToken": idToken},
       );
+
+      print("📦 Response: ${response.toString()}");
+
       user = SignInModel.fromJson(response);
+
+      // حفظ بيانات التوكن
       CacheHelper.saveData(key: ApiKey.token, value: user!.token);
       CacheHelper.saveData(key: ApiKey.refreshToken, value: user!.refreshToken);
       CacheHelper.saveData(key: ApiKey.expiresIn, value: user!.expiresIn);
@@ -221,11 +236,14 @@ class UserCubit extends Cubit<UserState> {
           key: ApiKey.refreshTokenExpiration,
           value: user!.refreshTokenExpiration);
       CacheHelper.saveData(key: ApiKey.id, value: user!.id);
+
       startTokenRefreshTimer();
       emit(SignInSuccess());
     } on ServerException catch (e) {
       emit(SignInFailure(
           errMessage: e.errorModel.message, errors: e.errorModel.error));
+    } catch (e) {
+      emit(SignInFailure(errMessage: e.toString(), errors: null));
     }
   }
 }

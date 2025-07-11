@@ -29,6 +29,9 @@ class _DashBoardState extends State<DashBoard> {
   List<FieldModel>? fields;
   String? roleName;
   FieldBloc? _fieldBloc;
+  double? totalProgress;
+  double? growth;
+  double temp = 0;
   @override
   void initState() {
     _fieldBloc = context.read<FieldBloc>();
@@ -40,8 +43,7 @@ class _DashBoardState extends State<DashBoard> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: BlocConsumer<FarmBloc, FarmState>(
-          listener: (context, state) {
+        body: BlocConsumer<FarmBloc, FarmState>(listener: (context, state) {
           if (state is FarmsLoaded) {
             print("==============================================");
             farms = state.farms;
@@ -51,16 +53,16 @@ class _DashBoardState extends State<DashBoard> {
           }
         }, builder: (context, state) {
           if (state is FarmEmpty) {
-           return Center(
+            return Center(
                 child: text(
                     fontSize: 24,
                     label:
                         "You don't have any farm yet. Go to the farm page and add a farm or have someone add you to their farm."));
-          } 
+          }
           if (state is FarmsLoaded) {
-           return _thereIsFarms(context, state.farms);
+            return _thereIsFarms(context, state.farms);
           } else if (state is FarmFailure) {
-           return Center(child: text(fontSize: 24, label: state.errMessage));
+            return Center(child: text(fontSize: 24, label: state.errMessage));
           }
           return circularProgressIndicator();
         }));
@@ -144,6 +146,7 @@ class _DashBoardState extends State<DashBoard> {
                                     roleName = selectedFarm.first.roleName;
                                     _fieldBloc!.add(OpenFieldEvent(
                                         farmId: selectedFarmId!));
+                                    _fieldBloc!.add(OpenFarmSensorUnitsEvent(farmId: selectedFarmId!));
                                   });
                                 },
                           selectedItemBuilder: (farms == null || farms.isEmpty)
@@ -235,6 +238,12 @@ class _DashBoardState extends State<DashBoard> {
                             fields = state.fields
                                 .where((field) => field.cropName != null)
                                 .toList();
+                            totalProgress = fields!.fold(0,
+                                (sum, field) => sum! + (field.progress ?? 0));
+                            growth = fields!.isNotEmpty
+                                ? totalProgress! / fields!.length
+                                : 0;
+
                             return Container(
                               height: state.fields.length > 3 ? 530 : null,
                               padding: EdgeInsets.all(8),
@@ -315,38 +324,45 @@ class _DashBoardState extends State<DashBoard> {
                     padding: const EdgeInsets.all(24),
                     width: 380,
                     height: 150,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(children: [
-                          Text('Temperature',
-                              style: TextStyle(
+                    child: BlocConsumer<FieldBloc, FieldState>(
+                      listener: (context, state) {
+                        // TODO: implement listener
+                      },
+                      builder: (context, state) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              Text('Temperature',
+                                  style: TextStyle(
+                                    color: Colors.green[900],
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w900,
+                                    fontFamily: 'manrope',
+                                  )),
+                              Spacer(),
+                              Image.asset('assets/images/temp.png')
+                            ]),
+                            SizedBox(height: 30),
+                            Text('Good',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w500,
+                                )),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: LinearProgressIndicator(
+                                value: temp,
+                                backgroundColor: Colors.grey[300],
                                 color: Colors.green[900],
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: 'manrope',
-                              )),
-                          Spacer(),
-                          Image.asset('assets/images/temp.png')
-                        ]),
-                        SizedBox(height: 30),
-                        Text('Good',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w500,
-                            )),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: LinearProgressIndicator(
-                            value: 0.55,
-                            backgroundColor: Colors.grey[300],
-                            color: Colors.green[900],
-                            minHeight: 6,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                      ],
+                                minHeight: 6,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                          ],
+                        );
+                      },
                     ))),
             SizedBox(height: 24),
             Container(

@@ -20,6 +20,10 @@
             "package_name": "com.example.grd_proj",
             "certificate_hash": "53f13a423b58541f8d3e5019044749ad73045ef1"
           }
+        },
+        {
+          "client_id": "769027848160-k3e11k5anbmk00osr85l37b793itm232.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -29,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "769027848160-k3e11k5anbmk00osr85l37b793itm232.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "769027848160-ta084b44rplr39o7g6pj0br4qporgpk5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.agrivision.com"
+              }
+            }
+          ]
         }
       }
     }
