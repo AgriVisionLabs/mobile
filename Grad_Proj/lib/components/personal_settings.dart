@@ -1,11 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/account_bloc/bloc/account_bloc.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/user_model.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PersonalSetting extends StatefulWidget {
   const PersonalSetting({super.key});
@@ -30,7 +34,10 @@ class _PersonalSettingState extends State<PersonalSetting> {
   void initState() {
     super.initState();
     context.read<AccountBloc>().add(ViewAccountDetails());
+    _loadSavedImage();
   }
+
+  
 
   @override
   void didChangeDependencies() {
@@ -44,6 +51,55 @@ class _PersonalSettingState extends State<PersonalSetting> {
   UserModel? user;
 
   String? description;
+  File? _selectedImage;
+
+  bool _isPickingImage = false;
+
+
+
+
+  Future<void> _loadSavedImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final path = prefs.getString('profile_image_path');
+    if (path != null && File(path).existsSync()) {
+      setState(() {
+        _selectedImage = File(path);
+      });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    if (_isPickingImage) return;
+    _isPickingImage = true;
+
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: ImageSource.gallery);
+      if (picked != null) {
+        final file = File(picked.path);
+        setState(() {
+          _selectedImage = file;
+        });
+
+        // حفظ المسار
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('profile_image_path', picked.path);
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+    } finally {
+      _isPickingImage = false;
+    }
+  }
+
+  Future<void> _removeImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('profile_image_path');
+
+    setState(() {
+      _selectedImage = null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,28 +200,46 @@ class _PersonalSettingState extends State<PersonalSetting> {
                               )),
                           SizedBox(height: 24),
                           Row(children: [
-                            Image.asset('assets/images/person.png',
-                                width: 50, height: 50),
-                            SizedBox(
-                              width: 24,
+                            GestureDetector(
+                              onTap: _pickImage,
+                              child: CircleAvatar(
+                                radius: 30,
+                                backgroundImage: _selectedImage != null
+                                    ? FileImage(_selectedImage!)
+                                    : const AssetImage(
+                                            'assets/images/person.png')
+                                        as ImageProvider,
+                              ),
                             ),
+                            const SizedBox(width: 24),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text('Upload new picture',
+                              children: [
+                                GestureDetector(
+                                  onTap: _pickImage,
+                                  child: const Text(
+                                    'Upload new picture',
                                     style: TextStyle(
-                                        fontSize: 18,
-                                        color: Color(0xff616161),
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: "manrope")),
-                                SizedBox(height: 8),
-                                Text('Remove',
+                                      fontSize: 18,
+                                      color: Color(0xff616161),
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "manrope",
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                GestureDetector(
+                                  onTap: _removeImage,
+                                  child: const Text(
+                                    'Remove',
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Color(0xffE13939),
                                       fontWeight: FontWeight.bold,
                                       fontFamily: "manrope",
-                                    ))
+                                    ),
+                                  ),
+                                ),
                               ],
                             )
                           ]),
