@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +8,6 @@ import 'package:grd_proj/bloc/user_cubit.dart';
 import 'package:grd_proj/bloc/user_state.dart';
 import 'package:grd_proj/screens/Login_Screen.dart';
 import 'package:grd_proj/screens/char_screen_container.dart';
-import 'package:grd_proj/screens/chat_screen.dart';
 import 'package:grd_proj/screens/disease_detection.dart';
 import 'package:grd_proj/screens/field_disease_detection.dart';
 import 'package:grd_proj/screens/fields_screen.dart';
@@ -15,6 +15,7 @@ import 'package:grd_proj/screens/inve_manage.dart';
 import 'package:grd_proj/screens/irrigation_control.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
 import 'package:grd_proj/screens/settings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../components/color.dart';
 import 'dash_board.dart';
 import 'farms_screen.dart';
@@ -49,6 +50,19 @@ class _HomeScreenState extends State<HomeScreen> {
       DashBoard(), // Dashboard Screen
       FarmsScreen(), // Pass farms list to FarmsScreen
     ]);
+    _loadSavedImage();
+  }
+
+  File? _selectedImage;
+
+  Future<void> _loadSavedImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final path = prefs.getString('profile_image_path');
+    if (path != null && File(path).existsSync()) {
+      setState(() {
+        _selectedImage = File(path);
+      });
+    }
   }
 
   // String? selectedValue;
@@ -72,8 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
       indexing = index;
     });
   }
-
-
 
   // Future<void> _login() async {
   //   final prefs = await SharedPreferences.getInstance();
@@ -127,8 +139,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         false, // This will remove all previous routes
                   );
                 },
-                child: Image.asset('assets/images/image 6.png',
-                    width: 30, height: 30),
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: _selectedImage != null
+                      ? FileImage(_selectedImage!)
+                      : const AssetImage('assets/images/person.png')
+                          as ImageProvider,
+                ),
               )
             ],
           ),

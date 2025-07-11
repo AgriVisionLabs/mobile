@@ -213,6 +213,7 @@ class UserCubit extends Cubit<UserState> {
         EndPoints.googleLogin,
         data: jsonEncode({'token': idToken}),
       );
+      user = SignInModel.fromJson(response);
       CacheHelper.saveData(key: ApiKey.token, value: user!.token);
       CacheHelper.saveData(key: ApiKey.refreshToken, value: user!.refreshToken);
       CacheHelper.saveData(key: ApiKey.expiresIn, value: user!.expiresIn);

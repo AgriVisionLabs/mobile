@@ -45,7 +45,7 @@ import 'screens/splash_screen.dart';
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     WidgetsFlutterBinding.ensureInitialized();
-
+    await Firebase.initializeApp();
     // Create Dio and DioConsumer instance
     final dio = Dio();
     final dioConsumer = DioConsumer(dio: dio);

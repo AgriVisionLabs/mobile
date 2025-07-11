@@ -6,14 +6,14 @@
     [
       "D:\\flutter\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
       "-C",
-      "C:\\flutter_project\\mobile\\Grad_Proj\\android\\app\\.cxx\\Debug\\2w6l53k5\\x86_64",
+      "C:\\flutter_project\\mobile\\mobile\\Grad_Proj\\android\\app\\.cxx\\Debug\\2w6l53k5\\x86_64",
       "clean"
     ]
   ],
   "buildTargetsCommandComponents": [
     "D:\\flutter\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
     "-C",
-    "C:\\flutter_project\\mobile\\Grad_Proj\\android\\app\\.cxx\\Debug\\2w6l53k5\\x86_64",
+    "C:\\flutter_project\\mobile\\mobile\\Grad_Proj\\android\\app\\.cxx\\Debug\\2w6l53k5\\x86_64",
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {}
