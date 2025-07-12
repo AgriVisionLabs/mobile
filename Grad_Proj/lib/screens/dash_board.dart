@@ -62,7 +62,17 @@ class _DashBoardState extends State<DashBoard> {
           if (state is FarmsLoaded) {
             return _thereIsFarms(context, state.farms);
           } else if (state is FarmFailure) {
-            return Center(child: text(fontSize: 24, label: state.errMessage));
+            if(state.errMessage == 'ConnectionError : Please Check Your Connection'){
+              return Center(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/no-access.png',width: 200,height: 200,color: primaryColor,),
+                  text(label: 'Please Check Your Connection',fontSize: 22),
+                ],
+              ));
+            }
+            return Center(
+              child: SizedBox(width: 300,child: text(fontSize: 24, label: state.errMessage)));
           }
           return circularProgressIndicator();
         }));

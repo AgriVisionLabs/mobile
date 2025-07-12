@@ -83,7 +83,6 @@ class _FarmsScreen extends State<FarmsScreen> {
                   ],
                 ));
           } else if (state is FarmFailure) {
-            ScaffoldMessenger.of(context).clearSnackBars();
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
