@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
-import 'package:grd_proj/models/diseaseDetections.dart';
+import 'package:grd_proj/models/diseasedetections.dart';
 
 // bool? getList(
 //     List<DiseaseDetectionModel> info, int? status) {

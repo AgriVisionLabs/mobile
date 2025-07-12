@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -416,7 +418,7 @@ class _SensorDevicesState extends State<SensorDevices> {
                                               farmId: item.farmId,
                                               fieldId: item.fieldId,
                                               sensorId: item.id));
-                                      // ignore: avoid_print
+                                     
                                       print("==========Delted===========");
                                       context.read<FieldBloc>().add(
                                           OpenFarmSensorUnitsEvent(

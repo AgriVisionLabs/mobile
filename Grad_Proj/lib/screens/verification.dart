@@ -36,7 +36,7 @@ class _VerificationState extends State<Verification> {
               height: 120,
               width: 120,
               decoration: BoxDecoration(
-                color: Color(0xff1E6930).withOpacity(0.1),
+                color: Color.fromARGB(50, 30, 105, 48),
                 borderRadius: BorderRadius.circular(100),
               ),
               alignment: Alignment.center,

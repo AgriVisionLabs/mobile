@@ -1,11 +1,13 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
+import 'package:grd_proj/bloc/weather/bloc/weather_bloc.dart';
 import 'package:grd_proj/models/farm_model.dart';
 import 'package:grd_proj/models/field_model.dart';
+import 'package:grd_proj/models/weather_hourly_model.dart';
 import 'package:grd_proj/screens/alerts_bar.dart';
 import 'package:grd_proj/screens/todo_bar.dart';
 import 'package:grd_proj/screens/activity_bar.dart';
@@ -28,13 +30,20 @@ class _DashBoardState extends State<DashBoard> {
   List<FarmModel>? farms;
   List<FieldModel>? fields;
   String? roleName;
+  String? location;
   FieldBloc? _fieldBloc;
+  WeatherBloc? _weatherBloc;
   double? totalProgress;
-  double? growth;
+  double growth = 0;
   double temp = 0;
+  double humidity = 0;
+  double lan = 0;
+  double lon = 0;
+  HourlyWeather? weather;
   @override
   void initState() {
     _fieldBloc = context.read<FieldBloc>();
+    _weatherBloc = context.read<WeatherBloc>();
     context.read<FarmBloc>().add(OpenFarmEvent());
     super.initState();
   }
@@ -50,6 +59,8 @@ class _DashBoardState extends State<DashBoard> {
             selectedFarmId = farms![0].farmId;
             roleName = farms![0].roleName;
             _fieldBloc!.add(OpenFieldEvent(farmId: selectedFarmId!));
+            _weatherBloc!
+                .add(GetLocationName(locationName: farms![0].location));
           }
         }, builder: (context, state) {
           if (state is FarmEmpty) {
@@ -62,17 +73,26 @@ class _DashBoardState extends State<DashBoard> {
           if (state is FarmsLoaded) {
             return _thereIsFarms(context, state.farms);
           } else if (state is FarmFailure) {
-            if(state.errMessage == 'ConnectionError : Please Check Your Connection'){
-              return Center(child: Column(
+            if (state.errMessage ==
+                'ConnectionError : Please Check Your Connection') {
+              return Center(
+                  child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/images/no-access.png',width: 200,height: 200,color: primaryColor,),
-                  text(label: 'Please Check Your Connection',fontSize: 22),
+                  Image.asset(
+                    'assets/images/no-access.png',
+                    width: 200,
+                    height: 200,
+                    color: primaryColor,
+                  ),
+                  text(label: 'Please Check Your Connection', fontSize: 22),
                 ],
               ));
             }
             return Center(
-              child: SizedBox(width: 300,child: text(fontSize: 24, label: state.errMessage)));
+                child: SizedBox(
+                    width: 300,
+                    child: text(fontSize: 24, label: state.errMessage)));
           }
           return circularProgressIndicator();
         }));
@@ -154,9 +174,11 @@ class _DashBoardState extends State<DashBoard> {
                                         .toList();
                                     selectedFarmId = value;
                                     roleName = selectedFarm.first.roleName;
+                                    location = selectedFarm.first.location;
                                     _fieldBloc!.add(OpenFieldEvent(
                                         farmId: selectedFarmId!));
-                                    _fieldBloc!.add(OpenFarmSensorUnitsEvent(farmId: selectedFarmId!));
+                                    _weatherBloc!.add(GetLocationName(
+                                        locationName: location!));
                                   });
                                 },
                           selectedItemBuilder: (farms == null || farms.isEmpty)
@@ -293,12 +315,28 @@ class _DashBoardState extends State<DashBoard> {
             ),
             SizedBox(height: 20),
             //Weather
-            CardContainer(
-              height: 324,
-              child: WeatherBar(
-                screenWidth: screenWidth,
-                screenHeight: screenHeight,
-              ),
+            BlocConsumer<WeatherBloc, WeatherState>(
+              listener: (context, state) {
+                if (state is LocationSuccess) {
+                  lan = state.locationModel.latitude;
+                  lon = state.locationModel.longitude;
+                  _weatherBloc!.add(GetLocationWeather(
+                      latitude: state.locationModel.latitude,
+                      longitude: state.locationModel.longitude));
+                  _weatherBloc!.add(GetLocationWeatherToday(
+                      latitude: state.locationModel.latitude,
+                      longitude: state.locationModel.longitude));
+                }
+              },
+              builder: (context, state) {
+                return CardContainer(
+                  height: 324,
+                  child: WeatherBar(
+                    screenWidth: screenWidth,
+                    screenHeight: screenHeight,
+                  ),
+                );
+              },
             ),
 
             const SizedBox(height: 60),
@@ -319,217 +357,227 @@ class _DashBoardState extends State<DashBoard> {
                   fontFamily: 'manrope'),
             ),
             SizedBox(height: 20),
-            Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color.fromARGB(50, 0, 0, 0),
-                          blurRadius: 10,
-                          spreadRadius: 0.7,
-                          offset: Offset(0, 2.25))
-                    ]),
-                child: Container(
-                    padding: const EdgeInsets.all(24),
-                    width: 380,
-                    height: 150,
-                    child: BlocConsumer<FieldBloc, FieldState>(
-                      listener: (context, state) {
-                        // TODO: implement listener
-                      },
-                      builder: (context, state) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(children: [
-                              Text('Temperature',
-                                  style: TextStyle(
-                                    color: Colors.green[900],
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w900,
-                                    fontFamily: 'manrope',
-                                  )),
-                              Spacer(),
-                              Image.asset('assets/images/temp.png')
+            BlocConsumer<WeatherBloc, WeatherState>(
+              listener: (context, state) {
+                if (state is WeatherTodaySuccess) {
+                  weather = state.weatherModel;
+                }
+              },
+              builder: (context, state) {
+
+              if (weather !=null) {
+                return Column(
+                  children: [
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Color.fromARGB(50, 0, 0, 0),
+                                  blurRadius: 10,
+                                  spreadRadius: 0.7,
+                                  offset: Offset(0, 2.25))
                             ]),
-                            SizedBox(height: 30),
-                            Text('Good',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w500,
-                                )),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: LinearProgressIndicator(
-                                value: temp,
-                                backgroundColor: Colors.grey[300],
-                                color: Colors.green[900],
-                                minHeight: 6,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                          ],
-                        );
-                      },
-                    ))),
-            SizedBox(height: 24),
-            Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color.fromARGB(50, 0, 0, 0),
-                          blurRadius: 10,
-                          spreadRadius: 0.7,
-                          offset: Offset(0, 2.25))
-                    ]),
-                child: Container(
-                    padding: const EdgeInsets.all(24),
-                    width: 380,
-                    height: 150,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(children: [
-                          Text('Moisture level',
-                              style: TextStyle(
-                                color: Colors.green[900],
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: 'manrope',
-                              )),
-                          Spacer(),
-                          Image.asset('assets/images/water.png')
-                        ]),
-                        SizedBox(height: 30),
-                        Text('Optimal',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w500,
-                            )),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: LinearProgressIndicator(
-                            value: 0.20,
-                            backgroundColor: Colors.grey[300],
-                            color: Colors.green[900],
-                            minHeight: 6,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                      ],
-                    ))),
-            SizedBox(height: 24),
-            Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color.fromARGB(50, 0, 0, 0),
-                          blurRadius: 10,
-                          spreadRadius: 0.7,
-                          offset: Offset(0, 2.25))
-                    ]),
-                child: Container(
-                    padding: const EdgeInsets.all(24),
-                    width: 380,
-                    height: 150,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(children: [
-                          Text('Crop growth',
-                              style: TextStyle(
-                                color: Colors.green[900],
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: 'manrope',
-                              )),
-                          Spacer(),
-                          Image.asset(
-                            'assets/images/growth.png',
-                            height: 24,
-                            width: 24,
-                          )
-                        ]),
-                        SizedBox(height: 30),
-                        Text('On Track',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w500,
-                            )),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: LinearProgressIndicator(
-                            value: 0.35,
-                            backgroundColor: Colors.grey[300],
-                            color: Colors.green[900],
-                            minHeight: 6,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                      ],
-                    ))),
-            SizedBox(height: 24),
-            Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color.fromARGB(50, 0, 0, 0),
-                          blurRadius: 10,
-                          spreadRadius: 0.7,
-                          offset: Offset(0, 2.25))
-                    ]),
-                child: Container(
-                    padding: const EdgeInsets.all(24),
-                    width: 380,
-                    height: 150,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(children: [
-                          Text('Yield forecast',
-                              style: TextStyle(
-                                color: Colors.green[900],
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: 'manrope',
-                              )),
-                          Spacer(),
-                          Image.asset(
-                            'assets/images/forcast.png',
-                            height: 24,
-                            width: 24,
-                          )
-                        ]),
-                        SizedBox(height: 30),
-                        Text('4.2 tons/acre',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w500,
-                            )),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: LinearProgressIndicator(
-                            value: 0.70,
-                            backgroundColor: Colors.grey[300],
-                            color: Colors.green[900],
-                            minHeight: 6,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                      ],
-                    ))),
-            SizedBox(height: 50),
+                        child: Container(
+                            padding: const EdgeInsets.all(24),
+                            width: 380,
+                            height: 150,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(children: [
+                                  Text('Temperature',
+                                      style: TextStyle(
+                                        color: Colors.green[900],
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w900,
+                                        fontFamily: 'manrope',
+                                      )),
+                                  Spacer(),
+                                  Image.asset('assets/images/temp.png')
+                                ]),
+                                SizedBox(height: 30),
+                                Text('Good',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500,
+                                    )),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: LinearProgressIndicator(
+                                    value: weather!.temperature2m[0] / 100,
+                                    backgroundColor: Colors.grey[300],
+                                    color: Colors.green[900],
+                                    minHeight: 6,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                              ],
+                            ))),
+                    SizedBox(height: 24),
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Color.fromARGB(50, 0, 0, 0),
+                                  blurRadius: 10,
+                                  spreadRadius: 0.7,
+                                  offset: Offset(0, 2.25))
+                            ]),
+                        child: Container(
+                            padding: const EdgeInsets.all(24),
+                            width: 380,
+                            height: 150,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(children: [
+                                  Text('Moisture level',
+                                      style: TextStyle(
+                                        color: Colors.green[900],
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w900,
+                                        fontFamily: 'manrope',
+                                      )),
+                                  Spacer(),
+                                  Image.asset('assets/images/water.png')
+                                ]),
+                                SizedBox(height: 30),
+                                Text('Optimal',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500,
+                                    )),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: LinearProgressIndicator(
+                                    value: weather!.relativeHumidity2m[0] / 100,
+                                    backgroundColor: Colors.grey[300],
+                                    color: Colors.green[900],
+                                    minHeight: 6,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                              ],
+                            ))),
+                    SizedBox(height: 24),
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Color.fromARGB(50, 0, 0, 0),
+                                  blurRadius: 10,
+                                  spreadRadius: 0.7,
+                                  offset: Offset(0, 2.25))
+                            ]),
+                        child: Container(
+                            padding: const EdgeInsets.all(24),
+                            width: 380,
+                            height: 150,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(children: [
+                                  Text('Crop growth',
+                                      style: TextStyle(
+                                        color: Colors.green[900],
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w900,
+                                        fontFamily: 'manrope',
+                                      )),
+                                  Spacer(),
+                                  Image.asset(
+                                    'assets/images/growth.png',
+                                    height: 24,
+                                    width: 24,
+                                  )
+                                ]),
+                                SizedBox(height: 30),
+                                Text('On Track',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500,
+                                    )),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: LinearProgressIndicator(
+                                    value: growth/100,
+                                    backgroundColor: Colors.grey[300],
+                                    color: Colors.green[900],
+                                    minHeight: 6,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                              ],
+                            ))),
+                    SizedBox(height: 24),
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Color.fromARGB(50, 0, 0, 0),
+                                  blurRadius: 10,
+                                  spreadRadius: 0.7,
+                                  offset: Offset(0, 2.25))
+                            ]),
+                        child: Container(
+                            padding: const EdgeInsets.all(24),
+                            width: 380,
+                            height: 150,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(children: [
+                                  Text('Completed Tasks',
+                                      style: TextStyle(
+                                        color: Colors.green[900],
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w900,
+                                        fontFamily: 'manrope',
+                                      )),
+                                  Spacer(),
+                                  Image.asset(
+                                    'assets/images/forcast.png',
+                                    height: 24,
+                                    width: 24,
+                                  )
+                                ]),
+                                SizedBox(height: 30),
+                                Text('All Times',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500,
+                                    )),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: LinearProgressIndicator(
+                                    value: 0.70,
+                                    backgroundColor: Colors.grey[300],
+                                    color: Colors.green[900],
+                                    minHeight: 6,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                              ],
+                            ))),
+                    SizedBox(height: 50),
+                  ],
+                );
+              }
+              return circularProgressIndicator();
+            }),
+
             //Recent Activity
             Container(
                 decoration: BoxDecoration(

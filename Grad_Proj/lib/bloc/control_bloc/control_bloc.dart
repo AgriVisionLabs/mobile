@@ -6,7 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
-import 'package:grd_proj/models/diseaseDetections.dart';
+import 'package:grd_proj/models/diseasedetections.dart';
 import 'package:grd_proj/models/inv_item_model.dart';
 import 'package:grd_proj/service/api/api_consumer.dart';
 import 'package:grd_proj/service/api/end_points.dart';

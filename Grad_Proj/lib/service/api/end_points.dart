@@ -1,5 +1,7 @@
 class EndPoints {
   static const String baseUrl = 'https://api.agrivisionlabs.tech/';
+  static const String locationUrl = 'https://geocoding-api.open-meteo.com/v1/search';
+  static const String weatherUrl = 'https://api.open-meteo.com/v1/forecast';
   static const String login = 'Auth';
   static const String register = 'Auth/register';
   static const String confirmEmailResand = '/Auth/resend-confirmation-email';

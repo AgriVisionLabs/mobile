@@ -15,6 +15,7 @@ import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/bloc/farm_bloc/farm_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
 import 'package:grd_proj/bloc/sensor_bloc/sensor_bloc.dart';
+import 'package:grd_proj/bloc/weather/bloc/weather_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/screens/chat_screen.dart';
 import 'package:grd_proj/screens/field_view.dart';
@@ -93,6 +94,9 @@ void main() async {
         BlocProvider<SensorBloc>(
           create: (BuildContext context) => SensorBloc(DioConsumer(dio: Dio())),
         ),
+        BlocProvider<WeatherBloc>(
+          create: (BuildContext context) => WeatherBloc(DioConsumer(dio: Dio())),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -142,9 +146,9 @@ class _MyAppState extends State<MyApp> {
           // ScheduleMaintenance()
           // SensorView()
           // SplashScreen()
-          LoginScreen(),
+          // LoginScreen(),
       // SplashScreen()
-      // HomeScreen()
+      HomeScreen()
       // ChatListScreen()
       // ChatScreen(),
     );

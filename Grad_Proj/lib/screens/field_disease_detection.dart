@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/control_bloc/control_bloc.dart';
 import 'package:grd_proj/components/color.dart';
-import 'package:grd_proj/models/diseaseDetections.dart';
+import 'package:grd_proj/models/diseasedetections.dart';
 import 'package:grd_proj/screens/disease_detection_screen.dart';
 import 'package:grd_proj/screens/disease_detection_show_image.dart';
 import 'package:grd_proj/screens/widget/circule_indector.dart';
