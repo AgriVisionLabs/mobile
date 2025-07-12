@@ -16,6 +16,7 @@ class AddSensor extends StatefulWidget {
 
 class _AddSensorState extends State<AddSensor> {
   String? selectedValue;
+  FieldBloc? _fieldBloc;
 
   int currentIndex = 0;
   List field = [];
@@ -32,6 +33,18 @@ class _AddSensorState extends State<AddSensor> {
     context.read<FieldBloc>().sensorSerialNum.clear();
     context.read<FieldBloc>().sensorUnitName.clear();
     super.didChangeDependencies();
+  }
+
+   @override
+  void initState() {
+    _fieldBloc = context.read<FieldBloc>();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _fieldBloc!.add(OpenFarmSensorUnitsEvent(farmId: widget.farmId));
+    super.dispose();
   }
 
   @override

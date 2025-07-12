@@ -16,6 +16,7 @@ class AddIrrigationUnit extends StatefulWidget {
 
 class _AddIrrigationUnitState extends State<AddIrrigationUnit> {
   String? selectedValue;
+  FieldBloc? _fieldBloc;
 
   int currentIndex = 0;
   List field = [];
@@ -32,6 +33,18 @@ class _AddIrrigationUnitState extends State<AddIrrigationUnit> {
     context.read<FieldBloc>().irrigationSerialNum.clear();
     context.read<FieldBloc>().irrigationUnitName.clear();
     super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    _fieldBloc = context.read<FieldBloc>();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _fieldBloc!.add(OpenFarmIrrigationUnitsEvent(farmId: widget.farmId));
+    super.dispose();
   }
 
   @override

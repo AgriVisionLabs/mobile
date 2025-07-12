@@ -184,7 +184,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         }
                         if (messages != null) {
                           return ListView(
-                            reverse: true,
                             padding: const EdgeInsets.fromLTRB(16, 16, 16, 90),
                             children: _buildGroupedMessages(messages!),
                           );
@@ -210,7 +209,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         children: [
           Expanded(
             child: TextField(
-              keyboardType: const TextInputType.numberWithOptions(),
+              keyboardType:  TextInputType.multiline,
               controller: _controller,
               decoration: InputDecoration(
                 hintText: 'Type a message...',
@@ -377,6 +376,5 @@ List<Widget> _buildGroupedMessages(List<MessageModel> messages) {
     }
   });
 
-  return widgets.reversed
-      .toList(); // مهم علشان تبقى الرسائل بالترتيب من تحت لفوق
+  return widgets.reversed.toList(); // مهم علشان تبقى الرسائل بالترتيب من تحت لفوق
 }

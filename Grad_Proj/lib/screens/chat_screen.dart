@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/chat_bloc/conversation/chat_bloc.dart';
-import 'package:grd_proj/bloc/chat_bloc/message/message_bloc.dart';
 import 'package:grd_proj/components/color.dart';
-import 'package:grd_proj/screens/message_screen.dart';
+import 'package:grd_proj/screens/message_container.dart';
 import 'package:grd_proj/screens/widget/avatar_color.dart';
 import 'package:grd_proj/screens/widget/circule_indector.dart';
 import 'package:grd_proj/screens/widget/conversation_function.dart';
@@ -139,14 +138,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                           value:
                                               context.read<ConversationBloc>(),
                                         ),
-                                        BlocProvider.value(
-                                          value: context.read<MessageBloc>(),
-                                        ),
+                                        
                                       ],
-                                      child: ChatDetailScreen(
+                                      child: MessageContainer(
                                         name: chat.name,
                                         groupe: chat.isGroup,
-                                        conversationId: chat.id,
+                                        convId: chat.id,
                                       ),
                                     ),
                                   ),

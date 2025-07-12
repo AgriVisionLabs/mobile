@@ -361,7 +361,7 @@ class _SensorState extends State<Sensor> {
                               : TextButton(
                                   onPressed: () {
                                     context.read<FieldBloc>().add(
-                                        AddIrrigationUnitEvent(
+                                        AddSensorUnitEvent(
                                             farmId: widget.farmId,
                                             fieldId: widget.fieldId));
 

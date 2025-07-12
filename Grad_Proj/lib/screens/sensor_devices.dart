@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grd_proj/bloc/field_bloc.dart/field_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:grd_proj/bloc/sensor_bloc/sensor_bloc.dart';
 import 'package:grd_proj/cache/cache_helper.dart';
 import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/sensor_model.dart';
+import 'package:grd_proj/models/sensor_readings_model.dart';
 import 'package:grd_proj/screens/schedule_maintenance.dart';
 import 'package:grd_proj/screens/sensor_view.dart';
 
@@ -27,6 +30,7 @@ class _SensorDevicesState extends State<SensorDevices> {
   String? mos;
   String? temp;
   String? hum;
+  SensorReadingModel? data;
   @override
   void initState() {
     _sensorBloc = context.read<SensorBloc>();
@@ -60,7 +64,7 @@ class _SensorDevicesState extends State<SensorDevices> {
           });
         } else if (state is ViewSensorUnitsSuccess) {
           return SizedBox(
-            height: 425,
+            height: 300,
             child: CustomScrollView(
               shrinkWrap: true,
               slivers: [
@@ -218,11 +222,14 @@ class _SensorDevicesState extends State<SensorDevices> {
                                         print(
                                             "=============${state.farmId}============");
                                       } else if (state is SensorDataReceived) {
+                                        Map<String, dynamic> dataMap = jsonDecode(state.data);
+                                        data = SensorReadingModel.fromJson(dataMap['readings']);
                                         print(
-                                            "==============${state.data}============}");
-                                        mos = state.data;
-                                        temp = state.data;
-                                        hum = state.data;
+                                            "==============Received============}");
+                                            
+                                        mos = data!.moisture;
+                                        temp = data!.temperature;
+                                        hum = data!.humidity;
                                       }
                                     },
                                     builder: (context, state) {
@@ -314,12 +321,12 @@ class _SensorDevicesState extends State<SensorDevices> {
                                                       )),
                                                 ])),
                                         const SizedBox(
-                                          width: 16,
+                                          width: 10,
                                         ),
                                         Container(
-                                            width: 100,
+                                            width: 80,
                                             height: 110,
-                                            padding: const EdgeInsets.all(15),
+                                            padding: const EdgeInsets.all(5),
                                             decoration: BoxDecoration(
                                               color: const Color(0x1825C462),
                                               borderRadius:

@@ -52,6 +52,8 @@ class IrrigationDevicesState extends State<IrrigationDevices> {
               ),
             );
           });
+          context.read<FieldBloc>()
+        .add(OpenFarmIrrigationUnitsEvent(farmId: widget.farmId));
         } else if (state is IrrigationUnitToggleFailure) {
           description = state.errors[0]['description'];
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -62,6 +64,8 @@ class IrrigationDevicesState extends State<IrrigationDevices> {
               ),
             );
           });
+          context.read<FieldBloc>()
+        .add(OpenFarmIrrigationUnitsEvent(farmId: widget.farmId));
         } else if (state is DeleteIrrigationUnitSuccess) {
           ScaffoldMessenger.of(context).clearSnackBars();
           WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -199,7 +199,7 @@ class UserCubit extends Cubit<UserState> {
       final googleSignIn = GoogleSignIn(
         scopes: ['email', 'profile'],
         serverClientId:
-            '769027848160-k3e11k5anbmk00osr85l37b793itm232.apps.googleusercontent.com', // Web ID فقط
+            "1031940008659-8vci78c18jj9an1qfqobsh5j7js5i8pk.apps.googleusercontent.com", // Web ID فقط
       );
 
 // 1. Disconnect أي جلسة سابقة (بدون signOut)
@@ -208,16 +208,23 @@ class UserCubit extends Cubit<UserState> {
           .catchError((_) {}); // تجنّب الخطأ لو مفيش جلسة
 
 // 2. اختيار حساب جديد
-      final googleUser = await googleSignIn.signIn();
-      if (googleUser == null) throw Exception("تم إلغاء تسجيل الدخول");
+        print('🟡 Starting Google Sign-In...');
+  final GoogleSignInAccount? account = await googleSignIn.signIn();
 
-// 3. جلب التوكن
-      final googleAuth = await googleUser.authentication;
-      final idToken = googleAuth.idToken;
+  if (account == null) {
+    print('❌ User canceled the sign-in or no account selected.');
+    return;
+  }
 
-      if (idToken == null) throw Exception("ID Token مفقود");
-      print("📧 User: ${googleUser.email}");
-      print("✅ ID Token: $idToken");
+  final GoogleSignInAuthentication auth = await account.authentication;
+  final String? idToken = auth.idToken;
+
+  if (idToken == null) {
+    print('❌ Failed to get ID Token.');
+    return;
+  }
+
+  print('✅ ID Token: $idToken');
 
       final response = await api.post(
         EndPoints.googleLogin,
