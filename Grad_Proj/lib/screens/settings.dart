@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/components/notfication_settings.dart';
 import 'package:grd_proj/components/personal_settings.dart';
 import 'package:grd_proj/components/security_settings.dart';
 import 'package:grd_proj/components/subcreption_settings.dart';
@@ -93,7 +94,7 @@ class _SettingsState extends State<Settings> {
               if (selectedTab == 0) PersonalSetting(),
               if (selectedTab == 1) SecuritySettings(),
               if (selectedTab == 2) SubcreptionSetting(),
-              // if (selectedTab == 3) NotificationSettings(),
+              if (selectedTab == 3) NotificationSettings(),
           ]),
         )
       )

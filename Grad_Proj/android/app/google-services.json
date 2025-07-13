@@ -7,22 +7,14 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:769027848160:android:0d3cba8547a5228ea4dd85",
+        "mobilesdk_app_id": "1:769027848160:android:0fdd8953c8973434a4dd85",
         "android_client_info": {
-          "package_name": "com.example.grd_proj"
+          "package_name": "com.agrivision.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "769027848160-hh5kc9rj6bmn1rn3ptfubvi9renoqgjb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.grd_proj",
-            "certificate_hash": "53f13a423b58541f8d3e5019044749ad73045ef1"
-          }
-        },
-        {
-          "client_id": "769027848160-k3e11k5anbmk00osr85l37b793itm232.apps.googleusercontent.com",
+          "client_id": "1031940008659-8vci78c18jj9an1qfqobsh5j7js5i8pk.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -35,11 +27,55 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "769027848160-k3e11k5anbmk00osr85l37b793itm232.apps.googleusercontent.com",
+              "client_id": "1031940008659-8vci78c18jj9an1qfqobsh5j7js5i8pk.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "769027848160-ta084b44rplr39o7g6pj0br4qporgpk5.apps.googleusercontent.com",
+              "client_id": "1031940008659-8vci78c18jj9an1qfqobsh5j7js5i8pk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.agrivision.com"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:769027848160:android:0d3cba8547a5228ea4dd85",
+        "android_client_info": {
+          "package_name": "com.example.grd_proj"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id":  "1031940008659-8vci78c18jj9an1qfqobsh5j7js5i8pk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.grd_proj",
+            "certificate_hash": "53f13a423b58541f8d3e5019044749ad73045ef1"
+          }
+        },
+        {
+          "client_id": "1031940008659-8vci78c18jj9an1qfqobsh5j7js5i8pk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfpm4iQ-NiC9-TD4UBPgGZFTvOn8rw5cI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id":  "1031940008659-8vci78c18jj9an1qfqobsh5j7js5i8pk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1031940008659-8vci78c18jj9an1qfqobsh5j7js5i8pk.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.agrivision.com"

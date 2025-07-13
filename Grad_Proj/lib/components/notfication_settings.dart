@@ -72,7 +72,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                 )),
               ],),
             ),
-            SizedBox(width: 50),
+            SizedBox(width: 35),
             Switch(
               value: systemSwitched,
               onChanged: (value) {
@@ -115,7 +115,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                 )),
               ],),
             ),
-            SizedBox(width: 50),
+            SizedBox(width: 35),
             Switch(
               value: updatessSwitched ,
               onChanged: (value) {
@@ -158,7 +158,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                 )),
               ],),
             ),
-            SizedBox(width: 50),
+            SizedBox(width: 35),
             Switch(
               value: tipsSwitched ,
               onChanged: (value) {

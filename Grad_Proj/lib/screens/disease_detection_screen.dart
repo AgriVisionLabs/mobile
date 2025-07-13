@@ -64,6 +64,13 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
   return lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.avi');
 }
 
+/// The `_pickMedia` function in Dart is used to pick media files from the device, check if the picked
+/// file is a video, and display it if it is a video.
+/// 
+/// Args:
+///   source (ImageSource): The `source` parameter in the `_pickMedia` function is of type
+/// `ImageSource`, which is used to specify whether the image should be picked from the gallery or
+/// captured using the camera. It is an enum with two possible values: `gallery` and `camera`.
 
   Future<void> _pickMedia(ImageSource source) async {
   final status = await Permission.photos.request();

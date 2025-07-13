@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -193,39 +194,41 @@ class UserCubit extends Cubit<UserState> {
     emit(SignOut());
   }
 
-  Future<void> loginWithGoogle() async {
+  loginWithGoogle() async {
     try {
       print("✨ Signing in...");
       final googleSignIn = GoogleSignIn(
         scopes: ['email', 'profile'],
-        serverClientId:
-            "1031940008659-8vci78c18jj9an1qfqobsh5j7js5i8pk.apps.googleusercontent.com", // Web ID فقط
       );
 
-// 1. Disconnect أي جلسة سابقة (بدون signOut)
       await googleSignIn
-          .disconnect()
-          .catchError((_) {}); // تجنّب الخطأ لو مفيش جلسة
+          .signOut(); // ← يجبر Google على إظهار شاشة اختيار الحساب
 
-// 2. اختيار حساب جديد
-        print('🟡 Starting Google Sign-In...');
-  final GoogleSignInAccount? account = await googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
-  if (account == null) {
-    print('❌ User canceled the sign-in or no account selected.');
-    return;
-  }
+      if (googleUser == null) {
+        print('❌ User canceled the sign-in or no account selected.');
+        return;
+      }
 
-  final GoogleSignInAuthentication auth = await account.authentication;
-  final String? idToken = auth.idToken;
+      final googleAuth = await googleUser.authentication;
 
-  if (idToken == null) {
-    print('❌ Failed to get ID Token.');
-    return;
-  }
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-  print('✅ ID Token: $idToken');
+      await FirebaseAuth.instance.signInWithCredential(credential);
 
+      final String? idToken = googleAuth.idToken;
+      if (idToken == null) {
+        print('❌ Failed to get ID Token.');
+        return;
+      }
+
+      print('✅ ID Token: $idToken');
+
+      // 🔥 إرسال التوكن مباشرة إلى السيرفر للتحقق وإنشاء/تسجيل الدخول للمستخدم
       final response = await api.post(
         EndPoints.googleLogin,
         data: {"idToken": idToken},
@@ -240,17 +243,23 @@ class UserCubit extends Cubit<UserState> {
       CacheHelper.saveData(key: ApiKey.refreshToken, value: user!.refreshToken);
       CacheHelper.saveData(key: ApiKey.expiresIn, value: user!.expiresIn);
       CacheHelper.saveData(
-          key: ApiKey.refreshTokenExpiration,
-          value: user!.refreshTokenExpiration);
+        key: ApiKey.refreshTokenExpiration,
+        value: user!.refreshTokenExpiration,
+      );
       CacheHelper.saveData(key: ApiKey.id, value: user!.id);
 
       startTokenRefreshTimer();
       emit(SignInSuccess());
     } on ServerException catch (e) {
       emit(SignInFailure(
-          errMessage: e.errorModel.message, errors: e.errorModel.error));
+        errMessage: e.errorModel.message,
+        errors: e.errorModel.error,
+      ));
     } catch (e) {
-      emit(SignInFailure(errMessage: e.toString(), errors: null));
+      emit(SignInFailure(
+        errMessage: e.toString(),
+        errors: null,
+      ));
     }
   }
 }

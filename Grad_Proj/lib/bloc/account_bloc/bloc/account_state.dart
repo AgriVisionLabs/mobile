@@ -68,3 +68,4 @@ class PaymentFailure extends AccountState {
   });
 
 }
+

@@ -10,7 +10,6 @@ import 'package:grd_proj/components/color.dart';
 import 'package:grd_proj/models/message_model.dart';
 import 'package:grd_proj/screens/chat_details.dart';
 import 'package:grd_proj/screens/widget/avatar_color.dart';
-import 'package:grd_proj/service/signalR/signar_service_message.dart';
 import 'package:intl/intl.dart';
 
 class ChatDetailScreen extends StatefulWidget {
@@ -45,17 +44,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   ConversationBloc? _conversationBloc;
   final TextEditingController _controller = TextEditingController();
 
-  void startConnection() async {
-    final signalRM =
-        MessageSignalRService(jwtToken: CacheHelper.getData(key: "token"));
-
-    await signalRM.init(widget.conversationId);
-  }
-
   @override
   void initState() {
     super.initState();
-    startConnection();
     context.read<MessageBloc>().add(LoadMessagesEvent(widget.conversationId));
     _conversationBloc = context.read<ConversationBloc>();
   }
@@ -184,6 +175,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         }
                         if (messages != null) {
                           return ListView(
+                            reverse: true,
                             padding: const EdgeInsets.fromLTRB(16, 16, 16, 90),
                             children: _buildGroupedMessages(messages!),
                           );
@@ -209,7 +201,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         children: [
           Expanded(
             child: TextField(
-              keyboardType:  TextInputType.multiline,
+              keyboardType: TextInputType.multiline,
               controller: _controller,
               decoration: InputDecoration(
                 hintText: 'Type a message...',
@@ -330,18 +322,29 @@ class _MessageBubbleState extends State<MessageBubble> {
     );
   }
 }
-
 List<Widget> _buildGroupedMessages(List<MessageModel> messages) {
+  // ✅ حذف التكرارات حسب الـ message id
+  final uniqueMessages = {
+    for (var msg in messages) msg.id: msg,
+  }.values.toList();
+
+  // ✅ ترتيب الرسائل من الأقدم للأحدث
+  uniqueMessages.sort((a, b) => a.sentAt.compareTo(b.sentAt));
+
   Map<String, List<MessageModel>> grouped = {};
 
-  for (var message in messages.reversed) {
+  for (var message in uniqueMessages) {
     final dateKey = formatDateHeader(message.sentAt);
     grouped.putIfAbsent(dateKey, () => []).add(message);
   }
 
   List<Widget> widgets = [];
 
-  grouped.forEach((date, msgs) {
+  final sortedKeys = grouped.keys.toList();
+
+  for (var date in sortedKeys) {
+    final msgs = grouped[date]!;
+
     widgets.add(
       Center(
         child: Padding(
@@ -374,7 +377,8 @@ List<Widget> _buildGroupedMessages(List<MessageModel> messages) {
         ),
       );
     }
-  });
+  }
 
-  return widgets.reversed.toList(); // مهم علشان تبقى الرسائل بالترتيب من تحت لفوق
+  return widgets.reversed.toList();
+//  مهم علشان تبقى الرسائل بالترتيب من تحت لفوق
 }

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:grd_proj/components/color.dart';
+import 'package:grd_proj/screens/add_card.dart';
 import 'package:grd_proj/screens/plans_screen.dart';
 
 class SubcreptionSetting extends StatefulWidget {
@@ -17,31 +18,30 @@ class _SubcreptionSettingState extends State<SubcreptionSetting> {
   bool billingHistory = false;
 
   Widget _buildCell(
-  String text, {
-  bool isHeader = false,
-  BorderRadius? borderRadius,
-}) {
-  return Container(
-    width: 174,
-    height: 70,
-    padding: EdgeInsets.all(24),
-    alignment: Alignment.centerLeft,
-    decoration: BoxDecoration(
-      color: isHeader ? Color(0XFFF4F4F4) : Colors.white,
-      borderRadius: borderRadius ?? BorderRadius.zero,
-    ),
-    child: Text(
-      text,
-      style: TextStyle(
-        fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-        fontSize: 16,
-        fontFamily: "manrope",
-        color: Colors.black,
+    String text, {
+    bool isHeader = false,
+    BorderRadius? borderRadius,
+  }) {
+    return Container(
+      width: 174,
+      height: 70,
+      padding: EdgeInsets.all(24),
+      alignment: Alignment.centerLeft,
+      decoration: BoxDecoration(
+        color: isHeader ? Color(0XFFF4F4F4) : Colors.white,
+        borderRadius: borderRadius ?? BorderRadius.zero,
       ),
-    ),
-  );
-}
-
+      child: Text(
+        text,
+        style: TextStyle(
+          fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
+          fontSize: 16,
+          fontFamily: "manrope",
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,10 +147,11 @@ class _SubcreptionSettingState extends State<SubcreptionSetting> {
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PlansScreen()),
-                                  );
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PlansScreen()),
+                                      );
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
@@ -247,7 +248,7 @@ class _SubcreptionSettingState extends State<SubcreptionSetting> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    currentPlan = ! currentPlan;
+                                    currentPlan = !currentPlan;
                                   });
                                 },
                                 child: Container(
@@ -277,37 +278,109 @@ class _SubcreptionSettingState extends State<SubcreptionSetting> {
                           ),
                   ],
                 )),
-                SizedBox(height: 24),
-                    Divider(height: 1, color: borderColor),
-                    SizedBox(height: 24),
-
-                    paymentMethod?
-                    SizedBox(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Payment Method',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "manrope",
+            SizedBox(height: 24),
+            Divider(height: 1, color: borderColor),
+            SizedBox(height: 24),
+            paymentMethod
+                ? SizedBox(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Payment Method',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "manrope",
+                          ),
+                        ),
+                        SizedBox(height: 24),
+                        Text(
+                          'No payment method found',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color(0xff0D121C),
+                            fontFamily: "manrope",
+                          ),
+                        ),
+                        SizedBox(height: 24),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            minimumSize: const Size(185, 39),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              side: BorderSide(
+                                color: borderColor,
+                                width: 1,
+                              ),
                             ),
                           ),
-                          SizedBox(height: 24),
-                          Text('No payment method found',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xff0D121C),
-                              fontFamily: "manrope",
-                            ),),
-                            SizedBox(height: 24),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => StripeCardSetupScreen()));
+                          },
+                          child: Text('Add Payment Method',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "manrope",
+                              )),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(
+                    height: 177,
+                    width: double.infinity,
+                    padding: EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Color(0xffF4F4F4),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/visa.png',
+                              width: 70,
+                              height: 50,
+                            ),
+                            SizedBox(width: 16),
+                            Column(children: [
+                              Text('Visa ending in 4242',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "manrope",
+                                  )),
+                              SizedBox(height: 8),
+                              Text('Expires on 10/2026',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xff616161),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "manrope",
+                                  ))
+                            ])
+                          ],
+                        ),
+                        SizedBox(height: 24),
+                        Row(
+                          children: [
+                            Spacer(),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
-                                minimumSize: const Size(185, 39),
+                                minimumSize: const Size(130, 39),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5),
                                   side: BorderSide(
@@ -318,194 +391,130 @@ class _SubcreptionSettingState extends State<SubcreptionSetting> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                  paymentMethod = ! paymentMethod;
+                                  paymentMethod = !paymentMethod;
                                 });
-                              }, child: Text('Add Payment Method',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "manrope",
-                              )),
-                              ),
-                        ],
-                      ),
-                    ):
-                    Container(
-                      height: 177,
-                      width: double.infinity,
-                      padding: EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: Color(0xffF4F4F4),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                        Row(children: [
-                          Image.asset(
-                            'assets/images/visa.png',
-                            width: 70,
-                            height: 50,
-                          ),
-                          SizedBox(width: 16),
-                          Column(children: [
-                            Text('Visa ending in 4242',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "manrope",
-                                )),
-                                SizedBox(height: 8),
-                                Text('Expires on 10/2026',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xff616161),
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: "manrope",
-                                ))
-                          ])
-                        ],),
-                        SizedBox(height: 24),
-                        Row(
-                          children: [
-                            Spacer(),
-                            ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    minimumSize: const Size(130, 39),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      side: BorderSide(
-                                        color: borderColor,
-                                        width: 1,
-                                      ),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      paymentMethod = ! paymentMethod;
-                                    });
-                                  }, child: Text('Replace Card',
+                              },
+                              child: Text('Replace Card',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: "manrope",
                                   )),
-                                  ),
+                            ),
                           ],
                         ),
-                      ],),
+                      ],
                     ),
-                    SizedBox(height: 24),
-                    Divider(height: 1, color: borderColor),
-                    SizedBox(height: 24),
-
-                    Text("Billing History",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "manrope",
-                    )),
-                    SizedBox(height: 24),
-                    paymentMethod ? 
-                    SizedBox(
-                      height: 110,
-                      child: Center(
-                        child: Text('your invoice history will appear here',
-                          style: TextStyle(
+                  ),
+            SizedBox(height: 24),
+            Divider(height: 1, color: borderColor),
+            SizedBox(height: 24),
+            Text("Billing History",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: "manrope",
+                )),
+            SizedBox(height: 24),
+            paymentMethod
+                ? SizedBox(
+                    height: 110,
+                    child: Center(
+                      child: Text(
+                        'your invoice history will appear here',
+                        style: TextStyle(
                             fontSize: 16,
                             color: Color(0xff9F9F9F),
                             fontFamily: "manrope",
-                            fontWeight: FontWeight.w600
-                          ),),
+                            fontWeight: FontWeight.w600),
                       ),
-                      
-                    )
-                    : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        margin: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade400),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
-                            // ✅ Header مع زوايا من فوق
-                            Row(
-                              children: [
-                                _buildCell(
-                                  "invoice ID",
-                                  isHeader: true,
-                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
-                                ),
-                                _buildCell(
-                                  "Date",
-                                  isHeader: true,
-                                ),
-                                _buildCell(
-                                  "PLan",
-                                  isHeader: true,
-                                ),
-                                _buildCell(
-                                  "Amount",
-                                  isHeader: true,
-                                ),
-                                _buildCell(
-                                  "Pay Method",
-                                  isHeader: true,
-                                  borderRadius: BorderRadius.only(topRight: Radius.circular(12)),
-                                ),
-                              ],
-                            ),
-
-                            // ✅ خط تحت الهيدر
-                            Divider(height: 1, color: Colors.grey.shade300),
-
-                            // ✅ صف عادي
-                            Row(
-                              children: [
-                                _buildCell("#INV-20250615"),
-                                _buildCell("Jun 15, 2025"),
-                                _buildCell("Advanced"),
-                                _buildCell("499.99 L.E"),
-                                _buildCell("Visa ending in 4242"),
-                              ],
-                            ),
-
-                            // ✅ الصف الأخير مع زوايا تحت
-                            Row(
-                              children: [
-                                _buildCell(
-                                  "#INV-20250715",
-                                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(12)),
-                                ),
-                                _buildCell(
-                                  "Jul 15, 2025",
-                                ),
-                                _buildCell(
-                                  "Advanced",
-                                ),
-                                _buildCell(
-                                  "499.99 L.E",
-                                ),
-                                _buildCell(
-                                  "Visa ending in 4242",
-                                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(12)),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                    ),
+                  )
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      margin: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    )
-                  ],
+                      child: Column(
+                        children: [
+                          // ✅ Header مع زوايا من فوق
+                          Row(
+                            children: [
+                              _buildCell(
+                                "invoice ID",
+                                isHeader: true,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12)),
+                              ),
+                              _buildCell(
+                                "Date",
+                                isHeader: true,
+                              ),
+                              _buildCell(
+                                "PLan",
+                                isHeader: true,
+                              ),
+                              _buildCell(
+                                "Amount",
+                                isHeader: true,
+                              ),
+                              _buildCell(
+                                "Pay Method",
+                                isHeader: true,
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(12)),
+                              ),
+                            ],
+                          ),
+
+                          // ✅ خط تحت الهيدر
+                          Divider(height: 1, color: Colors.grey.shade300),
+
+                          // ✅ صف عادي
+                          Row(
+                            children: [
+                              _buildCell("#INV-20250615"),
+                              _buildCell("Jun 15, 2025"),
+                              _buildCell("Advanced"),
+                              _buildCell("499.99 L.E"),
+                              _buildCell("Visa ending in 4242"),
+                            ],
+                          ),
+
+                          // ✅ الصف الأخير مع زوايا تحت
+                          Row(
+                            children: [
+                              _buildCell(
+                                "#INV-20250715",
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(12)),
+                              ),
+                              _buildCell(
+                                "Jul 15, 2025",
+                              ),
+                              _buildCell(
+                                "Advanced",
+                              ),
+                              _buildCell(
+                                "499.99 L.E",
+                              ),
+                              _buildCell(
+                                "Visa ending in 4242",
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(12)),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+          ],
         ));
   }
-
-  
 }

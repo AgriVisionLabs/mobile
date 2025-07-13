@@ -84,30 +84,17 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     });
 
 
-    on<PayForPlan>((event, emit) async {
+    on<ChoocePaln>((event, emit) async {
       try {
         // 1. استدعاء API backend لإنشاء PaymentIntent
-        final response = await api.post(EndPoints.webHook,);
+        final response = await api.post(EndPoints.plan,data: {
+          "planId": event.Id
+        });
 
-        final json = jsonDecode(response.body);
-        final clientSecret = json['clientSecret'];
-
-        // 2. تهيئة صفحة الدفع
-        await Stripe.instance.initPaymentSheet(
-          paymentSheetParameters: SetupPaymentSheetParameters(
-            paymentIntentClientSecret: clientSecret,
-            merchantDisplayName: 'Your App',
-            style: ThemeMode.light,
-          ),
-        );
-
-        // 3. عرض صفحة الدفع
-        await Stripe.instance.presentPaymentSheet();
-
-        // 4. تأكيد الدفع
-        print('✅ Payment successful!');
-      } catch (e) {
-        print('❌ Payment failed: $e');
+         emit(PaymentSuccess());
+      } on ServerException catch (e) {
+        emit(PaymentFailure(
+            errMessage: e.errorModel.message, errors: e.errorModel.error));
       }
     });
   }

@@ -13,6 +13,7 @@ import 'package:grd_proj/screens/field_disease_detection.dart';
 import 'package:grd_proj/screens/fields_screen.dart';
 import 'package:grd_proj/screens/inve_manage.dart';
 import 'package:grd_proj/screens/irrigation_control.dart';
+import 'package:grd_proj/screens/notification.dart';
 import 'package:grd_proj/screens/sensor_and_devices.dart';
 import 'package:grd_proj/screens/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -124,7 +125,12 @@ class _HomeScreenState extends State<HomeScreen> {
               const Spacer(),
               GestureDetector(
                 onTap: () {
-                  print("call note");
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NotificationScreen(),
+                    ),
+                  );
                 },
                 child: Image.asset('assets/images/Vector.png',
                     width: 30, height: 30),
@@ -132,11 +138,11 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(width: 20),
               GestureDetector(
                 onTap: () {
-                  // _login();
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                    (Route<dynamic> route) =>
-                        false, // This will remove all previous routes
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreen(initialIndex:8,),
+                    ),
                   );
                 },
                 child: CircleAvatar(

@@ -4,16 +4,16 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
+// / Default [FirebaseOptions] for use with your Firebase apps.
+// /
+// / Example:
+// / ```dart
+// / import 'firebase_options.dart';
+// / // ...
+// / await Firebase.initializeApp(
+// /   options: DefaultFirebaseOptions.currentPlatform,
+// / );
+// / ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAfpm4iQ-NiC9-TD4UBPgGZFTvOn8rw5cI',
-    appId: '1:769027848160:android:0fdd8953c8973434a4dd85',
+    appId: '1:769027848160:android:0d3cba8547a5228ea4dd85',
     messagingSenderId: '769027848160',
     projectId: 'graduation-project-c880c',
     storageBucket: 'graduation-project-c880c.firebasestorage.app',
@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'graduation-project-c880c.firebasestorage.app',
     measurementId: 'G-BVBPGECP53',
   );
+
 }

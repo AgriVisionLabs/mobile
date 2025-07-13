@@ -26,7 +26,7 @@ class EndPoints {
   static const String diseaseDetections = '/farms';
   static const String farmMembers = '/farms';
   static const String conversations = '/Conversations';
-  static const String webHook = '/WebHook/stripe-webhook';
+  static const String plan = '/Subscriptions/create-Subscription';
 
 }
 

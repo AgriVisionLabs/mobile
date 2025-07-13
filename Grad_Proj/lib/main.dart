@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters, prefer_const_constructors, use_key_in_widget_constructors, unused_import
+// ignore_for_file: use_super_parameters, prefer_const_constructors, use_key_in_widget_constructors, unused_import, avoid_print
 
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,11 +42,14 @@ import 'package:workmanager/workmanager.dart';
 import 'bloc/user_cubit.dart';
 import 'screens/register.dart';
 import 'screens/splash_screen.dart';
-
+import 'firebase_options.dart';
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
+
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     // Create Dio and DioConsumer instance
     final dio = Dio();
     final dioConsumer = DioConsumer(dio: dio);
@@ -63,6 +66,11 @@ void callbackDispatcher() {
 
 // ignore: prefer_const_declarations
 void main() async {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    // Ignore to keep running
+    print('[FlutterError] ${details.exception}');
+  };
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   Stripe.publishableKey =
@@ -95,7 +103,8 @@ void main() async {
           create: (BuildContext context) => SensorBloc(DioConsumer(dio: Dio())),
         ),
         BlocProvider<WeatherBloc>(
-          create: (BuildContext context) => WeatherBloc(DioConsumer(dio: Dio())),
+          create: (BuildContext context) =>
+              WeatherBloc(DioConsumer(dio: Dio())),
         ),
       ],
       child: const MyApp(),
